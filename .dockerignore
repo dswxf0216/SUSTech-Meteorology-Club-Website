@@ -1,0 +1,12 @@
+.git
+.next
+.env
+.env.*
+!.env.example
+node_modules
+club-cms.db*
+media
+test-results
+playwright-report
+npm-debug.log*
+pnpm-debug.log*
