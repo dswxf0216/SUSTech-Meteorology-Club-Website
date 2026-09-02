@@ -5,3 +5,9 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+# pnpm 11.22 及更早版本（Railway 当前构建镜像）使用此白名单。
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - unrs-resolver
