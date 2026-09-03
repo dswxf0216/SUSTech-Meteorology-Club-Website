@@ -90,6 +90,18 @@ button, input { font: inherit; }
 .weather-details span { color: rgba(255,255,255,.66); font-size: 13px; }.weather-details strong { font-size: 24px; }
 .notice-card { margin-top: 22px; padding: 24px 28px; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; }
 .notice-card strong { color: var(--primary-dark); }.notice-card p { margin: 8px 0 0; color: var(--muted); line-height: 1.7; }
+.station-weather-card { overflow: hidden; display: grid; grid-template-columns: 1.1fr .9fr; color: white; background: var(--primary); border-radius: var(--radius-lg); }
+.station-weather-copy { min-height: 360px; padding: 42px; }
+.station-weather-label { margin: 62px 0 8px; color: rgba(255,255,255,.72); font-size: 14px; }
+.station-temperature { display: flex; align-items: center; gap: 10px; }
+.station-temperature img { width: 156px; height: 96px; object-fit: cover; object-position: center; border-radius: 4px; background: white; image-rendering: crisp-edges; }
+.station-temperature strong { font-size: 36px; }
+.station-message { display: block; min-height: 96px; padding-top: 18px; font-size: 28px; }
+.station-observed { margin: 12px 0 0; color: rgba(255,255,255,.72); font-size: 13px; }
+.station-weather-info { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,.1); }
+.station-weather-info div { display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 28px; background: rgba(255,255,255,.04); }
+.station-weather-info span { color: rgba(255,255,255,.66); font-size: 13px; }
+.station-weather-info strong, .station-weather-info a { color: white; font-size: 16px; line-height: 1.5; }
 .about-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 24px; }
 .about-lead, .prose-card { padding: 36px; border-radius: var(--radius-md); }
 .about-lead { color: white; background: var(--primary); }.about-lead > span { color: #bde7df; font-size: 12px; letter-spacing: .18em; }.about-lead h2 { margin: 70px 0 0; font-size: 34px; line-height: 1.4; }
@@ -166,7 +178,7 @@ button, input { font: inherit; }
   .hero-grid { min-height: auto; grid-template-columns: 1fr; gap: 30px; }.hero-logo-panel { width: min(440px, 100%); margin: 0 auto; border-left: 0; border-top: 1px solid var(--line); }
   .feature-grid, .link-grid, .activity-grid { grid-template-columns: 1fr 1fr; }.content-columns { grid-template-columns: 1fr; gap: 54px; }
   .section-heading { align-items: start; flex-direction: column; gap: 14px; }
-  .weather-panel, .about-grid { grid-template-columns: 1fr; }
+  .weather-panel, .station-weather-card, .about-grid { grid-template-columns: 1fr; }
   .value-grid { grid-template-columns: 1fr; }.footer-inner { align-items: flex-start; flex-direction: column; gap: 24px; }.footer-inner > div:first-child { margin-right: 0; }
 }
 
@@ -178,7 +190,8 @@ button, input { font: inherit; }
   .archive-item { grid-template-columns: 1fr; gap: 18px; }.archive-cover { height: 190px; }
   .activity-facts { grid-template-columns: 1fr; }.activity-facts div { border-right: 0; border-bottom: 1px solid var(--line); }.activity-facts div:last-child { border-bottom: 0; }
   .gallery-grid { grid-template-columns: 1fr; }.gallery-grid img { height: auto; }
-  .feature-card { min-height: 260px; }.weather-primary { padding: 30px; }.weather-details div { padding: 22px; }.weather-primary > strong { font-size: 60px; }
+  .feature-card { min-height: 260px; }.weather-primary, .station-weather-copy { padding: 30px; }.weather-details div, .station-weather-info div { padding: 22px; }.weather-primary > strong { font-size: 60px; }
+  .station-weather-copy { min-height: 320px; }.station-weather-label { margin-top: 46px; }
   .about-lead, .prose-card { padding: 28px; }.about-lead h2 { margin-top: 54px; font-size: 28px; }
   .footer-links { flex-wrap: wrap; }.button { width: 100%; }
 }
