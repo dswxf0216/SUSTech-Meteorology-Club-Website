@@ -9,6 +9,7 @@ type WeatherData = {
   humidity: string | null
   observedAt: string | null
   pressure: string | null
+  retrievedAt: string
   rainfall1h: string | null
   rainfall24h: string | null
   stationId: string
@@ -20,7 +21,7 @@ type WeatherData = {
   windSpeed: string | null
 }
 
-const REFRESH_INTERVAL = 5 * 60 * 1000
+const REFRESH_INTERVAL = 60 * 1000
 const SOURCE_PAGE = 'https://szqxapp1.121.com.cn/sztq-app/web/'
 
 function valueOrDash(value: string | null | undefined) {
@@ -64,7 +65,8 @@ export function WeatherStationCard() {
             <strong className="station-message">{failed ? '数据暂时不可用' : '正在读取…'}</strong>
           )}
           <p className="station-description">{data?.description ?? '深圳市自动气象站观测'}</p>
-          <p className="station-observed">观测时间：{data?.observedAt ?? '—'} · 站号 {data?.stationId ?? 'G3565'}</p>
+          <p className="station-observed">实况时间：{data?.observedAt ?? '—'} · 站号 {data?.stationId ?? 'G3565'}</p>
+          {data ? <p className="station-retrieved">本站读取：{new Date(data.retrievedAt).toLocaleString('zh-CN')}</p> : null}
         </div>
         <div className="station-weather-info">
           <div><span>体感温度</span><strong>{valueOrDash(data?.apparentTemperature)}</strong></div>
@@ -79,7 +81,7 @@ export function WeatherStationCard() {
       </section>
       <div className="notice-card">
         <strong>数据说明</strong>
-        <p>数据来自深圳天气“南山－大学城”自动站，每 5 分钟自动检查更新。自动站观测可能因设备维护而短时缺测，仅作天气参考。<a href={SOURCE_PAGE} rel="noreferrer" target="_blank">查看深圳天气官方页面 ↗</a></p>
+        <p>数据来自深圳天气“南山－大学城”自动站，每分钟自动检查更新。自动站观测可能因设备维护而短时缺测，仅作天气参考。<a href={SOURCE_PAGE} rel="noreferrer" target="_blank">查看深圳天气官方页面 ↗</a></p>
       </div>
     </>
   )

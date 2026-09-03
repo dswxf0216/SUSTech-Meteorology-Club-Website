@@ -8,6 +8,7 @@ type SourceResponse = {
   result?: {
     desc?: string
     fcstTime?: string
+    obtDataTime?: string
     obtId?: string
     obtName?: string
     obtT?: string
@@ -41,7 +42,8 @@ export async function GET() {
         available: true,
         stationId: result.obtId ?? 'G3565',
         stationName: result.obtName ?? '大学城',
-        observedAt: result.fcstTime ?? null,
+        observedAt: result.obtDataTime ?? result.fcstTime ?? null,
+        retrievedAt: new Date().toISOString(),
         temperature: result.obtT,
         description: result.desc ?? null,
         apparentTemperature: result.element?.sensibleTemperature?.aptmp1 ?? null,
@@ -54,7 +56,7 @@ export async function GET() {
         rainfall1h: result.element?.rainfall?.r01hOfObt ?? null,
         rainfall24h: result.element?.rainfall?.r24hOfObt ?? null,
       },
-      { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=240, stale-while-revalidate=600' } },
+      { headers: { 'Cache-Control': 'public, max-age=15, s-maxage=30, stale-while-revalidate=60' } },
     )
   } catch {
     return Response.json(
