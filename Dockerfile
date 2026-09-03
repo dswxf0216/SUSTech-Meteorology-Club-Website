@@ -30,6 +30,11 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Payload is initialized while Next.js prerenders server pages. Railway injects
+# the real secret at container runtime, so use a non-sensitive build-only value
+# here instead of baking the production secret into the image.
+ENV PAYLOAD_SECRET="build-only-placeholder-secret-32-chars"
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
