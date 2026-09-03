@@ -13,6 +13,7 @@ import { Articles } from './collections/Articles'
 import { Activities } from './collections/Activities'
 import { Links } from './collections/Links'
 import { SiteSettings } from './globals/SiteSettings'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,6 +32,7 @@ const db = usePostgres
       pool: {
         connectionString: process.env.DATABASE_URL,
       },
+      prodMigrations: migrations,
       push: process.env.NODE_ENV !== 'production' || process.env.PAYLOAD_DB_PUSH === 'true',
     })
   : sqliteAdapter({
