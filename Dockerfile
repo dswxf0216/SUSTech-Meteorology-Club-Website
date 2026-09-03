@@ -34,6 +34,7 @@ COPY . .
 # the real secret at container runtime, so use a non-sensitive build-only value
 # here instead of baking the production secret into the image.
 ENV PAYLOAD_SECRET="build-only-placeholder-secret-32-chars"
+ENV PAYLOAD_DB_PUSH="true"
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
