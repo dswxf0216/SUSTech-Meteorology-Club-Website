@@ -28,7 +28,7 @@ function valueOrDash(value: string | null | undefined) {
   return value || '—'
 }
 
-export function WeatherStationCard() {
+export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
   const [data, setData] = useState<WeatherData | null>(null)
   const [failed, setFailed] = useState(false)
 
@@ -55,7 +55,7 @@ export function WeatherStationCard() {
 
   return (
     <>
-      <section className="station-weather-card" aria-live="polite">
+      <section className={`station-weather-card${compact ? ' station-weather-card-compact' : ''}`} aria-live="polite">
         <div className="station-weather-copy">
           <div><span className="status-dot" /><span className="weather-location">南山 · 大学城自动站</span></div>
           <p className="station-weather-label">实时温度</p>
@@ -79,10 +79,10 @@ export function WeatherStationCard() {
           <div><span>24 小时降雨</span><strong>{valueOrDash(data?.rainfall24h)}</strong></div>
         </div>
       </section>
-      <div className="notice-card">
+      {!compact ? <div className="notice-card">
         <strong>数据说明</strong>
         <p>数据来自深圳天气“南山－大学城”自动站，每分钟自动检查更新。自动站观测可能因设备维护而短时缺测，仅作天气参考。<a href={SOURCE_PAGE} rel="noreferrer" target="_blank">查看深圳天气官方页面 ↗</a></p>
-      </div>
+      </div> : null}
     </>
   )
 }

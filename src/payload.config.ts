@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Articles } from './collections/Articles'
 import { Activities } from './collections/Activities'
 import { Links } from './collections/Links'
+import { DailyForecasts } from './collections/DailyForecasts'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
 
@@ -67,7 +68,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Articles, Activities, Links],
+  collections: [Users, Media, DailyForecasts, Articles, Activities, Links],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   defaultMaxTextLength: 100_000,

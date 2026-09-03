@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'daily-forecasts': DailyForecast;
     articles: Article;
     activities: Activity;
     links: Link;
@@ -82,6 +83,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'daily-forecasts': DailyForecastsSelect<false> | DailyForecastsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     activities: ActivitiesSelect<false> | ActivitiesSelect<true>;
     links: LinksSelect<false> | LinksSelect<true>;
@@ -180,6 +182,47 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * 按页面分区编写每日预报。保存为草稿不会公开，确认后再发布。
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-forecasts".
+ */
+export interface DailyForecast {
+  id: number;
+  forecastDate: string;
+  headline?: string | null;
+  todayObservation?: {
+    period?: string | null;
+    temperatureRange?: string | null;
+    averageTemperature?: string | null;
+    rainfall?: string | null;
+  };
+  tomorrowForecast?: {
+    period?: string | null;
+    weather?: string | null;
+    temperatureRange?: string | null;
+    wind?: string | null;
+    rainProbability?: string | null;
+  };
+  /**
+   * 每一天增加一行，最多三行。
+   */
+  threeDayForecast?:
+    | {
+        date: string;
+        weather: string;
+        temperatureRange: string;
+        id?: string | null;
+      }[]
+    | null;
+  shenzhenOverview?: string | null;
+  chinaOverview?: string | null;
+  disclaimer?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -404,6 +447,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'daily-forecasts';
+        value: number | DailyForecast;
+      } | null)
+    | ({
         relationTo: 'articles';
         value: number | Article;
       } | null)
@@ -498,6 +545,45 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-forecasts_select".
+ */
+export interface DailyForecastsSelect<T extends boolean = true> {
+  forecastDate?: T;
+  headline?: T;
+  todayObservation?:
+    | T
+    | {
+        period?: T;
+        temperatureRange?: T;
+        averageTemperature?: T;
+        rainfall?: T;
+      };
+  tomorrowForecast?:
+    | T
+    | {
+        period?: T;
+        weather?: T;
+        temperatureRange?: T;
+        wind?: T;
+        rainProbability?: T;
+      };
+  threeDayForecast?:
+    | T
+    | {
+        date?: T;
+        weather?: T;
+        temperatureRange?: T;
+        id?: T;
+      };
+  shenzhenOverview?: T;
+  chinaOverview?: T;
+  disclaimer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -752,6 +838,10 @@ export interface TaskSchedulePublish {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?:
+      | ({
+          relationTo: 'daily-forecasts';
+          value: number | DailyForecast;
+        } | null)
       | ({
           relationTo: 'articles';
           value: number | Article;
