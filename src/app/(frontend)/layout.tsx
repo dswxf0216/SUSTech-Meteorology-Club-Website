@@ -7,6 +7,9 @@ import { SiteFooter } from './components/SiteFooter'
 import { SiteHeader } from './components/SiteHeader'
 import './styles.css'
 
+// Public pages read CMS content from the production database at request time.
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
   const title = settings.seo?.title || settings.clubName || '南方科技大学气象社'
