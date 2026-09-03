@@ -94,7 +94,8 @@ button, input { font: inherit; }
 .station-weather-copy { min-height: 360px; padding: 42px; }
 .station-weather-label { margin: 62px 0 8px; color: rgba(255,255,255,.72); font-size: 14px; }
 .station-temperature { display: flex; align-items: center; gap: 10px; }
-.station-temperature img { width: 156px; height: 96px; object-fit: cover; object-position: center; border-radius: 4px; background: white; image-rendering: crisp-edges; }
+.station-temperature-crop { position: relative; width: 156px; height: 96px; overflow: hidden; border-radius: 4px; background: white; }
+.station-temperature-crop img { position: absolute; top: -414px; left: -810px; width: 1280px; height: 1682px; max-width: none; image-rendering: crisp-edges; }
 .station-temperature strong { font-size: 36px; }
 .station-message { display: block; min-height: 96px; padding-top: 18px; font-size: 28px; }
 .station-observed { margin: 12px 0 0; color: rgba(255,255,255,.72); font-size: 13px; }

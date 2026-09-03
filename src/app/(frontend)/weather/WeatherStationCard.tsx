@@ -1,57 +1,24 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import Image from 'next/image'
-
-type StationStatus = {
-  available: boolean
-  imageUrl: string | null
-  observedAt: string | null
-  sourceUrl: string
-}
+import { useEffect, useState } from 'react'
 
 const REFRESH_INTERVAL = 5 * 60 * 1000
-
-function formatObservedAt(value: string | null) {
-  if (!value) return '更新时间由数据源提供'
-
-  return new Intl.DateTimeFormat('zh-CN', {
-    dateStyle: 'medium',
-    timeStyle: 'medium',
-    timeZone: 'Asia/Shanghai',
-  }).format(new Date(value))
-}
+const SOURCE_IMAGE =
+  'https://wx.121.com.cn/weixin/WeChat/data/mobile/temperature/AWS_NanShan_T_1_1.png'
+const SOURCE_PAGE = 'https://wx.121.com.cn/MobileWeather/districtWeather_newMap.html'
 
 export function WeatherStationCard() {
-  const [status, setStatus] = useState<StationStatus | null>(null)
   const [refreshKey, setRefreshKey] = useState(() => Date.now())
-
-  const refresh = useCallback(async () => {
-    try {
-      const response = await fetch('/api/weather/nanshan-station', { cache: 'no-store' })
-      const nextStatus = (await response.json()) as StationStatus
-      setStatus(nextStatus)
-      if (nextStatus.available) setRefreshKey(Date.now())
-    } catch {
-      setStatus({
-        available: false,
-        imageUrl: null,
-        observedAt: null,
-        sourceUrl: 'https://wx.121.com.cn/MobileWeather/districtWeather_newMap.html',
-      })
-    }
-  }, [])
+  const [imageState, setImageState] = useState<'loading' | 'available' | 'error'>('loading')
+  const [readAt, setReadAt] = useState<Date | null>(null)
 
   useEffect(() => {
-    const initialTimer = window.setTimeout(() => void refresh(), 0)
-    const timer = window.setInterval(() => void refresh(), REFRESH_INTERVAL)
-    return () => {
-      window.clearTimeout(initialTimer)
-      window.clearInterval(timer)
-    }
-  }, [refresh])
-
-  const sourceUrl = status?.sourceUrl ?? 'https://wx.121.com.cn/MobileWeather/districtWeather_newMap.html'
+    const timer = window.setInterval(() => {
+      setImageState('loading')
+      setRefreshKey(Date.now())
+    }, REFRESH_INTERVAL)
+    return () => window.clearInterval(timer)
+  }, [])
 
   return (
     <>
@@ -59,30 +26,35 @@ export function WeatherStationCard() {
         <div className="station-weather-copy">
           <div><span className="status-dot" /><span className="weather-location">南山区北部目标站点</span></div>
           <p className="station-weather-label">实时温度</p>
-          {status?.available && status.imageUrl ? (
-            <div className="station-temperature">
-              <Image
-                alt="南山区目标站点实时温度数值"
-                height="144"
+          <div className="station-temperature">
+            <div className="station-temperature-crop" aria-hidden={imageState !== 'available'}>
+              {/* The source publishes station readings as a transparent 640×841 map overlay. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt=""
                 key={refreshKey}
-                src={`${status.imageUrl}?t=${refreshKey}`}
-                unoptimized
-                width="234"
+                onError={() => setImageState('error')}
+                onLoad={() => {
+                  setImageState('available')
+                  setReadAt(new Date())
+                }}
+                src={`${SOURCE_IMAGE}?t=${refreshKey}`}
               />
-              <strong>°C</strong>
             </div>
-          ) : status === null ? (
-            <strong className="station-message">正在读取…</strong>
-          ) : (
-            <strong className="station-message">数据暂时不可用</strong>
-          )}
-          <p className="station-observed">{formatObservedAt(status?.observedAt ?? null)}</p>
+            {imageState === 'available' ? <strong>°C</strong> : null}
+          </div>
+          {imageState !== 'available' ? (
+            <strong className="station-message">{imageState === 'error' ? '数据暂时不可用' : '正在读取…'}</strong>
+          ) : null}
+          <p className="station-observed">
+            {readAt ? `最近读取：${readAt.toLocaleString('zh-CN')}` : '正在连接数据源'}
+          </p>
         </div>
         <div className="station-weather-info">
           <div><span>区域</span><strong>深圳市南山区</strong></div>
           <div><span>更新频率</span><strong>约 5 分钟检查一次</strong></div>
           <div><span>站点说明</span><strong>截图红圈所示位置</strong></div>
-          <div><span>数据来源</span><a href={sourceUrl} rel="noreferrer" target="_blank">深圳市气象局 ↗</a></div>
+          <div><span>数据来源</span><a href={SOURCE_PAGE} rel="noreferrer" target="_blank">深圳市气象局 ↗</a></div>
         </div>
       </section>
       <div className="notice-card">
