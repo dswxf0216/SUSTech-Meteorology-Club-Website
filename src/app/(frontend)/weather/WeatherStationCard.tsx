@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type WeatherData = {
   apparentTemperature: string | null
   available: boolean
+  stale?: boolean
   description: string | null
   humidity: string | null
   observedAt: string | null
@@ -32,26 +33,47 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
   const [data, setData] = useState<WeatherData | null>(null)
   const [failed, setFailed] = useState(false)
 
-  const refresh = useCallback(async () => {
+  useEffect(() => {
+    let stopped = false
+    let timer: ReturnType<typeof setTimeout>
+    const controller = new AbortController()
+    const storageKey = 'university-town-weather-v1'
+    const maxAge = 30 * 60_000
     try {
-      const response = await fetch('/api/weather/university-town', { cache: 'no-store' })
+      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null') as WeatherData | null
+      if (saved?.available && saved.stationId === 'G3565' && Date.now() - Date.parse(saved.retrievedAt) < maxAge) {
+        setData({ ...saved, stale: true })
+      }
+    } catch { /* Storage may be disabled. */ }
+    const refresh = async () => {
+    let delay = REFRESH_INTERVAL
+    try {
+      const response = await fetch('/api/weather/university-town', {
+        cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(25_000)]),
+      })
       if (!response.ok) throw new Error('Weather request failed')
       const nextData = (await response.json()) as WeatherData
+      if (!nextData.available || !nextData.temperature) throw new Error('Invalid weather data')
+      if (stopped) return
       setData(nextData)
       setFailed(false)
+      try { localStorage.setItem(storageKey, JSON.stringify(nextData)) } catch { /* Optional cache. */ }
+      if (nextData.stale) delay = 15_000
     } catch {
+      if (stopped) return
       setFailed(true)
+      setData(previous => previous && Date.now() - Date.parse(previous.retrievedAt) < maxAge ? previous : null)
+      delay = 15_000
+    }
+    if (!stopped) timer = setTimeout(() => void refresh(), delay)
+    }
+    timer = setTimeout(() => void refresh(), 0)
+    return () => {
+      stopped = true
+      controller.abort()
+      clearTimeout(timer)
     }
   }, [])
-
-  useEffect(() => {
-    const initialTimer = window.setTimeout(() => void refresh(), 0)
-    const timer = window.setInterval(() => void refresh(), REFRESH_INTERVAL)
-    return () => {
-      window.clearTimeout(initialTimer)
-      window.clearInterval(timer)
-    }
-  }, [refresh])
 
   return (
     <>
@@ -67,6 +89,7 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
           <p className="station-description">{data?.description ?? '深圳市自动气象站观测'}</p>
           <p className="station-observed">实况时间：{data?.observedAt ?? '—'} · 站号 {data?.stationId ?? 'G3565'}</p>
           {data ? <p className="station-retrieved">本站读取：{new Date(data.retrievedAt).toLocaleString('zh-CN')}</p> : null}
+          {(failed || data?.stale) ? <p className="station-observed">{data ? '显示上次成功读取的数据，请留意实况时间；正在自动重试更新。' : '暂未取得数据，正在自动重试，无需刷新页面。'}</p> : null}
         </div>
         <div className="station-weather-info">
           <div><span>体感温度</span><strong>{valueOrDash(data?.apparentTemperature)}</strong></div>

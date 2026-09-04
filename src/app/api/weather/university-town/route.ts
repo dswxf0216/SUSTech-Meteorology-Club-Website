@@ -23,13 +23,13 @@ type SourceResponse = {
   }
 }
 
-export async function GET() {
-  try {
+async function readWeather() {
     const response = await fetch(SOURCE_URL, {
       cache: 'no-store',
       headers: { 'User-Agent': 'SUSTech-Meteorology-Club-Website/1.0' },
       signal: AbortSignal.timeout(10_000),
     })
+    if (!response.ok) throw new Error(`Upstream HTTP ${response.status}`)
     const source = (await response.json()) as SourceResponse
 
     if (!response.ok || !source.success || !source.result?.obtT) {
@@ -37,8 +37,7 @@ export async function GET() {
     }
 
     const result = source.result
-    return Response.json(
-      {
+    return {
         available: true,
         stationId: result.obtId ?? 'G3565',
         stationName: result.obtName ?? '大学城',
@@ -55,13 +54,43 @@ export async function GET() {
         visibility: result.element?.visibility?.vis ?? null,
         rainfall1h: result.element?.rainfall?.r01hOfObt ?? null,
         rainfall24h: result.element?.rainfall?.r24hOfObt ?? null,
-      },
-      { headers: { 'Cache-Control': 'public, max-age=15, s-maxage=30, stale-while-revalidate=60' } },
-    )
-  } catch {
-    return Response.json(
-      { available: false },
-      { headers: { 'Cache-Control': 'no-store' }, status: 503 },
-    )
+      }
+}
+
+let cached: Awaited<ReturnType<typeof readWeather>> | null = null
+let pending: Promise<void> | null = null
+let retryAfter = 0
+const MAX_AGE = 30 * 60_000
+
+export async function GET() {
+  const age = () => cached ? Date.now() - Date.parse(cached.retrievedAt) : Infinity
+  if (age() > 30_000 && Date.now() >= retryAfter) {
+    if (!pending) {
+      pending = (async () => {
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            cached = await readWeather()
+            retryAfter = 0
+            return
+          } catch (error) {
+            console.warn('[weather] upstream request failed', {
+              attempt: attempt + 1,
+              reason: error instanceof Error ? error.message : 'Unknown error',
+            })
+            if (attempt === 0) await new Promise(resolve => setTimeout(resolve, 500))
+          }
+        }
+        retryAfter = Date.now() + 15_000
+      })().finally(() => { pending = null })
+    }
+    await pending
   }
+  if (cached && age() < MAX_AGE) {
+    return Response.json({ ...cached, stale: age() > 60_000 }, {
+      headers: { 'Cache-Control': 'no-store' },
+    })
+  }
+  return Response.json({ available: false }, {
+    headers: { 'Cache-Control': 'no-store', 'Retry-After': '15' }, status: 503,
+  })
 }
