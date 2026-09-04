@@ -64,6 +64,7 @@ const email = process.env.SMTP_HOST
 export default buildConfig({
   admin: {
     user: Users.slug,
+    components: { afterLogin: ['/components/EditorSignupLink#EditorSignupLink'] },
     importMap: {
       baseDir: path.resolve(dirname),
     },

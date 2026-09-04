@@ -138,12 +138,16 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * 编辑申请默认待审批。管理员将审批状态改为“已批准”并保存后，申请人即可登录。
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
   name: string;
+  applicationReason?: string | null;
+  approvalStatus: 'pending' | 'approved' | 'rejected';
   role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
@@ -510,6 +514,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  applicationReason?: T;
+  approvalStatus?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;
