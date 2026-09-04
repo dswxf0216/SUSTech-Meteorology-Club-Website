@@ -7,6 +7,7 @@ import type { DailyForecast } from '@/payload-types'
 import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 import { WeatherStationCard } from './weather/WeatherStationCard'
+import { ForecastWeather } from './components/ForecastWeather'
 
 export const dynamic = 'force-dynamic'
 
@@ -116,7 +117,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
               {(forecast?.threeDayForecast?.length ? forecast.threeDayForecast : [null, null, null]).map((day, index) => (
                 <div key={day?.id || index}>
                   <span>{day?.date || '日期'}</span>
-                  <strong>{day?.weather || '天气'}</strong>
+                  <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
                   <span>{day?.temperatureRange || '气温范围'}</span>
                 </div>
               ))}
@@ -138,7 +139,7 @@ function ForecastBlock({ children, period, title }: { children: React.ReactNode;
 }
 
 function ForecastFact({ label, value }: { label: string; value?: null | string }) {
-  return <div><span>{label}</span><strong>{value || '—'}</strong></div>
+  return <div><span>{label}</span><strong>{label === '天气' ? <ForecastWeather text={value} /> : value || '—'}</strong></div>
 }
 
 function ForecastOverview({ title, value }: { title: string; value?: null | string }) {

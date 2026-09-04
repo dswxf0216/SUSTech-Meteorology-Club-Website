@@ -125,6 +125,11 @@ button, input { font: inherit; }
 .forecast-heading { margin-bottom: 24px; }
 .forecast-lead { min-height: 76px; display: flex; align-items: center; padding: 20px 24px; color: var(--primary-dark); background: white; border: 1px solid var(--line); border-left: 4px solid var(--primary); font-size: 21px; font-weight: 700; }
 .forecast-placeholder { color: #8a9bab; font-weight: 500; }
+.forecast-facts .forecast-weather, .three-day-list .forecast-weather { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.forecast-facts .forecast-weather-symbols, .three-day-list .forecast-weather-symbols, .forecast-symbol-item { display: inline-flex; align-items: center; flex-wrap: wrap; }
+.forecast-weather svg { flex-shrink: 0; display: block; }
+.forecast-facts .forecast-weather-text, .three-day-list .forecast-weather-text { color: var(--ink); font-size: 16px; font-weight: 700; }
+.forecast-symbol-arrow { padding: 0 4px; }
 .forecast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
 .forecast-block { min-height: 310px; padding: 28px; background: white; border: 1px solid var(--line); border-radius: var(--radius-md); }
 .forecast-block h3, .forecast-overviews h3 { margin: 0; font-size: 21px; }
