@@ -1,0 +1,60 @@
+name: sustech-weather
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+services:
+  postgres:
+    # Confirm the source database major version before choosing this image.
+    image: ${POSTGRES_IMAGE:?Set a verified PostgreSQL image}
+    restart: unless-stopped
+    mem_limit: 384m
+    command: ['postgres', '-c', 'shared_buffers=64MB', '-c', 'max_connections=30']
+    environment:
+      POSTGRES_DB: club_website
+      POSTGRES_USER: club_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a database password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U club_user -d club_website']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  web:
+    image: ${APP_IMAGE:?Set the prebuilt website image}
+    restart: unless-stopped
+    mem_limit: 1024m
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=640
+      NEXT_TELEMETRY_DISABLED: '1'
+      DATABASE_TYPE: postgres
+      DATABASE_URL: postgresql://club_user:${POSTGRES_PASSWORD:?Set a database password}@postgres:5432/club_website
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Use the existing production Payload secret}
+      PAYLOAD_DB_PUSH: 'false'
+      NEXT_PUBLIC_SERVER_URL: ${SITE_URL:?Set the website origin}
+    # Private testing only; public HTTPS will be configured after data restore.
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      retries: 5
+    logging: *logging
+
+volumes:
+  postgres_data:
+  media:

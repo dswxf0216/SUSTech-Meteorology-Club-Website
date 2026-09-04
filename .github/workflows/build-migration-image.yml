@@ -1,0 +1,28 @@
+name: Build migration image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux image outside the small server
+        run: docker build --platform linux/amd64 -t club-website:${{ github.sha }} .
+      - name: Export image and checksum
+        run: |
+          docker save club-website:${{ github.sha }} | gzip > club-website-image.tar.gz
+          sha256sum club-website-image.tar.gz > club-website-image.tar.gz.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: club-website-image-${{ github.sha }}
+          path: |
+            club-website-image.tar.gz
+            club-website-image.tar.gz.sha256
+          retention-days: 3
+          compression-level: 0
