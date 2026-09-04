@@ -32,7 +32,10 @@ export default async function HomePage() {
             <div><span className="eyebrow">UNIVERSITY TOWN AWS</span><h2>校园实时观测</h2></div>
             <p>大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p>
           </div>
-          <WeatherStationCard compact />
+          <div className="weather-layout home-weather-layout"><div>
+            <WeatherStationCard compact />
+            <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
+          </div><div aria-hidden="true" /></div>
         </div>
       </section>
 
