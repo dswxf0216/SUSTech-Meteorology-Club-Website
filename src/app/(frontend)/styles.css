@@ -130,6 +130,22 @@ button, input { font: inherit; }
 .forecast-weather svg { flex-shrink: 0; display: block; }
 .forecast-facts .forecast-weather-text, .three-day-list .forecast-weather-text { color: var(--ink); font-size: 16px; font-weight: 700; }
 .forecast-symbol-arrow { padding: 0 4px; }
+.forecast-heading { justify-content: center; text-align: center; }
+.forecast-lead { justify-content: center; text-align: center; }
+.forecast-block, .forecast-disclaimer { text-align: center; }
+.forecast-overviews h3 { text-align: center; }
+.forecast-facts > div { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.forecast-facts > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.forecast-facts .forecast-weather, .three-day-list .forecast-weather { align-items: center; text-align: center; }
+.forecast-facts .forecast-symbol-item, .three-day-list .forecast-symbol-item { display: inline-flex; align-items: center; }
+.forecast-facts .forecast-weather-symbols, .three-day-list .forecast-weather-symbols { justify-content: center; }
+.forecast-block .three-day-list { gap: 16px; border: 0; }
+.forecast-block .three-day-list > div { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px 14px; border: 0; border-radius: 12px; background: #edf4fb; text-align: center; }
+.forecast-facts .forecast-temperature, .three-day-list .forecast-temperature { display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.forecast-facts .forecast-temperature span, .three-day-list .forecast-temperature span { display: inline; font-size: inherit; }
+.forecast-temperature .temperature-low { color: #226fba; }
+.forecast-temperature .temperature-high { color: #bc580a; }
+.forecast-temperature .temperature-divider { color: var(--muted); }
 .forecast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
 .forecast-block { min-height: 310px; padding: 28px; background: white; border: 1px solid var(--line); border-radius: var(--radius-md); }
 .forecast-block h3, .forecast-overviews h3 { margin: 0; font-size: 21px; }
