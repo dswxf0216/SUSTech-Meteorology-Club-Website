@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { dewPoint } from '@/utilities/dewPoint'
 
 type WeatherData = {
   apparentTemperature: string | null
@@ -92,7 +93,7 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
           {(failed || data?.stale) ? <p className="station-observed">{data ? '显示上次成功读取的数据，请留意实况时间；正在自动重试更新。' : '暂未取得数据，正在自动重试，无需刷新页面。'}</p> : null}
         </div>
         <div className="station-weather-info">
-          <div><span>体感温度</span><strong>{valueOrDash(data?.apparentTemperature)}</strong></div>
+          <div title="根据同一份实况气温与相对湿度，使用 Magnus 近似公式计算；非直接观测值。"><span>露点温度（计算值）</span><strong>{valueOrDash(dewPoint(data?.temperature, data?.humidity))}</strong></div>
           <div><span>相对湿度</span><strong>{valueOrDash(data?.humidity)}</strong></div>
           <div><span>风向风速</span><strong>{data ? `${valueOrDash(data.windDirection)} ${valueOrDash(data.windSpeed)}` : '—'}</strong></div>
           <div><span>风力</span><strong>{valueOrDash(data?.windForce)}</strong></div>
