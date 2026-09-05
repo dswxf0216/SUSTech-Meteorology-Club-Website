@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { fetchWithTimeout } from '@/utilities/fetchWithTimeout'
 
 type Point = { time: string; value: number | null }
 type History = { available: boolean; stale: boolean; observedAt: string; retrievedAt: string; series: Record<string, Point[]> }
@@ -17,7 +18,7 @@ export function WeatherHistory() {
     async function refresh() {
       let delay = 60_000
       try {
-        const response = await fetch('/api/weather/university-town/history', { cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(25_000)]) })
+        const response = await fetchWithTimeout('/api/weather/university-town/history', { cache: 'no-store' }, 25_000, controller.signal)
         if (!response.ok) throw new Error('History unavailable')
         const next: History = await response.json()
         if (!next.available) throw new Error('Empty history')

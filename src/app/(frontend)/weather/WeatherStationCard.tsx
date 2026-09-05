@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { dewPoint } from '@/utilities/dewPoint'
+import { fetchWithTimeout } from '@/utilities/fetchWithTimeout'
 
 type WeatherData = {
   apparentTemperature: string | null
@@ -49,9 +50,12 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
     const refresh = async () => {
     let delay = REFRESH_INTERVAL
     try {
-      const response = await fetch('/api/weather/university-town', {
-        cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(25_000)]),
-      })
+      const response = await fetchWithTimeout(
+        '/api/weather/university-town',
+        { cache: 'no-store' },
+        25_000,
+        controller.signal,
+      )
       if (!response.ok) throw new Error('Weather request failed')
       const nextData = (await response.json()) as WeatherData
       if (!nextData.available || !nextData.temperature) throw new Error('Invalid weather data')
