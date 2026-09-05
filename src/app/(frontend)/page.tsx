@@ -101,17 +101,18 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
         </div>
         <div className="forecast-lead">{forecast?.headline || <span className="forecast-placeholder">当日标题／一句话概述</span>}</div>
         <div className="forecast-grid">
-          <ForecastBlock title="今日深圳天气实况" period="昨日20时至今日20时">
+          <ForecastBlock title="今日深圳天气实况" periodLabel="实况时段" period="昨日20时至今日20时">
             <ForecastFact label="高低温" value={<ForecastTemperature low={forecast?.todayObservation?.lowTemperature} high={forecast?.todayObservation?.highTemperature} text={forecast?.todayObservation?.temperatureRange} />} />
             <ForecastFact label="均温" value={formatSingleTemperature(forecast?.todayObservation?.averageTemperatureValue, forecast?.todayObservation?.averageTemperature)} />
-            <ForecastFact label="降水量与量级" value={forecast?.todayObservation?.rainfall} />
+            <ForecastFact label="降水量" value={formatRainfall(forecast?.todayObservation?.rainfallAmount, forecast?.todayObservation?.rainfall)} />
+            <ForecastFact label="量级" value={forecast?.todayObservation?.precipitationLevel} />
           </ForecastBlock>
-          <ForecastBlock title="明日南科天气预报" period="今日20时至明日20时">
+          <ForecastBlock title="明日南科天气预报" periodLabel="预报时段" period="今日20时至明日20时">
             <ForecastFact label="天气" value={<ForecastWeather text={forecast?.tomorrowForecast?.weather} />} />
             <ForecastFact label="气温" value={<ForecastTemperature low={forecast?.tomorrowForecast?.lowTemperature} high={forecast?.tomorrowForecast?.highTemperature} text={forecast?.tomorrowForecast?.temperatureRange} />} />
             <ForecastFact label="风向风速" value={forecast?.tomorrowForecast?.wind} />
             <ForecastFact label="降水概率" value={forecast?.tomorrowForecast?.rainProbability} />
-            <ForecastFact label="降水量" value={forecast?.tomorrowForecast?.rainfall} />
+            <ForecastFact label="降水量" value={formatRainfall(forecast?.tomorrowForecast?.rainfallAmount, forecast?.tomorrowForecast?.rainfall)} />
             <ForecastFact label="可能的降水时段&雨强预报" value={forecast?.tomorrowForecast?.precipitationTimingIntensity} />
           </ForecastBlock>
           <article className="forecast-block forecast-three-day">
@@ -119,7 +120,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
             <div className="three-day-list">
               {(forecast?.threeDayForecast?.length ? forecast.threeDayForecast : [null, null, null]).map((day, index) => (
                 <div key={day?.id || index}>
-                  <span>{day?.date || '日期'}</span>
+                  <span className="forecast-date">{day?.date || '日期'}</span>
                   <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
                   <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
                 </div>
@@ -137,8 +138,8 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
   )
 }
 
-function ForecastBlock({ children, period, title }: { children: React.ReactNode; period?: null | string; title: string }) {
-  return <article className="forecast-block"><h3>{title}</h3><p className="forecast-period">{period || '时段说明'}</p><div className="forecast-facts">{children}</div></article>
+function ForecastBlock({ children, period, periodLabel, title }: { children: React.ReactNode; period?: null | string; periodLabel: string; title: string }) {
+  return <article className="forecast-block"><h3>{title}</h3><p className="forecast-period"><span>{periodLabel}：</span>{period || '时段说明'}</p><div className="forecast-facts">{children}</div></article>
 }
 
 function ForecastFact({ label, value }: { label: string; value?: React.ReactNode }) {
@@ -147,6 +148,11 @@ function ForecastFact({ label, value }: { label: string; value?: React.ReactNode
 
 function formatSingleTemperature(value?: number | null, legacyValue?: string | null) {
   if (typeof value === 'number') return `${value}℃`
+  return legacyValue || '—'
+}
+
+function formatRainfall(value?: number | null, legacyValue?: string | null) {
+  if (typeof value === 'number') return `${value}mm`
   return legacyValue || '—'
 }
 

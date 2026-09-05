@@ -204,6 +204,8 @@ export interface DailyForecast {
     averageTemperatureValue: number;
     temperatureRange?: string | null;
     averageTemperature?: string | null;
+    rainfallAmount?: number | null;
+    precipitationLevel?: string | null;
     rainfall?: string | null;
   };
   tomorrowForecast: {
@@ -214,6 +216,7 @@ export interface DailyForecast {
     temperatureRange?: string | null;
     wind?: string | null;
     rainProbability?: string | null;
+    rainfallAmount?: number | null;
     rainfall?: string | null;
     precipitationTimingIntensity?: string | null;
   };
@@ -577,6 +580,8 @@ export interface DailyForecastsSelect<T extends boolean = true> {
         averageTemperatureValue?: T;
         temperatureRange?: T;
         averageTemperature?: T;
+        rainfallAmount?: T;
+        precipitationLevel?: T;
         rainfall?: T;
       };
   tomorrowForecast?:
@@ -589,6 +594,7 @@ export interface DailyForecastsSelect<T extends boolean = true> {
         temperatureRange?: T;
         wind?: T;
         rainProbability?: T;
+        rainfallAmount?: T;
         rainfall?: T;
         precipitationTimingIntensity?: T;
       };

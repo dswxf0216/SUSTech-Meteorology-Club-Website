@@ -49,7 +49,9 @@ export const DailyForecasts: CollectionConfig = {
         { name: 'averageTemperatureValue', label: '平均温度（℃）', type: 'number', required: true },
         { name: 'temperatureRange', label: '旧版高低温', type: 'text', admin: { hidden: true } },
         { name: 'averageTemperature', label: '旧版平均温度', type: 'text', admin: { hidden: true } },
-        { name: 'rainfall', label: '降水量与量级', type: 'text', maxLength: 100 },
+        { name: 'rainfallAmount', label: '降水量（mm）', type: 'number' },
+        { name: 'precipitationLevel', label: '量级', type: 'text', maxLength: 100 },
+        { name: 'rainfall', label: '旧版降水量与量级', type: 'text', admin: { hidden: true } },
       ],
     },
     {
@@ -71,7 +73,8 @@ export const DailyForecasts: CollectionConfig = {
         { name: 'temperatureRange', label: '旧版气温范围', type: 'text', admin: { hidden: true } },
         { name: 'wind', label: '风向风速', type: 'text', maxLength: 100 },
         { name: 'rainProbability', label: '降水概率', type: 'text', maxLength: 50 },
-        { name: 'rainfall', label: '降水量', type: 'text', maxLength: 100 },
+        { name: 'rainfallAmount', label: '降水量（mm）', type: 'number' },
+        { name: 'rainfall', label: '旧版降水量', type: 'text', admin: { hidden: true } },
         {
           name: 'precipitationTimingIntensity',
           label: '可能的降水时段&雨强预报',
