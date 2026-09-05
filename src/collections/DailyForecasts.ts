@@ -106,7 +106,24 @@ export const DailyForecasts: CollectionConfig = {
         { name: 'temperatureRange', label: '旧版气温范围', type: 'text', admin: { hidden: true } },
         { name: 'wind', label: '风向风速', type: 'text', maxLength: 100 },
         { name: 'rainProbability', label: '降水概率', type: 'text', maxLength: 50 },
-        { name: 'rainfallAmount', label: '降水量（mm）', type: 'number' },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'rainfallAmountMin',
+              label: '降水量下限（mm）',
+              type: 'number',
+              admin: { className: 'rainfall-range-start', width: '50%' },
+            },
+            {
+              name: 'rainfallAmountMax',
+              label: '降水量上限（mm）',
+              type: 'number',
+              admin: { className: 'rainfall-range-end', width: '50%' },
+            },
+          ],
+        },
+        { name: 'rainfallAmount', label: '旧版降水量数值', type: 'number', admin: { hidden: true } },
         { name: 'rainfall', label: '旧版降水量', type: 'text', admin: { hidden: true } },
         {
           name: 'precipitationTimingIntensity',

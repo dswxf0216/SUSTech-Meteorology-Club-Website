@@ -4,6 +4,7 @@ import * as migration_20260904_072246_editor_approval from './20260904_072246_ed
 import * as migration_20260905_120000_forecast_editor_fields from './20260905_120000_forecast_editor_fields';
 import * as migration_20260905_170000_forecast_precipitation_fields from './20260905_170000_forecast_precipitation_fields';
 import * as migration_20260905_210000_forecast_image_capture from './20260905_210000_forecast_image_capture';
+import * as migration_20260905_223000_forecast_rainfall_range from './20260905_223000_forecast_rainfall_range';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260905_210000_forecast_image_capture.up,
     down: migration_20260905_210000_forecast_image_capture.down,
     name: '20260905_210000_forecast_image_capture',
+  },
+  {
+    up: migration_20260905_223000_forecast_rainfall_range.up,
+    down: migration_20260905_223000_forecast_rainfall_range.down,
+    name: '20260905_223000_forecast_rainfall_range',
   },
 ];

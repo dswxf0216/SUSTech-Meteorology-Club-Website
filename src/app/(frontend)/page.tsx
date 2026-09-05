@@ -120,7 +120,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
             <ForecastFact label="气温" value={<ForecastTemperature low={forecast?.tomorrowForecast?.lowTemperature} high={forecast?.tomorrowForecast?.highTemperature} text={forecast?.tomorrowForecast?.temperatureRange} />} />
             <ForecastFact label="风向风速" value={forecast?.tomorrowForecast?.wind} />
             <ForecastFact label="降水概率" value={forecast?.tomorrowForecast?.rainProbability} />
-            <ForecastFact label="降水量" value={formatRainfall(forecast?.tomorrowForecast?.rainfallAmount, forecast?.tomorrowForecast?.rainfall)} />
+            <ForecastFact label="降水量" value={formatRainfallRange(forecast?.tomorrowForecast?.rainfallAmountMin, forecast?.tomorrowForecast?.rainfallAmountMax, forecast?.tomorrowForecast?.rainfallAmount, forecast?.tomorrowForecast?.rainfall)} />
             <ForecastFact label="可能的降水时段&雨强预报" value={forecast?.tomorrowForecast?.precipitationTimingIntensity} />
           </ForecastBlock>
           <article className="forecast-block forecast-three-day">
@@ -162,6 +162,15 @@ function formatSingleTemperature(value?: number | null, legacyValue?: string | n
 function formatRainfall(value?: number | null, legacyValue?: string | null) {
   if (typeof value === 'number') return `${value}mm`
   return legacyValue || '—'
+}
+
+function formatRainfallRange(min?: number | null, max?: number | null, legacyValue?: number | null, legacyText?: string | null) {
+  if (typeof min === 'number' && typeof max === 'number') {
+    return min === max ? `${min}mm` : `${min}-${max}mm`
+  }
+  if (typeof min === 'number') return `${min}mm`
+  if (typeof max === 'number') return `${max}mm`
+  return formatRainfall(legacyValue, legacyText)
 }
 
 function ForecastOverview({ title, value }: { title: string; value?: null | string }) {

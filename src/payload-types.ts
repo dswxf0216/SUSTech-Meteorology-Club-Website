@@ -220,6 +220,8 @@ export interface DailyForecast {
     temperatureRange?: string | null;
     wind?: string | null;
     rainProbability?: string | null;
+    rainfallAmountMin?: number | null;
+    rainfallAmountMax?: number | null;
     rainfallAmount?: number | null;
     rainfall?: string | null;
     precipitationTimingIntensity?: string | null;
@@ -599,6 +601,8 @@ export interface DailyForecastsSelect<T extends boolean = true> {
         temperatureRange?: T;
         wind?: T;
         rainProbability?: T;
+        rainfallAmountMin?: T;
+        rainfallAmountMax?: T;
         rainfallAmount?: T;
         rainfall?: T;
         precipitationTimingIntensity?: T;
