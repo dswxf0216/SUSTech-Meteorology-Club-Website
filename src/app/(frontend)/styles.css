@@ -159,6 +159,10 @@ button, input { font: inherit; }
 .forecast-facts div { min-height: 78px; padding: 15px; background: var(--soft); }
 .forecast-facts span, .three-day-list span { display: block; color: var(--muted); font-size: 12px; }
 .forecast-facts strong { width: 100%; display: block; margin-top: 8px; font-size: 16px; text-align: center; }
+.forecast-facts strong .forecast-weather, .three-day-list strong .forecast-weather { width: 100%; display: flex; align-items: center; text-align: center; }
+.forecast-facts strong .forecast-weather-symbols, .three-day-list strong .forecast-weather-symbols { width: 100%; display: flex; align-items: center; justify-content: center; }
+.forecast-facts strong .forecast-symbol-item, .three-day-list strong .forecast-symbol-item { display: inline-flex; align-items: center; }
+.forecast-facts strong .forecast-weather svg, .three-day-list strong .forecast-weather svg { margin-right: auto; margin-left: auto; }
 .forecast-three-day { grid-column: 1 / -1; min-height: 220px; }
 .three-day-list { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 24px; border: 1px solid var(--line); }
 .three-day-list div { min-height: 105px; padding: 18px; border-right: 1px solid var(--line); }
