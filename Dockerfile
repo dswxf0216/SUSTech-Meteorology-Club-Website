@@ -43,6 +43,11 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+# The screenshot worker loads Playwright dynamically after a forecast is
+# published, so explicitly include it in Next.js' standalone runtime.
+RUN mkdir -p .next/standalone/node_modules && \
+  cp -RL node_modules/playwright-core .next/standalone/node_modules/playwright-core
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app

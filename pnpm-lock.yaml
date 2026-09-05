@@ -26,9 +26,6 @@ importers:
       '@payloadcms/ui':
         specifier: 3.88.0
         version: 3.88.0(@types/react@19.2.14)(monaco-editor@0.56.0)(next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.59.1)(@types/node@24.12.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.77.4))(payload@3.88.0(graphql@16.14.2)(supports-color@7.2.0)(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(supports-color@7.2.0)(typescript@6.0.3)
-      '@playwright/test':
-        specifier: 1.59.1
-        version: 1.59.1
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -44,6 +41,9 @@ importers:
       payload:
         specifier: 3.88.0
         version: 3.88.0(graphql@16.14.2)(supports-color@7.2.0)(typescript@6.0.3)
+      playwright-core:
+        specifier: 1.59.1
+        version: 1.59.1
       react:
         specifier: 19.2.6
         version: 19.2.6
@@ -54,6 +54,9 @@ importers:
         specifier: 0.34.2
         version: 0.34.2
     devDependencies:
+      '@playwright/test':
+        specifier: 1.59.1
+        version: 1.59.1
       '@testing-library/react':
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)

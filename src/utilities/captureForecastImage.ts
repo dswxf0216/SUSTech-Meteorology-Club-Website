@@ -20,7 +20,7 @@ export function scheduleForecastImageCapture(args: CaptureForecastImageArgs) {
 }
 
 export async function captureForecastImage({ forecastDate, forecastID, siteURL }: CaptureForecastImageArgs) {
-  const { chromium } = await import('@playwright/test')
+  const { chromium } = await import('playwright-core')
   const outputDirectory = path.resolve(process.env.FORECAST_SCREENSHOT_DIR || 'forecast-screenshots')
   const datePart = formatForecastDateForFilename(forecastDate)
   const captureTime = new Date().toISOString().replace(/[:.]/g, '-')
