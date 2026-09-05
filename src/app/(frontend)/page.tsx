@@ -101,16 +101,18 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
         </div>
         <div className="forecast-lead">{forecast?.headline || <span className="forecast-placeholder">当日标题／一句话概述</span>}</div>
         <div className="forecast-grid">
-          <ForecastBlock title="今日深圳天气实况" period={forecast?.todayObservation?.period}>
-            <ForecastFact label="高低温" value={forecast?.todayObservation?.temperatureRange} />
-            <ForecastFact label="均温" value={forecast?.todayObservation?.averageTemperature} />
-            <ForecastFact label="降水量" value={forecast?.todayObservation?.rainfall} />
+          <ForecastBlock title="今日深圳天气实况" period="昨日20时至今日20时">
+            <ForecastFact label="高低温" value={<ForecastTemperature low={forecast?.todayObservation?.lowTemperature} high={forecast?.todayObservation?.highTemperature} text={forecast?.todayObservation?.temperatureRange} />} />
+            <ForecastFact label="均温" value={formatSingleTemperature(forecast?.todayObservation?.averageTemperatureValue, forecast?.todayObservation?.averageTemperature)} />
+            <ForecastFact label="降水量与量级" value={forecast?.todayObservation?.rainfall} />
           </ForecastBlock>
-          <ForecastBlock title="明日南科天气预报" period={forecast?.tomorrowForecast?.period}>
-            <ForecastFact label="天气" value={forecast?.tomorrowForecast?.weather} />
-            <ForecastFact label="气温" value={forecast?.tomorrowForecast?.temperatureRange} />
+          <ForecastBlock title="明日南科天气预报" period="今日20时至明日20时">
+            <ForecastFact label="天气" value={<ForecastWeather text={forecast?.tomorrowForecast?.weather} />} />
+            <ForecastFact label="气温" value={<ForecastTemperature low={forecast?.tomorrowForecast?.lowTemperature} high={forecast?.tomorrowForecast?.highTemperature} text={forecast?.tomorrowForecast?.temperatureRange} />} />
             <ForecastFact label="风向风速" value={forecast?.tomorrowForecast?.wind} />
             <ForecastFact label="降水概率" value={forecast?.tomorrowForecast?.rainProbability} />
+            <ForecastFact label="降水量" value={forecast?.tomorrowForecast?.rainfall} />
+            <ForecastFact label="可能的降水时段&雨强预报" value={forecast?.tomorrowForecast?.precipitationTimingIntensity} />
           </ForecastBlock>
           <article className="forecast-block forecast-three-day">
             <h3>三日南科天气预报</h3>
@@ -119,7 +121,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
                 <div key={day?.id || index}>
                   <span>{day?.date || '日期'}</span>
                   <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
-                  <ForecastTemperature text={day?.temperatureRange || '气温范围'} />
+                  <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
                 </div>
               ))}
             </div>
@@ -129,7 +131,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
           <ForecastOverview title="深圳天气概述" value={forecast?.shenzhenOverview} />
           <ForecastOverview title="国内天气概述" value={forecast?.chinaOverview} />
         </div>
-        <div className="forecast-disclaimer">{forecast?.disclaimer || '非官方天气预报声明将在这里显示。'}</div>
+        <div className="forecast-disclaimer">本预报为非官方天气预报，供服务校内师生使用，仅供参考</div>
       </div>
     </section>
   )
@@ -139,8 +141,13 @@ function ForecastBlock({ children, period, title }: { children: React.ReactNode;
   return <article className="forecast-block"><h3>{title}</h3><p className="forecast-period">{period || '时段说明'}</p><div className="forecast-facts">{children}</div></article>
 }
 
-function ForecastFact({ label, value }: { label: string; value?: null | string }) {
-  return <div><span>{label}</span><strong>{label === '天气' ? <ForecastWeather text={value} /> : ['气温', '高低温'].includes(label) ? <ForecastTemperature text={value} /> : value || '—'}</strong></div>
+function ForecastFact({ label, value }: { label: string; value?: React.ReactNode }) {
+  return <div><span>{label}</span><strong>{value || '—'}</strong></div>
+}
+
+function formatSingleTemperature(value?: number | null, legacyValue?: string | null) {
+  if (typeof value === 'number') return `${value}℃`
+  return legacyValue || '—'
 }
 
 function ForecastOverview({ title, value }: { title: string; value?: null | string }) {

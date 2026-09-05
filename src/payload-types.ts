@@ -197,18 +197,25 @@ export interface DailyForecast {
   id: number;
   forecastDate: string;
   headline?: string | null;
-  todayObservation?: {
-    period?: string | null;
+  todayObservation: {
+    period: string;
+    lowTemperature: number;
+    highTemperature: number;
+    averageTemperatureValue: number;
     temperatureRange?: string | null;
     averageTemperature?: string | null;
     rainfall?: string | null;
   };
-  tomorrowForecast?: {
-    period?: string | null;
+  tomorrowForecast: {
+    period: string;
     weather?: string | null;
+    lowTemperature: number;
+    highTemperature: number;
     temperatureRange?: string | null;
     wind?: string | null;
     rainProbability?: string | null;
+    rainfall?: string | null;
+    precipitationTimingIntensity?: string | null;
   };
   /**
    * 每一天增加一行，最多三行。
@@ -217,13 +224,15 @@ export interface DailyForecast {
     | {
         date: string;
         weather: string;
-        temperatureRange: string;
+        lowTemperature: number;
+        highTemperature: number;
+        temperatureRange?: string | null;
         id?: string | null;
       }[]
     | null;
   shenzhenOverview?: string | null;
   chinaOverview?: string | null;
-  disclaimer?: string | null;
+  disclaimer: string;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -563,6 +572,9 @@ export interface DailyForecastsSelect<T extends boolean = true> {
     | T
     | {
         period?: T;
+        lowTemperature?: T;
+        highTemperature?: T;
+        averageTemperatureValue?: T;
         temperatureRange?: T;
         averageTemperature?: T;
         rainfall?: T;
@@ -572,15 +584,21 @@ export interface DailyForecastsSelect<T extends boolean = true> {
     | {
         period?: T;
         weather?: T;
+        lowTemperature?: T;
+        highTemperature?: T;
         temperatureRange?: T;
         wind?: T;
         rainProbability?: T;
+        rainfall?: T;
+        precipitationTimingIntensity?: T;
       };
   threeDayForecast?:
     | T
     | {
         date?: T;
         weather?: T;
+        lowTemperature?: T;
+        highTemperature?: T;
         temperatureRange?: T;
         id?: T;
       };
