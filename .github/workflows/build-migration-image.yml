@@ -2,6 +2,17 @@ name: Build migration image
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.*'
+      - 'payload.config.*'
+      - 'Dockerfile'
+      - '.github/workflows/build-migration-image.yml'
 
 permissions:
   contents: read
