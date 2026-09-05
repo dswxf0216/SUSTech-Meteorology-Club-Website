@@ -41,6 +41,7 @@ next-env.d.ts
 .env
 
 /media
+/forecast-screenshots
 /club-cms.db
 /club-cms.db-shm
 /club-cms.db-wal

@@ -197,6 +197,10 @@ export interface DailyForecast {
   id: number;
   forecastDate: string;
   headline?: string | null;
+  /**
+   * 仅在这条预报从草稿正式发布时执行；取消勾选则本次不生成。图片保存到服务器的 forecast-screenshots 文件夹。
+   */
+  captureImageOnPublish?: boolean | null;
   todayObservation: {
     period: string;
     lowTemperature: number;
@@ -571,6 +575,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface DailyForecastsSelect<T extends boolean = true> {
   forecastDate?: T;
   headline?: T;
+  captureImageOnPublish?: T;
   todayObservation?:
     | T
     | {

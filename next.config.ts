@@ -8,6 +8,7 @@ const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  serverExternalPackages: ['@playwright/test'],
   async headers() {
     const securityHeaders = [
       { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },

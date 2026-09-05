@@ -49,9 +49,11 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV HOSTNAME "0.0.0.0"
+ENV CHROMIUM_PATH "/usr/bin/chromium-browser"
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN apk add --no-cache chromium
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -59,8 +61,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir .next media
-RUN chown nextjs:nodejs .next media
+RUN mkdir .next media forecast-screenshots
+RUN chown nextjs:nodejs .next media forecast-screenshots
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing

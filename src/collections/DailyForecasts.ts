@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated, publishedOrAuthenticated } from '../access/contentAccess'
+import { scheduleForecastImageCapture } from '../utilities/captureForecastImage'
 
 export const DailyForecasts: CollectionConfig = {
   slug: 'daily-forecasts',
@@ -20,6 +21,28 @@ export const DailyForecasts: CollectionConfig = {
     drafts: { autosave: true, schedulePublish: true },
     maxPerDoc: 30,
   },
+  hooks: {
+    afterChange: [
+      ({ doc, previousDoc, req }) => {
+        const isNewPublication = doc._status === 'published' && previousDoc?._status !== 'published'
+        if (isNewPublication && doc.captureImageOnPublish) {
+          const siteURL = process.env.NEXT_PUBLIC_SERVER_URL
+          if (siteURL && doc.forecastDate) {
+            scheduleForecastImageCapture({
+              forecastDate: doc.forecastDate,
+              forecastID: doc.id,
+              siteURL,
+            })
+            req.payload.logger.info(`[forecast-image] Scheduled image capture for forecast ${doc.id}`)
+          } else {
+            req.payload.logger.error('[forecast-image] Missing site URL or forecast date; capture was not scheduled')
+          }
+        }
+
+        return doc
+      },
+    ],
+  },
   fields: [
     {
       name: 'forecastDate',
@@ -31,6 +54,16 @@ export const DailyForecasts: CollectionConfig = {
       admin: { date: { pickerAppearance: 'dayOnly', displayFormat: 'yyyy年M月d日' } },
     },
     { name: 'headline', label: '当日标题／一句话概述', type: 'text', maxLength: 100 },
+    {
+      name: 'captureImageOnPublish',
+      label: '发布后生成高清预报图片',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description: '仅在这条预报从草稿正式发布时执行；取消勾选则本次不生成。图片保存到服务器的 forecast-screenshots 文件夹。',
+        position: 'sidebar',
+      },
+    },
     {
       name: 'todayObservation',
       label: '今日深圳天气实况',

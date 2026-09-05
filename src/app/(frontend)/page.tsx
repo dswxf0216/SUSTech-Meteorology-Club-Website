@@ -12,11 +12,19 @@ import { ForecastTemperature } from './components/ForecastTemperature'
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ forecastId?: string }> }) {
+  const { forecastId } = await searchParams
   const payload = await getPayload({ config })
   const [settings, forecasts, articles, activities] = await Promise.all([
     getSiteSettings(),
-    payload.find({ collection: 'daily-forecasts', limit: 1, sort: '-forecastDate', where: { _status: { equals: 'published' } } }),
+    payload.find({
+      collection: 'daily-forecasts',
+      limit: 1,
+      sort: '-forecastDate',
+      where: forecastId
+        ? { and: [{ id: { equals: forecastId } }, { _status: { equals: 'published' } }] }
+        : { _status: { equals: 'published' } },
+    }),
     payload.find({ collection: 'articles', limit: 3, sort: '-publishedAt', where: { _status: { equals: 'published' } } }),
     payload.find({ collection: 'activities', limit: 3, sort: '-startAt', where: { _status: { equals: 'published' } } }),
   ])
@@ -90,7 +98,7 @@ export default async function HomePage() {
 
 function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) {
   return (
-    <section className="section-pad forecast-section">
+    <section className="section-pad forecast-section" data-forecast-capture data-forecast-id={forecast?.id}>
       <div className="container">
         <div className="section-heading forecast-heading">
           <div>
