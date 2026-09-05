@@ -1,5 +1,6 @@
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
+import sharp from 'sharp'
 
 const CAPTURE_DELAY_MS = 1500
 
@@ -55,7 +56,28 @@ export async function captureForecastImage({ forecastDate, forecastID, siteURL }
 
     await page.addStyleTag({ content: '.site-header { display: none !important; }' })
     await page.evaluate(() => document.fonts.ready)
-    await forecastSection.screenshot({ animations: 'disabled', path: outputPath, type: 'png' })
+    const content = forecastSection.locator(':scope > .container').first()
+    const [sectionBox, contentBox, verticalPadding] = await Promise.all([
+      forecastSection.boundingBox(),
+      content.boundingBox(),
+      forecastSection.evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingTop) || 0),
+    ])
+
+    if (!sectionBox || !contentBox) throw new Error('Unable to measure the forecast section for screenshot capture')
+
+    const left = Math.max(sectionBox.x, contentBox.x - verticalPadding)
+    const right = Math.min(sectionBox.x + sectionBox.width, contentBox.x + contentBox.width + verticalPadding)
+    const pixelRatio = 2
+    const fullScreenshot = await forecastSection.screenshot({ animations: 'disabled', type: 'png' })
+    await sharp(fullScreenshot)
+      .extract({
+        height: Math.round(sectionBox.height * pixelRatio),
+        left: Math.round((left - sectionBox.x) * pixelRatio),
+        top: 0,
+        width: Math.round((right - left) * pixelRatio),
+      })
+      .png()
+      .toFile(outputPath)
     return outputPath
   } finally {
     await browser.close()
