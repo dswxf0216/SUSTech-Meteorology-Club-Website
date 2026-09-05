@@ -58,7 +58,7 @@ ENV CHROMIUM_PATH "/usr/bin/chromium-browser"
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN apk add --no-cache chromium
+RUN apk add --no-cache chromium font-noto-cjk
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
