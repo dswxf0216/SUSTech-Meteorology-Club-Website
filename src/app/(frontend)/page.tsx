@@ -39,19 +39,33 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     <>
       <section className="section-pad home-weather-section">
         <div className="container">
-          <div className="section-heading">
-            <div><span className="eyebrow">CAMPUS REAL-TIME OBSERVATIONS</span><h2>校园实时观测</h2><p className="home-weather-description">大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p></div>
-          </div>
-          <div className="home-weather-layout"><div className="home-station-column">
-            <WeatherStationCard compact />
-            <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
-          </div><div className="home-forecast-dashboard">
-            <div className="home-forecast-top">
-              <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} />
-              <WeatherWarnings />
+          <div className="home-weather-layout">
+            <div className="home-weather-column">
+              <div className="home-weather-heading">
+              <span className="eyebrow">CAMPUS REAL-TIME OBSERVATIONS</span>
+              <h2>校园实时观测</h2>
+              <p>大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p>
+              </div>
+              <div className="home-station-column">
+                <WeatherStationCard compact />
+                <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
+              </div>
             </div>
-            <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} />
-          </div></div>
+            <div className="home-weather-column">
+              <div className="home-weather-heading">
+                <span className="eyebrow">SUSTECH WEATHER FORECAST</span>
+                <h2>南科天气预报</h2>
+                <p>为南科的天空“把脉”</p>
+              </div>
+              <div className="home-forecast-dashboard">
+                <div className="home-forecast-top">
+                  <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} />
+                  <WeatherWarnings />
+                </div>
+                <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
