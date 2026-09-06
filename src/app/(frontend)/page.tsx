@@ -231,10 +231,15 @@ function formatForecastDay(value?: null | string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
 
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
+  const monthAndDay = new Intl.DateTimeFormat('zh-CN', {
     month: 'long',
     day: 'numeric',
     timeZone: 'Asia/Shanghai',
   }).format(date)
+  const weekday = new Intl.DateTimeFormat('zh-CN', {
+    weekday: 'short',
+    timeZone: 'Asia/Shanghai',
+  }).format(date)
+
+  return `${monthAndDay} ${weekday}`
 }
