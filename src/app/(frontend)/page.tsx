@@ -128,7 +128,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
             <div className="three-day-list">
               {(forecast?.threeDayForecast?.length ? forecast.threeDayForecast : [null, null, null]).map((day, index) => (
                 <div key={day?.id || index}>
-                  <span className="forecast-date">{day?.date || '日期'}</span>
+                  <span className="forecast-date">{formatForecastDay(day?.date)}</span>
                   <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
                   <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
                 </div>
@@ -183,4 +183,18 @@ function ContentSection({ children, empty, eyebrow, title }: { children: React.R
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(value))
+}
+
+function formatForecastDay(value?: null | string) {
+  if (!value) return '日期'
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'Asia/Shanghai',
+  }).format(date)
 }

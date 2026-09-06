@@ -84,7 +84,7 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
     <>
       <section className={`station-weather-card${compact ? ' station-weather-card-compact' : ''}`} aria-live="polite">
         <div className="station-weather-copy">
-          <div><span className="status-dot" /><span className="weather-location">南山 · 大学城自动站</span></div>
+          <div><span className="status-dot" /><span className="weather-location">南山 · 大学城自动站 {data?.stationId ?? 'G3565'}</span></div>
           <p className="station-weather-label">实时温度</p>
           {data ? (
             <div className="station-temperature-value"><strong>{data.temperature}</strong><span>°C</span></div>
@@ -92,7 +92,7 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
             <strong className="station-message">{failed ? '数据暂时不可用' : '正在读取…'}</strong>
           )}
           <p className="station-description">{data?.description ?? '深圳市自动气象站观测'}</p>
-          <p className="station-observed">实况时间：{data?.observedAt ?? '—'} · 站号 {data?.stationId ?? 'G3565'}</p>
+          <p className="station-observed">实况时间：{data?.observedAt ?? '—'}</p>
           {data ? <p className="station-retrieved">本站读取：{new Date(data.retrievedAt).toLocaleString('zh-CN')}</p> : null}
           {(failed || data?.stale) ? <p className="station-observed">{data ? '显示上次成功读取的数据，请留意实况时间；正在自动重试更新。' : '暂未取得数据，正在自动重试，无需刷新页面。'}</p> : null}
         </div>

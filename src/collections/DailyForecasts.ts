@@ -140,7 +140,13 @@ export const DailyForecasts: CollectionConfig = {
       maxRows: 3,
       admin: { description: '每一天增加一行，最多三行。' },
       fields: [
-        { name: 'date', label: '日期', type: 'text', required: true, maxLength: 30 },
+        {
+          name: 'date',
+          label: '日期',
+          type: 'date',
+          required: true,
+          admin: { date: { pickerAppearance: 'dayOnly', displayFormat: 'yyyy年M月d日' } },
+        },
         { name: 'weather', label: '天气', type: 'text', required: true, maxLength: 100 },
         { name: 'lowTemperature', label: '最低气温（℃）', type: 'number', required: true },
         { name: 'highTemperature', label: '最高气温（℃）', type: 'number', required: true },
