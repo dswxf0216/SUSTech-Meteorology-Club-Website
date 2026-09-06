@@ -7,6 +7,7 @@ import type { DailyForecast } from '@/payload-types'
 import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 import { WeatherStationCard } from './weather/WeatherStationCard'
+import { WeatherWarnings } from './weather/WeatherWarnings'
 import { ForecastWeather } from './components/ForecastWeather'
 import { ForecastTemperature } from './components/ForecastTemperature'
 
@@ -39,13 +40,18 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className="section-pad home-weather-section">
         <div className="container">
           <div className="section-heading">
-            <div><span className="eyebrow">UNIVERSITY TOWN AWS</span><h2>校园实时观测</h2></div>
-            <p>大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p>
+            <div><span className="eyebrow">CAMPUS REAL-TIME OBSERVATIONS</span><h2>校园实时观测</h2><p className="home-weather-description">大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p></div>
           </div>
-          <div className="weather-layout home-weather-layout"><div>
+          <div className="home-weather-layout"><div className="home-station-column">
             <WeatherStationCard compact />
             <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
-          </div><div aria-hidden="true" /></div>
+          </div><div className="home-forecast-dashboard">
+            <div className="home-forecast-top">
+              <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} />
+              <WeatherWarnings />
+            </div>
+            <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} />
+          </div></div>
         </div>
       </section>
 
@@ -94,6 +100,31 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </section>
     </>
   )
+}
+
+type ThreeDayEntry = NonNullable<DailyForecast['threeDayForecast']>[number]
+
+function TodayWeather({ day }: { day?: ThreeDayEntry | null }) {
+  return <article className="home-today-weather">
+    <h3>今日天气</h3>
+    <span className="forecast-date">{formatForecastDay(day?.date)}</span>
+    <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
+    <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
+  </article>
+}
+
+function ThreeDayWeather({ days }: { days?: DailyForecast['threeDayForecast'] | null }) {
+  const entries = days?.length ? days : [null, null, null]
+  return <article className="home-three-day">
+    <h3>三日天气</h3>
+    <div className="three-day-list">
+      {entries.map((day, index) => <div key={day?.id || index}>
+        <span className="forecast-date">{formatForecastDay(day?.date)}</span>
+        <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
+        <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
+      </div>)}
+    </div>
+  </article>
 }
 
 function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) {
