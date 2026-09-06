@@ -84,7 +84,7 @@ export function WeatherStationCard({ compact = false }: { compact?: boolean }) {
     <>
       <section className={`station-weather-card${compact ? ' station-weather-card-compact' : ''}`} aria-live="polite">
         <div className="station-weather-copy">
-          <div><span className="status-dot" /><span className="weather-location">南山 · 大学城自动站 {data?.stationId ?? 'G3565'}</span></div>
+          <div><span className="status-dot" /><span className="weather-location">南山 · 大学城自动站（{data?.stationId ?? 'G3565'}）</span></div>
           <p className="station-weather-label">实时温度</p>
           {data ? (
             <div className="station-temperature-value"><strong>{data.temperature}</strong><span>°C</span></div>
