@@ -194,8 +194,8 @@ function ForecastFact({ label, value }: { label: string; value?: React.ReactNode
   return <div><span>{label}</span><strong>{value || '—'}</strong></div>
 }
 
-function formatSingleTemperature(value?: number | null, legacyValue?: string | null) {
-  if (typeof value === 'number') return `${value}℃`
+function formatSingleTemperature(value?: number | string | null, legacyValue?: string | null) {
+  if ((typeof value === 'number' && Number.isFinite(value)) || (typeof value === 'string' && value !== '')) return `${value}℃`
   return legacyValue || '—'
 }
 

@@ -3,6 +3,13 @@ import type { CollectionConfig } from 'payload'
 import { authenticated, publishedOrAuthenticated } from '../access/contentAccess'
 import { scheduleForecastImageCapture } from '../utilities/captureForecastImage'
 
+const validateTemperature = (value: unknown) => {
+  if (value === null || value === undefined || value === '') return true
+  return typeof value === 'string' && /^-?\d+(?:\.\d+)?$/.test(value)
+    ? true
+    : '请输入数字，例如 25、25.0 或 -1.5'
+}
+
 export const DailyForecasts: CollectionConfig = {
   slug: 'daily-forecasts',
   labels: { singular: '每日天气预报', plural: '每日天气预报' },
@@ -77,9 +84,9 @@ export const DailyForecasts: CollectionConfig = {
           required: true,
           admin: { readOnly: true },
         },
-        { name: 'lowTemperature', label: '最低气温（℃）', type: 'number', required: true },
-        { name: 'highTemperature', label: '最高气温（℃）', type: 'number', required: true },
-        { name: 'averageTemperatureValue', label: '平均温度（℃）', type: 'number', required: true },
+        { name: 'lowTemperature', label: '最低气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
+        { name: 'highTemperature', label: '最高气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
+        { name: 'averageTemperatureValue', label: '平均温度（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
         { name: 'temperatureRange', label: '旧版高低温', type: 'text', admin: { hidden: true } },
         { name: 'averageTemperature', label: '旧版平均温度', type: 'text', admin: { hidden: true } },
         { name: 'rainfallAmount', label: '降水量（mm）', type: 'number' },
@@ -101,8 +108,8 @@ export const DailyForecasts: CollectionConfig = {
           admin: { readOnly: true },
         },
         { name: 'weather', label: '天气', type: 'text', maxLength: 100 },
-        { name: 'lowTemperature', label: '最低气温（℃）', type: 'number', required: true },
-        { name: 'highTemperature', label: '最高气温（℃）', type: 'number', required: true },
+        { name: 'lowTemperature', label: '最低气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
+        { name: 'highTemperature', label: '最高气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
         { name: 'temperatureRange', label: '旧版气温范围', type: 'text', admin: { hidden: true } },
         { name: 'wind', label: '风向风速', type: 'text', maxLength: 100 },
         { name: 'rainProbability', label: '降水概率', type: 'text', maxLength: 50 },
@@ -148,8 +155,8 @@ export const DailyForecasts: CollectionConfig = {
           admin: { date: { pickerAppearance: 'dayOnly', displayFormat: 'yyyy年M月d日' } },
         },
         { name: 'weather', label: '天气', type: 'text', required: true, maxLength: 100 },
-        { name: 'lowTemperature', label: '最低气温（℃）', type: 'number', required: true },
-        { name: 'highTemperature', label: '最高气温（℃）', type: 'number', required: true },
+        { name: 'lowTemperature', label: '最低气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
+        { name: 'highTemperature', label: '最高气温（℃）', type: 'text', required: true, maxLength: 20, validate: validateTemperature },
         { name: 'temperatureRange', label: '旧版气温范围', type: 'text', admin: { hidden: true } },
       ],
     },

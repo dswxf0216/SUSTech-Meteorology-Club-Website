@@ -203,9 +203,9 @@ export interface DailyForecast {
   captureImageOnPublish?: boolean | null;
   todayObservation: {
     period: string;
-    lowTemperature: number;
-    highTemperature: number;
-    averageTemperatureValue: number;
+    lowTemperature: string;
+    highTemperature: string;
+    averageTemperatureValue: string;
     temperatureRange?: string | null;
     averageTemperature?: string | null;
     rainfallAmount?: number | null;
@@ -215,8 +215,8 @@ export interface DailyForecast {
   tomorrowForecast: {
     period: string;
     weather?: string | null;
-    lowTemperature: number;
-    highTemperature: number;
+    lowTemperature: string;
+    highTemperature: string;
     temperatureRange?: string | null;
     wind?: string | null;
     rainProbability?: string | null;
@@ -233,8 +233,8 @@ export interface DailyForecast {
     | {
         date: string;
         weather: string;
-        lowTemperature: number;
-        highTemperature: number;
+        lowTemperature: string;
+        highTemperature: string;
         temperatureRange?: string | null;
         id?: string | null;
       }[]
