@@ -39,24 +39,19 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     <>
       <section className="section-pad home-weather-section">
         <div className="container">
+          <div className="home-weather-heading">
+            <span className="eyebrow">CAMPUS WEATHER OBSERVATIONS AND FORECASTS</span>
+            <h2>校园天气实况与预报</h2>
+            <p>为南科的天空“把脉”</p>
+          </div>
           <div className="home-weather-layout">
             <div className="home-weather-column">
-              <div className="home-weather-heading">
-              <span className="eyebrow">CAMPUS REAL-TIME OBSERVATIONS</span>
-              <h2>校园实时观测</h2>
-              <p>大学城自动气象站分钟级实况，为校内活动和日常出行提供参考。</p>
-              </div>
               <div className="home-station-column">
                 <WeatherStationCard compact />
                 <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
               </div>
             </div>
             <div className="home-weather-column">
-              <div className="home-weather-heading">
-                <span className="eyebrow">SUSTECH WEATHER FORECAST</span>
-                <h2>南科天气预报</h2>
-                <p>为南科的天空“把脉”</p>
-              </div>
               <div className="home-forecast-dashboard">
                 <div className="home-forecast-top">
                   <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} />
