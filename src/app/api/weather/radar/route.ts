@@ -47,6 +47,7 @@ async function readRadar() {
       observedAt: frame.dtime || '',
       time: frame.time || '',
     }))
+    .sort((left, right) => left.observedAt.localeCompare(right.observedAt))
 
   if (!frames.length) throw new Error('No radar frames')
 
