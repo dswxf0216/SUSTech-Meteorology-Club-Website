@@ -8,6 +8,7 @@ import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 import { WeatherStationCard } from './weather/WeatherStationCard'
 import { WeatherWarnings } from './weather/WeatherWarnings'
+import { RadarMap } from './weather/RadarMap'
 import { ForecastWeather } from './components/ForecastWeather'
 import { ForecastTemperature } from './components/ForecastTemperature'
 
@@ -61,6 +62,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               </div>
             </div>
           </div>
+          <RadarMap />
         </div>
       </section>
 
