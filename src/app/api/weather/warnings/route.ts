@@ -48,13 +48,14 @@ function textOnly(value?: string) {
 }
 
 function alarmKey(alarm: AlarmSummary) {
-  return `${alarm.name || alarm.signalType}-${alarm.issueTime || ''}`
+  const normalizedTime = alarm.issueTime?.replace(/\D/g, '').slice(0, 12) || ''
+  return `${alarm.name || alarm.signalType}-${alarm.signalLevel || ''}-${normalizedTime}`
 }
 
 function categoryFor(alarm: AlarmSummary, localKeys: Set<string>): WarningItem['category'] {
-  if (localKeys.has(alarmKey(alarm))) return 'local'
   const areas = alarm.area || []
   if (!alarm.name?.includes('分区') || areas.length === 0 || areas.some(area => area.includes('全市'))) return 'citywide'
+  if (localKeys.has(alarmKey(alarm))) return 'local'
   return 'other'
 }
 
@@ -102,7 +103,9 @@ async function readWarnings() {
   const local: AlarmSummary[] = Array.isArray(body.result.areaAlarmList) ? body.result.areaAlarmList : []
   const city: AlarmSummary[] = Array.isArray(body.result.cityAlarmList) ? body.result.cityAlarmList : []
   const localKeys = new Set(local.map(alarmKey))
-  const summaries = [...local, ...city].filter((alarm, index, all) => all.findIndex(item => alarmKey(item) === alarmKey(alarm)) === index)
+  // Prefer the city list when the same citywide warning is repeated in the
+  // station-effective list. Upstream formats the two timestamps differently.
+  const summaries = [...city, ...local].filter((alarm, index, all) => all.findIndex(item => alarmKey(item) === alarmKey(alarm)) === index)
   const detailGroups = await Promise.all([...new Set(summaries.map(item => item.url).filter(Boolean))].map(readDetails))
   const details = detailGroups.flat()
 
