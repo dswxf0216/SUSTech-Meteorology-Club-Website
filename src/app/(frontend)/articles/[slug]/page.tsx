@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { getArticleIDFromRoute } from '@/utilities/articlePath'
 
 import { MediaImage } from '../../components/MediaImage'
 
@@ -15,6 +16,15 @@ type Props = { params: Promise<{ slug: string }> }
 async function getArticle(slug: string) {
   const payload = await getPayload({ config })
   const normalizedSlug = decodeRouteSegment(slug)
+  const articleID = getArticleIDFromRoute(normalizedSlug)
+  if (articleID !== null) {
+    try {
+      const article = await payload.findByID({ collection: 'articles', id: articleID, depth: 1, draft: false })
+      if (article._status === 'published') return article
+    } catch {
+      // Fall through to the legacy slug lookup for invalid or deleted IDs.
+    }
+  }
   const result = await payload.find({ collection: 'articles', depth: 1, limit: 1, where: { and: [{ slug: { equals: normalizedSlug } }, { _status: { equals: 'published' } }] } })
   return result.docs[0]
 }

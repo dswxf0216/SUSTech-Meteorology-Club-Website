@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import type { DailyForecast } from '@/payload-types'
+import { getArticlePath } from '@/utilities/articlePath'
 import { resolveForecastDayDate } from '@/utilities/forecastDates'
 import { getSiteSettings } from '@/utilities/getSiteSettings'
 
@@ -103,7 +104,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className="section-pad">
         <div className="container content-columns">
           <ContentSection eyebrow="近期内容" title="最新文章" empty="后台发布文章后，将自动显示在这里。">
-            {articles.docs.map((article) => article.contentType === 'external' && article.externalUrl ? <a className="content-item" href={article.externalUrl} key={article.id} rel="noreferrer" target="_blank"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></a> : <Link className="content-item" href={`/articles/${article.slug}`} key={article.id}><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></Link>)}
+            {articles.docs.map((article) => article.contentType === 'external' && article.externalUrl ? <a className="content-item" href={article.externalUrl} key={article.id} rel="noreferrer" target="_blank"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></a> : <Link className="content-item" href={getArticlePath(article)} key={article.id}><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></Link>)}
           </ContentSection>
           <ContentSection eyebrow="社团现场" title="近期活动" empty="后台发布活动后，将自动显示在这里。">
             {activities.docs.map((activity) => <Link className="content-item" href={`/activities/${activity.slug}`} key={activity.id}><span>{formatDate(activity.startAt)}</span><h3>{activity.title}</h3><p>{activity.summary}</p></Link>)}
