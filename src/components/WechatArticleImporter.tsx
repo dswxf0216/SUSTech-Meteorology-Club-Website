@@ -20,10 +20,10 @@ export function WechatArticleImporter() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: url.trim() }),
       })
-      const result = await response.json() as { id?: number | string; message?: string }
+      const result = await response.json() as { id?: number | string; message?: string; updated?: boolean }
       if (!response.ok || result.id == null) throw new Error(result.message || '导入失败')
 
-      toast.success('微信推文已保存为草稿，请检查排版后发布。')
+      toast.success(result.updated ? '原文章已重新导入为草稿，请检查后发布。' : '微信推文已保存为草稿，请检查排版后发布。')
       router.push(`/admin/collections/articles/${result.id}`)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '导入失败，请稍后重试。')

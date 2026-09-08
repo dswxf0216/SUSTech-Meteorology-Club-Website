@@ -5,7 +5,7 @@ import type { PayloadHandler } from 'payload'
 import type { Article } from '../payload-types'
 
 const ARTICLE_HOSTS = new Set(['mp.weixin.qq.com'])
-const IMAGE_HOSTS = new Set(['mmbiz.qpic.cn', 'mmbiz.qlogo.cn', 'mmbiz.qlogo.com'])
+const IMAGE_HOSTS = new Set(['mmbiz.qpic.cn', 'mmecoa.qpic.cn', 'mmbiz.qlogo.cn', 'mmbiz.qlogo.com'])
 const MAX_IMAGES = 40
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024
 const MAX_TOTAL_IMAGE_BYTES = 40 * 1024 * 1024
@@ -26,9 +26,7 @@ export const importWechatArticle: PayloadHandler = async (req) => {
       req,
       where: { externalUrl: { equals: articleURL.href } },
     })
-    if (duplicate.docs[0]) {
-      return Response.json({ id: duplicate.docs[0].id, message: '这篇微信推文已经导入过。' })
-    }
+    const existingArticle = duplicate.docs[0]
 
     const html = await fetchAllowed(articleURL, ARTICLE_HOSTS, 'text/html')
     const dom = new JSDOM(html)
@@ -81,25 +79,35 @@ export const importWechatArticle: PayloadHandler = async (req) => {
     const content = buildLexicalContent(contentElement, articleURL)
     const normalizedCoverURL = coverURL ? normalizeAllowedImageURL(coverURL) : null
     const cover = normalizedCoverURL ? uploaded.get(normalizedCoverURL) : undefined
-    const article = await req.payload.create({
-      collection: 'articles',
-      draft: true,
-      overrideAccess: false,
-      req,
-      data: {
-        title,
-        summary,
-        cover,
-        contentType: 'internal',
-        content,
-        externalUrl: articleURL.href,
-        source: author ? `微信公众号：${author}` : '微信公众号',
-        publishedAt,
-        featured: false,
-      },
-    })
+    const articleData = {
+      title,
+      summary,
+      cover,
+      contentType: 'internal' as const,
+      content,
+      externalUrl: articleURL.href,
+      source: author ? `微信公众号：${author}` : '微信公众号',
+      publishedAt,
+      featured: existingArticle?.featured || false,
+    }
+    const article = existingArticle
+      ? await req.payload.update({
+          collection: 'articles',
+          id: existingArticle.id,
+          draft: true,
+          overrideAccess: false,
+          req,
+          data: articleData,
+        })
+      : await req.payload.create({
+          collection: 'articles',
+          draft: true,
+          overrideAccess: false,
+          req,
+          data: articleData,
+        })
 
-    return Response.json({ id: article.id })
+    return Response.json({ id: article.id, updated: Boolean(existingArticle) })
   } catch (error) {
     req.payload.logger.error({ err: error, msg: '微信公众号文章导入失败' })
     const status = error instanceof ImportError ? error.status : 500
