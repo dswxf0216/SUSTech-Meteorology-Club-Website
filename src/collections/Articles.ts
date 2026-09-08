@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated, publishedOrAuthenticated } from '../access/contentAccess'
 import { createSlug, validatePublicUrl } from '../utilities/slug'
+import { importWechatArticle } from '../utilities/importWechatArticle'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -9,6 +10,9 @@ export const Articles: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'contentType', 'publishedAt', '_status'],
+    components: {
+      beforeList: ['/components/WechatArticleImporter#WechatArticleImporter'],
+    },
   },
   access: {
     read: publishedOrAuthenticated,
@@ -20,6 +24,13 @@ export const Articles: CollectionConfig = {
     drafts: { autosave: true, schedulePublish: true },
     maxPerDoc: 20,
   },
+  endpoints: [
+    {
+      path: '/import-wechat',
+      method: 'post',
+      handler: importWechatArticle,
+    },
+  ],
   hooks: {
     beforeValidate: [({ data }) => {
       if (data?.title && !data.slug) data.slug = createSlug(data.title)
