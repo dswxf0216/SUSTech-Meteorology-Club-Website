@@ -71,6 +71,7 @@ jobs:
           IMAGE: ghcr.io/dswxf0216/sustech-meteorology-club-website:${{ github.sha }}
         run: |
           ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=15 \
+            -o ServerAliveInterval=20 -o ServerAliveCountMax=30 -o TCPKeepAlive=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
             "cd /home/ubuntu/club-deploy &&
              sudo docker pull '$IMAGE' &&
