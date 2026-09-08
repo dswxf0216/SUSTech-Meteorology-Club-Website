@@ -42,3 +42,39 @@ jobs:
             ghcr.io/dswxf0216/sustech-meteorology-club-website:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Tencent Cloud
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    concurrency:
+      group: production-deployment
+      cancel-in-progress: false
+    steps:
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy website
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          IMAGE: ghcr.io/dswxf0216/sustech-meteorology-club-website:${{ github.sha }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=15 \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd /home/ubuntu/club-deploy &&
+             sudo docker pull '$IMAGE' &&
+             cp -p .env.web .env.web.before-auto-deploy &&
+             sed -i 's|^APP_IMAGE=.*|APP_IMAGE=$IMAGE|' .env.web &&
+             sudo docker compose --env-file .env.web -f compose.private.yaml up -d --no-deps --wait --wait-timeout 180 web &&
+             curl -fsS http://127.0.0.1:3000/api/health"
