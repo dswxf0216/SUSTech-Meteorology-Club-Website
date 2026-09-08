@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import type { DailyForecast } from '@/payload-types'
+import { resolveForecastDayDate } from '@/utilities/forecastDates'
 import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 import { WeatherStationCard } from './weather/WeatherStationCard'
@@ -55,10 +56,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             <div className="home-weather-column">
               <div className="home-forecast-dashboard">
                 <div className="home-forecast-top">
-                  <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} />
+                  <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} forecastDate={forecasts.docs[0]?.forecastDate} />
                   <WeatherWarnings />
                 </div>
-                <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} />
+                <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} forecastDate={forecasts.docs[0]?.forecastDate} />
               </div>
             </div>
           </div>
@@ -115,22 +116,22 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
 type ThreeDayEntry = NonNullable<DailyForecast['threeDayForecast']>[number]
 
-function TodayWeather({ day }: { day?: ThreeDayEntry | null }) {
+function TodayWeather({ day, forecastDate }: { day?: ThreeDayEntry | null; forecastDate?: null | string }) {
   return <article className="home-today-weather">
     <h3>今日天气</h3>
-    <span className="forecast-date">{formatForecastDay(day?.date)}</span>
+    <span className="forecast-date">{formatForecastDay(forecastDate ? resolveForecastDayDate(forecastDate, day?.date, 0) : day?.date)}</span>
     <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
     <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
   </article>
 }
 
-function ThreeDayWeather({ days }: { days?: DailyForecast['threeDayForecast'] | null }) {
+function ThreeDayWeather({ days, forecastDate }: { days?: DailyForecast['threeDayForecast'] | null; forecastDate?: null | string }) {
   const entries = days?.length ? days : [null, null, null]
   return <article className="home-three-day">
     <h3>三日天气</h3>
     <div className="three-day-list">
       {entries.map((day, index) => <div key={day?.id || index}>
-        <span className="forecast-date">{formatForecastDay(day?.date)}</span>
+        <span className="forecast-date">{formatForecastDay(forecastDate ? resolveForecastDayDate(forecastDate, day?.date, index) : day?.date)}</span>
         <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
         <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
       </div>)}
@@ -170,7 +171,7 @@ function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) 
             <div className="three-day-list">
               {(forecast?.threeDayForecast?.length ? forecast.threeDayForecast : [null, null, null]).map((day, index) => (
                 <div key={day?.id || index}>
-                  <span className="forecast-date">{formatForecastDay(day?.date)}</span>
+                  <span className="forecast-date">{formatForecastDay(forecast?.forecastDate ? resolveForecastDayDate(forecast.forecastDate, day?.date, index) : day?.date)}</span>
                   <strong><ForecastWeather text={day?.weather || '天气'} /></strong>
                   <ForecastTemperature low={day?.lowTemperature} high={day?.highTemperature} text={day?.temperatureRange || '气温范围'} />
                 </div>

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated, publishedOrAuthenticated } from '../access/contentAccess'
 import { scheduleForecastImageCapture } from '../utilities/captureForecastImage'
+import { resolveForecastDayDate } from '../utilities/forecastDates'
 
 const validateTemperature = (value: unknown) => {
   if (value === null || value === undefined || value === '') return true
@@ -29,6 +30,18 @@ export const DailyForecasts: CollectionConfig = {
     maxPerDoc: 30,
   },
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data?.forecastDate || !Array.isArray(data.threeDayForecast)) return data
+        return {
+          ...data,
+          threeDayForecast: data.threeDayForecast.map((day, index) => ({
+            ...day,
+            date: resolveForecastDayDate(data.forecastDate, day?.date, index),
+          })),
+        }
+      },
+    ],
     afterChange: [
       ({ doc, previousDoc, req }) => {
         const isNewPublication = doc._status === 'published' && previousDoc?._status !== 'published'
