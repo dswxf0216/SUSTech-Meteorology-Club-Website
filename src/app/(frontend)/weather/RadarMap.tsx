@@ -47,7 +47,7 @@ export function RadarMap() {
       mapRef.current = map
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 12,
+        maxZoom: 18,
       }).addTo(map)
 
       const bounds = L.latLngBounds(
