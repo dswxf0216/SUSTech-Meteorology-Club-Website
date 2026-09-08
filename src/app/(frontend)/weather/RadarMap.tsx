@@ -62,7 +62,7 @@ export function RadarMap() {
       L.circleMarker([22.5935, 113.9973], {
         color: '#ffffff', fillColor: '#d9482f', fillOpacity: 1, radius: 7, weight: 3,
       }).bindTooltip('南方科技大学', { direction: 'top' }).addTo(map)
-      map.setView([22.56, 114.05], 8)
+      map.setView([22.5935, 113.9973], 9)
     })
     return () => {
       cancelled = true
