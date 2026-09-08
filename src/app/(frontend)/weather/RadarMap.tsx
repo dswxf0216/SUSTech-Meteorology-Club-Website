@@ -12,7 +12,8 @@ type RadarData = {
   frames: { imageUrl: string; observedAt: string; time: string }[]
 }
 
-const OFFICIAL_RADAR_URL = 'https://szqxapp1.121.com.cn/phone/api/RedirectWxRadar.do?lat=22.5935&lon=113.9973'
+const YIDAN_LIBRARY: [number, number] = [22.6002995, 113.9932586]
+const OFFICIAL_RADAR_URL = `https://szqxapp1.121.com.cn/phone/api/RedirectWxRadar.do?lat=${YIDAN_LIBRARY[0]}&lon=${YIDAN_LIBRARY[1]}`
 
 export function RadarMap() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -59,10 +60,10 @@ export function RadarMap() {
         interactive: false,
       }).addTo(map))
 
-      L.circleMarker([22.5935, 113.9973], {
+      L.circleMarker(YIDAN_LIBRARY, {
         color: '#ffffff', fillColor: '#d9482f', fillOpacity: 1, radius: 7, weight: 3,
-      }).bindTooltip('南方科技大学', { direction: 'top' }).addTo(map)
-      map.setView([22.5935, 113.9973], 9)
+      }).bindTooltip('南方科技大学 · 一丹图书馆', { direction: 'top' }).addTo(map)
+      map.setView(YIDAN_LIBRARY, 9)
     })
     return () => {
       cancelled = true
