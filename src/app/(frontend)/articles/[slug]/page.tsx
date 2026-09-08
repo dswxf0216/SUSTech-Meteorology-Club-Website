@@ -14,7 +14,8 @@ type Props = { params: Promise<{ slug: string }> }
 
 async function getArticle(slug: string) {
   const payload = await getPayload({ config })
-  const result = await payload.find({ collection: 'articles', depth: 1, limit: 1, where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] } })
+  const normalizedSlug = decodeRouteSegment(slug)
+  const result = await payload.find({ collection: 'articles', depth: 1, limit: 1, where: { and: [{ slug: { equals: normalizedSlug } }, { _status: { equals: 'published' } }] } })
   return result.docs[0]
 }
 
@@ -46,4 +47,12 @@ export default async function ArticleDetailPage({ params }: Props) {
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(value))
+}
+
+function decodeRouteSegment(value: string) {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
 }
