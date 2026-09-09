@@ -32,8 +32,16 @@ button, input { font: inherit; }
 .brand strong { font-size: 16px; letter-spacing: .04em; }
 .brand small { margin-top: 1px; color: var(--muted); font-size: 10px; letter-spacing: .08em; }
 .desktop-nav { display: flex; align-items: center; gap: 6px; }
-.desktop-nav a { padding: 10px 14px; border-bottom: 2px solid transparent; color: #38536d; font-size: 14px; text-decoration: none; }
-.desktop-nav a:hover { color: var(--primary-dark); border-bottom-color: var(--primary); }
+.desktop-nav > a, .desktop-nav-menu > button { padding: 10px 14px; border: 0; border-bottom: 2px solid transparent; color: #38536d; background: transparent; font: inherit; font-size: 14px; text-decoration: none; }
+.desktop-nav > a:hover, .desktop-nav-menu:hover > button, .desktop-nav-menu:focus-within > button { color: var(--primary-dark); border-bottom-color: var(--primary); }
+.desktop-nav-menu { position: relative; }
+.desktop-nav-menu > button { display: flex; align-items: center; gap: 6px; cursor: default; }
+.desktop-nav-menu > button span { font-size: 14px; transition: transform .18s ease; }
+.desktop-nav-menu:hover > button span, .desktop-nav-menu:focus-within > button span { transform: rotate(180deg); }
+.desktop-nav-submenu { position: absolute; top: 100%; left: 50%; width: 140px; display: grid; visibility: hidden; padding: 8px; opacity: 0; background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 26px rgba(23,50,77,.12); transform: translate(-50%,8px); transition: opacity .16s ease, transform .16s ease, visibility .16s; }
+.desktop-nav-menu:hover .desktop-nav-submenu, .desktop-nav-menu:focus-within .desktop-nav-submenu { visibility: visible; opacity: 1; transform: translate(-50%,0); }
+.desktop-nav-submenu a { padding: 10px 12px; border-radius: 4px; color: #38536d; text-decoration: none; white-space: nowrap; }
+.desktop-nav-submenu a:hover, .desktop-nav-submenu a:focus-visible { color: var(--primary-dark); background: var(--soft); }
 .mobile-nav { display: none; position: relative; }
 .mobile-nav summary { width: 42px; height: 42px; display: grid; align-content: center; gap: 5px; padding: 10px; cursor: pointer; list-style: none; border: 1px solid var(--line); border-radius: 12px; background: white; }
 .mobile-nav summary::-webkit-details-marker { display: none; }
@@ -41,6 +49,10 @@ button, input { font: inherit; }
 .mobile-nav nav { position: absolute; top: 52px; right: 0; min-width: 190px; display: grid; padding: 8px; background: white; border: 1px solid var(--line); border-radius: 6px; }
 .mobile-nav nav a { padding: 11px 13px; border-radius: 10px; text-decoration: none; }
 .mobile-nav nav a:hover { background: var(--soft); }
+.mobile-nav-submenu summary { width: auto; height: auto; display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border: 0; border-radius: 10px; background: transparent; }
+.mobile-nav-submenu summary::after { content: '⌄'; }
+.mobile-nav-submenu[open] summary::after { transform: rotate(180deg); }
+.mobile-nav-submenu > a { margin-left: 14px; color: var(--muted); }
 
 .hero { background: #ffffff; border-bottom: 1px solid var(--line); }
 .hero-grid { min-height: 500px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 72px; }
@@ -159,6 +171,7 @@ button, input { font: inherit; }
 .home-three-day .three-day-list { margin-top: 0; border: 0; gap: 14px; }
 .home-three-day .three-day-list > div { display: flex; min-height: 190px; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: white; }
 .weather-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; align-items: start; }
+.weather-anchor-section { scroll-margin-top: 76px; }
 .weather-history { min-width: 0; scroll-margin-top: 90px; }
 .weather-history h2 { margin: 0 0 10px; font-size: 24px; }
 .history-caption { color: var(--muted); font-size: 13px; line-height: 1.7; }

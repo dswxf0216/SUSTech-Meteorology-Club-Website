@@ -25,7 +25,7 @@ export default async function WeatherPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <div className="page-wrap section-pad">
+      <div className="page-wrap section-pad weather-anchor-section" id="weather-observations">
         <div className="container">
           <header className="page-heading">
             <span className="eyebrow">校园及周边观测</span><h1>天气信息</h1>
