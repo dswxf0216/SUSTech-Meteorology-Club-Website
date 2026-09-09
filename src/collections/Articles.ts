@@ -57,7 +57,7 @@ export const Articles: CollectionConfig = {
       name: 'content',
       label: '正文',
       type: 'richText',
-      admin: { condition: (_, siblingData) => siblingData.contentType === 'internal' },
+      admin: { condition: (_, siblingData) => siblingData.contentType === 'internal' && !siblingData.importedHtml },
     },
     {
       name: 'importedHtml',
@@ -65,6 +65,15 @@ export const Articles: CollectionConfig = {
       type: 'textarea',
       maxLength: 500_000,
       admin: { hidden: true },
+    },
+    {
+      name: 'wechatLayoutPreview',
+      label: '微信原排版预览',
+      type: 'ui',
+      admin: {
+        condition: (_, siblingData) => Boolean(siblingData.importedHtml),
+        components: { Field: '/components/WechatLayoutPreview#WechatLayoutPreview' },
+      },
     },
     {
       name: 'externalUrl',
