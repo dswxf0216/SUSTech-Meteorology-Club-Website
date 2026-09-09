@@ -106,7 +106,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         <div className="container content-columns">
           <ContentSection eyebrow="近期内容" title="最新文章" empty="后台发布文章后，将自动显示在这里。">
             {articles.docs.map((article) => {
-              const content = <><div className="content-item-cover"><MediaImage media={article.cover} /></div><div className="content-item-copy"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></div></>
+              const content = <><div className="content-item-cover"><MediaImage media={article.cover} /></div><div className="content-item-copy"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}</div></>
               return article.contentType === 'external' && article.externalUrl
                 ? <a className="content-item content-item-with-cover" href={article.externalUrl} key={article.id} rel="noreferrer" target="_blank">{content}</a>
                 : <Link className="content-item content-item-with-cover" href={getArticlePath(article)} key={article.id}>{content}</Link>

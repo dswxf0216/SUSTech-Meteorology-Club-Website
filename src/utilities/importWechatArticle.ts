@@ -37,8 +37,7 @@ export const importWechatArticle: PayloadHandler = async (req) => {
 
     const author = cleanText(document.querySelector('#js_name')?.textContent || getMeta(document, 'author'))
     const description = cleanText(getMeta(document, 'og:description') || getMeta(document, 'description'))
-    const articleText = cleanText(contentElement.textContent)
-    const summary = (description || articleText).slice(0, 300) || title
+    const summary = description.slice(0, 300)
     const publishedAt = getPublishedAt(document, html)
 
     const imageElements: Element[] = Array.from(contentElement.querySelectorAll('img')).slice(0, MAX_IMAGES)

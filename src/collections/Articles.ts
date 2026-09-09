@@ -40,7 +40,7 @@ export const Articles: CollectionConfig = {
   fields: [
     { name: 'title', label: '标题', type: 'text', required: true },
     { name: 'slug', label: '网址标识', type: 'text', required: true, unique: true, index: true, admin: { description: '留空时将根据标题自动生成；发布后不建议修改。' } },
-    { name: 'summary', label: '摘要', type: 'textarea', required: true, maxLength: 300 },
+    { name: 'summary', label: '摘要', type: 'textarea', maxLength: 300, admin: { description: '可选。微信原文未提供摘要时请留空，不会自动截取正文。' } },
     { name: 'cover', label: '封面', type: 'upload', relationTo: 'media' },
     {
       name: 'contentType',

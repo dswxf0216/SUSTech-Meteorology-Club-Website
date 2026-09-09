@@ -257,7 +257,10 @@ export interface Article {
    * 留空时将根据标题自动生成；发布后不建议修改。
    */
   slug: string;
-  summary: string;
+  /**
+   * 可选。微信原文未提供摘要时请留空，不会自动截取正文。
+   */
+  summary?: string | null;
   cover?: (number | null) | Media;
   contentType: 'internal' | 'external';
   content?: {

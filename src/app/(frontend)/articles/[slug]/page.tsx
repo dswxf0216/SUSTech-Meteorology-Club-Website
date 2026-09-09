@@ -31,7 +31,7 @@ async function getArticle(slug: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await getArticle((await params).slug)
-  return article ? { title: article.title, description: article.summary } : { title: '文章不存在' }
+  return article ? { title: article.title, description: article.summary || undefined } : { title: '文章不存在' }
 }
 
 export default async function ArticleDetailPage({ params }: Props) {
@@ -44,7 +44,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         <Link className="back-link" href="/articles">← 返回文章列表</Link>
         <header className="detail-heading">
           <div className="archive-meta"><span>{formatDate(article.publishedAt)}</span>{article.source && <span>来源：{article.source}</span>}</div>
-          <h1>{article.title}</h1><p>{article.summary}</p>
+          <h1>{article.title}</h1>{article.summary && <p>{article.summary}</p>}
         </header>
         <MediaImage className="detail-cover" media={article.cover} preload />
         {article.contentType === 'external' ? (
