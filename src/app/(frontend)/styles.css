@@ -36,8 +36,8 @@ button, input { font: inherit; }
 .desktop-nav > a:hover, .desktop-nav-menu:hover > button, .desktop-nav-menu:focus-within > button { color: var(--primary-dark); border-bottom-color: var(--primary); }
 .desktop-nav-menu { position: relative; }
 .desktop-nav-menu > button { display: flex; align-items: center; gap: 6px; cursor: default; }
-.desktop-nav-menu > button span { font-size: 14px; transition: transform .18s ease; }
-.desktop-nav-menu:hover > button span, .desktop-nav-menu:focus-within > button span { transform: rotate(180deg); }
+.desktop-nav-menu > button svg { width: 10px; height: 7px; display: block; overflow: visible; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; transition: transform .18s ease; }
+.desktop-nav-menu:hover > button svg, .desktop-nav-menu:focus-within > button svg { transform: rotate(180deg); }
 .desktop-nav-submenu { position: absolute; top: 100%; left: 50%; width: 140px; display: grid; visibility: hidden; padding: 8px; opacity: 0; background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 26px rgba(23,50,77,.12); transform: translate(-50%,8px); transition: opacity .16s ease, transform .16s ease, visibility .16s; }
 .desktop-nav-menu:hover .desktop-nav-submenu, .desktop-nav-menu:focus-within .desktop-nav-submenu { visibility: visible; opacity: 1; transform: translate(-50%,0); }
 .desktop-nav-submenu a { padding: 10px 12px; border-radius: 4px; color: #38536d; text-decoration: none; white-space: nowrap; }
@@ -171,7 +171,6 @@ button, input { font: inherit; }
 .home-three-day .three-day-list { margin-top: 0; border: 0; gap: 14px; }
 .home-three-day .three-day-list > div { display: flex; min-height: 190px; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: white; }
 .weather-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; align-items: start; }
-.weather-anchor-section { scroll-margin-top: 76px; }
 .weather-history { min-width: 0; scroll-margin-top: 90px; }
 .weather-history h2 { margin: 0 0 10px; font-size: 24px; }
 .history-caption { color: var(--muted); font-size: 13px; line-height: 1.7; }

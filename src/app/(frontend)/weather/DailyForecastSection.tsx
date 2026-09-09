@@ -6,7 +6,7 @@ import { ForecastWeather } from '../components/ForecastWeather'
 
 export function DailyForecastSection({ forecast }: { forecast: DailyForecast | null }) {
   return (
-    <section className="section-pad forecast-section weather-anchor-section" id="weather-forecast" data-forecast-capture data-forecast-id={forecast?.id}>
+    <section className="section-pad forecast-section" data-forecast-capture data-forecast-id={forecast?.id}>
       <div className="container">
         <div className="section-heading forecast-heading">
           <div>

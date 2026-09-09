@@ -27,7 +27,7 @@ export async function captureForecastImage({ forecastDate, forecastID, siteURL }
   const captureTime = new Date().toISOString().replace(/[:.]/g, '-')
   const outputPath = path.join(outputDirectory, `${datePart}-${captureTime}-daily-forecast.png`)
   const captureURL = new URL(siteURL)
-  captureURL.pathname = '/weather'
+  captureURL.pathname = '/weather/forecast'
   captureURL.searchParams.set('forecastId', String(forecastID))
   captureURL.searchParams.set('capture', Date.now().toString())
 

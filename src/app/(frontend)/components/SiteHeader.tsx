@@ -53,10 +53,13 @@ function isWeatherNavigation(url: string) {
 function DesktopWeatherMenu({ label }: { label: string }) {
   return (
     <div className="desktop-nav-menu">
-      <button type="button" aria-haspopup="true">{label}<span aria-hidden="true">⌄</span></button>
+      <button type="button" aria-haspopup="true">
+        {label}
+        <svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg>
+      </button>
       <div className="desktop-nav-submenu">
-        <Link href="/weather#weather-observations">天气实况</Link>
-        <Link href="/weather#weather-forecast">天气预报</Link>
+        <Link href="/weather">天气实况</Link>
+        <Link href="/weather/forecast">天气预报</Link>
       </div>
     </div>
   )
@@ -66,8 +69,8 @@ function MobileWeatherMenu({ label }: { label: string }) {
   return (
     <details className="mobile-nav-submenu">
       <summary>{label}</summary>
-      <Link href="/weather#weather-observations">天气实况</Link>
-      <Link href="/weather#weather-forecast">天气预报</Link>
+      <Link href="/weather">天气实况</Link>
+      <Link href="/weather/forecast">天气预报</Link>
     </details>
   )
 }
