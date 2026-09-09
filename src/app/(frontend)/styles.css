@@ -284,6 +284,13 @@ button, input { font: inherit; }
 .rich-content p { margin: 1em 0; }
 .rich-content a { color: var(--primary); }
 .rich-content img { max-width: 100%; height: auto; }
+.wechat-content { max-width: 100%; overflow: hidden; color: var(--ink); font-size: 16px; line-height: 1.8; isolation: isolate; }
+.wechat-content *, .wechat-content *::before, .wechat-content *::after { max-width: 100%; box-sizing: border-box; }
+.wechat-content img { display: inline-block; max-width: 100% !important; height: auto !important; }
+.wechat-content svg, .wechat-content video { max-width: 100%; height: auto; }
+.wechat-content table { width: 100% !important; table-layout: fixed; border-collapse: collapse; }
+.wechat-content pre { overflow-x: auto; white-space: pre-wrap; }
+.wechat-content a { color: var(--primary); }
 .external-notice { padding: 30px; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; }
 .external-notice p { margin: 0 0 20px; }
 .activity-facts { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 0 40px; border: 1px solid var(--line); }

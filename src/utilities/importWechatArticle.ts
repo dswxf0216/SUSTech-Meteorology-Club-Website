@@ -48,7 +48,7 @@ export const importWechatArticle: PayloadHandler = async (req) => {
     const coverURL = getMeta(document, 'og:image')
     if (coverURL) imageURLs.unshift(coverURL)
 
-    const uploaded = new Map<string, number>()
+    const uploaded = new Map<string, { id: number; url: string }>()
     let totalBytes = 0
     const allowedImageURLs = imageURLs
       .map(normalizeAllowedImageURL)
@@ -67,24 +67,31 @@ export const importWechatArticle: PayloadHandler = async (req) => {
         overrideAccess: false,
         req,
       })
-      uploaded.set(rawURL, media.id)
+      uploaded.set(rawURL, { id: media.id, url: normalizeLocalMediaURL(media.url) })
     }
 
     for (const image of imageElements) {
       const rawURL = image.getAttribute('data-src') || image.getAttribute('src')
       const normalizedURL = rawURL ? normalizeAllowedImageURL(rawURL) : null
-      if (normalizedURL) image.setAttribute('data-media-id', String(uploaded.get(normalizedURL) || ''))
+      const media = normalizedURL ? uploaded.get(normalizedURL) : undefined
+      if (media) {
+        image.setAttribute('data-media-id', String(media.id))
+        image.setAttribute('data-local-src', media.url)
+      }
     }
 
     const content = buildLexicalContent(contentElement, articleURL)
     const normalizedCoverURL = coverURL ? normalizeAllowedImageURL(coverURL) : null
-    const cover = normalizedCoverURL ? uploaded.get(normalizedCoverURL) : undefined
+    const cover = normalizedCoverURL ? uploaded.get(normalizedCoverURL)?.id : undefined
+    const importedHtml = sanitizeWechatContent(contentElement, articleURL)
+    if (importedHtml.length > 500_000) throw new ImportError('文章排版内容超过 500 KB，无法自动导入。', 413)
     const articleData = {
       title,
       summary,
       cover,
       contentType: 'internal' as const,
       content,
+      importedHtml,
       externalUrl: articleURL.href,
       source: author ? `微信公众号：${author}` : '微信公众号',
       publishedAt,
@@ -248,6 +255,86 @@ function uploadNode(element: Element): LexicalNode | null {
   const value = Number(element.getAttribute('data-media-id'))
   if (!value) return null
   return { type: 'upload', version: 3, id: randomBytes(12).toString('hex'), relationTo: 'media', value, fields: null, format: '' }
+}
+
+export function sanitizeWechatContent(root: Element, articleURL: URL) {
+  const clone = root.cloneNode(true) as Element
+  clone.querySelectorAll('script, style, noscript, iframe, object, embed, form, input, button, textarea, select, option, link, meta, base, canvas').forEach((element) => element.remove())
+
+  for (const element of Array.from(clone.querySelectorAll('*'))) {
+    const inlineStyle = element.getAttribute('style') || ''
+    if (/display\s*:\s*none|visibility\s*:\s*hidden/i.test(inlineStyle) || element.getAttribute('aria-hidden') === 'true') {
+      element.remove()
+      continue
+    }
+
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLowerCase()
+      if (name.startsWith('on') || !SAFE_ATTRIBUTES.has(name)) element.removeAttribute(attribute.name)
+    }
+
+    const style = sanitizeStyle(element.getAttribute('style') || '')
+    if (style) element.setAttribute('style', style)
+    else element.removeAttribute('style')
+
+    if (element.tagName === 'IMG') {
+      const localSource = element.getAttribute('data-local-src')
+      if (!localSource) {
+        element.remove()
+        continue
+      }
+      element.setAttribute('src', localSource)
+      element.setAttribute('loading', 'lazy')
+      element.removeAttribute('data-local-src')
+    }
+
+    if (element.tagName === 'A') {
+      const href = safeLink(element.getAttribute('href'), articleURL)
+      if (href) {
+        element.setAttribute('href', href)
+        element.setAttribute('target', '_blank')
+        element.setAttribute('rel', 'noopener noreferrer')
+      } else {
+        element.removeAttribute('href')
+      }
+    }
+  }
+
+  return clone.innerHTML
+}
+
+const SAFE_ATTRIBUTES = new Set([
+  'alt', 'aria-label', 'colspan', 'data-local-src', 'height', 'href', 'rel', 'role',
+  'rowspan', 'src', 'style', 'target', 'title', 'width',
+])
+
+function sanitizeStyle(value: string) {
+  return value
+    .split(';')
+    .map((declaration) => declaration.trim())
+    .filter(Boolean)
+    .filter((declaration) => !/(?:expression\s*\(|url\s*\(|@import|javascript:|behavior\s*:|-moz-binding|position\s*:\s*fixed)/i.test(declaration))
+    .join('; ')
+}
+
+function safeLink(value: null | string, articleURL: URL) {
+  if (!value) return null
+  try {
+    const url = new URL(value, articleURL)
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+function normalizeLocalMediaURL(value?: null | string) {
+  if (!value) return ''
+  try {
+    const url = new URL(value)
+    return `${url.pathname}${url.search}`
+  } catch {
+    return value
+  }
 }
 
 function getMeta(document: Document, key: string) {

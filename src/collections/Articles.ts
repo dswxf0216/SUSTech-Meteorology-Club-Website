@@ -60,6 +60,13 @@ export const Articles: CollectionConfig = {
       admin: { condition: (_, siblingData) => siblingData.contentType === 'internal' },
     },
     {
+      name: 'importedHtml',
+      label: '微信原始排版',
+      type: 'textarea',
+      maxLength: 500_000,
+      admin: { hidden: true },
+    },
+    {
       name: 'externalUrl',
       label: '原文链接',
       type: 'text',

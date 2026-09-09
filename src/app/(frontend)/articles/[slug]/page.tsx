@@ -49,7 +49,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         <MediaImage className="detail-cover" media={article.cover} preload />
         {article.contentType === 'external' ? (
           <div className="external-notice"><p>这是一篇发布在外部平台的内容。</p>{article.externalUrl && <a className="button button-primary" href={article.externalUrl} rel="noreferrer" target="_blank">前往阅读原文 ↗</a>}</div>
-        ) : article.content ? <div className="rich-content"><RichText data={article.content} /></div> : <div className="empty-state">正文尚未填写。</div>}
+        ) : article.importedHtml ? <div className="wechat-content" dangerouslySetInnerHTML={{ __html: article.importedHtml }} /> : article.content ? <div className="rich-content"><RichText data={article.content} /></div> : <div className="empty-state">正文尚未填写。</div>}
       </div>
     </article>
   )

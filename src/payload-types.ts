@@ -275,6 +275,7 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
+  importedHtml?: string | null;
   externalUrl?: string | null;
   source?: string | null;
   publishedAt: string;
@@ -635,6 +636,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   cover?: T;
   contentType?: T;
   content?: T;
+  importedHtml?: T;
   externalUrl?: T;
   source?: T;
   publishedAt?: T;

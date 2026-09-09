@@ -7,6 +7,7 @@ import * as migration_20260905_210000_forecast_image_capture from './20260905_21
 import * as migration_20260905_223000_forecast_rainfall_range from './20260905_223000_forecast_rainfall_range';
 import * as migration_20260906_100000_three_day_forecast_dates from './20260906_100000_three_day_forecast_dates';
 import * as migration_20260906_180000_temperature_text from './20260906_180000_temperature_text';
+import * as migration_20260909_103000_article_imported_html from './20260909_103000_article_imported_html';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260906_180000_temperature_text.up,
     down: migration_20260906_180000_temperature_text.down,
     name: '20260906_180000_temperature_text',
+  },
+  {
+    up: migration_20260909_103000_article_imported_html.up,
+    down: migration_20260909_103000_article_imported_html.down,
+    name: '20260909_103000_article_imported_html',
   },
 ];
