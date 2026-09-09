@@ -13,6 +13,7 @@ import { WeatherWarnings } from './weather/WeatherWarnings'
 import { RadarMap } from './weather/RadarMap'
 import { ForecastWeather } from './components/ForecastWeather'
 import { ForecastTemperature } from './components/ForecastTemperature'
+import { MediaImage } from './components/MediaImage'
 
 export const dynamic = 'force-dynamic'
 
@@ -104,7 +105,12 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className="section-pad">
         <div className="container content-columns">
           <ContentSection eyebrow="近期内容" title="最新文章" empty="后台发布文章后，将自动显示在这里。">
-            {articles.docs.map((article) => article.contentType === 'external' && article.externalUrl ? <a className="content-item" href={article.externalUrl} key={article.id} rel="noreferrer" target="_blank"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></a> : <Link className="content-item" href={getArticlePath(article)} key={article.id}><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></Link>)}
+            {articles.docs.map((article) => {
+              const content = <><div className="content-item-cover"><MediaImage media={article.cover} /></div><div className="content-item-copy"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3><p>{article.summary}</p></div></>
+              return article.contentType === 'external' && article.externalUrl
+                ? <a className="content-item content-item-with-cover" href={article.externalUrl} key={article.id} rel="noreferrer" target="_blank">{content}</a>
+                : <Link className="content-item content-item-with-cover" href={getArticlePath(article)} key={article.id}>{content}</Link>
+            })}
           </ContentSection>
           <ContentSection eyebrow="社团现场" title="近期活动" empty="后台发布活动后，将自动显示在这里。">
             {activities.docs.map((activity) => <Link className="content-item" href={`/activities/${activity.slug}`} key={activity.id}><span>{formatDate(activity.startAt)}</span><h3>{activity.title}</h3><p>{activity.summary}</p></Link>)}

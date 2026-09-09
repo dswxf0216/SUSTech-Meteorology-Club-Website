@@ -72,6 +72,11 @@ button, input { font: inherit; }
 .content-item > span { color: var(--primary); font-size: 12px; font-weight: 700; }
 .content-item h3 { margin: 8px 0 6px; font-size: 19px; }
 .content-item p { margin: 0; color: var(--muted); line-height: 1.65; }
+.content-item-with-cover { display: grid; grid-template-columns: minmax(120px, 34%) 1fr; gap: 20px; align-items: stretch; }
+.content-item-cover { min-height: 128px; overflow: hidden; border-radius: 3px; background: var(--soft); }
+.content-item-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.content-item-copy { align-self: center; min-width: 0; }
+.content-item-copy > span { color: var(--primary); font-size: 12px; font-weight: 700; }
 .empty-state { padding: 30px; color: var(--muted); background: var(--soft); border: 1px dashed #b8c9d8; border-radius: 4px; text-align: center; }
 
 .page-wrap { min-height: 68vh; }
@@ -325,6 +330,7 @@ button, input { font: inherit; }
   .section-pad { padding: 52px 0; }.hero h1 { font-size: 48px; }.hero-copy > p { font-size: 17px; }
   .hero-logo-panel { padding: 18px; border-left: 0; }.feature-grid, .link-grid, .activity-grid { grid-template-columns: 1fr; }
   .archive-item { grid-template-columns: 1fr; gap: 18px; }.archive-cover { height: 190px; }
+  .content-item-with-cover { grid-template-columns: 1fr; }.content-item-cover { min-height: 180px; }
   .activity-facts { grid-template-columns: 1fr; }.activity-facts div { border-right: 0; border-bottom: 1px solid var(--line); }.activity-facts div:last-child { border-bottom: 0; }
   .gallery-grid { grid-template-columns: 1fr; }.gallery-grid img { height: auto; }
   .feature-card { min-height: 260px; }.weather-primary, .station-weather-copy { padding: 30px; }.weather-details div, .station-weather-info div { padding: 22px; }.weather-primary > strong { font-size: 60px; }
