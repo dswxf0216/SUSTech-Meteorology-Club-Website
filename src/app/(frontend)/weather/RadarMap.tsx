@@ -26,13 +26,14 @@ export function RadarMap() {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch('/api/weather/radar', { signal: controller.signal })
+    fetch('/api/weather/radar', { cache: 'no-store', signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error('Radar unavailable')
         return response.json()
       })
       .then(body => {
         if (!body.available || !body.radar) throw new Error('Radar unavailable')
+        setFrameIndex(Math.max(0, body.radar.frames.length - 1))
         setRadar(body.radar)
       })
       .catch(error => { if (error?.name !== 'AbortError') setFailed(true) })
@@ -55,8 +56,9 @@ export function RadarMap() {
         [radar.bounds.south, radar.bounds.west],
         [radar.bounds.north, radar.bounds.east],
       )
+      const latestFrameIndex = radar.frames.length - 1
       overlaysRef.current = radar.frames.map((frame, index) => L.imageOverlay(frame.imageUrl, bounds, {
-        opacity: index === 0 ? 0.62 : 0,
+        opacity: index === latestFrameIndex ? 0.62 : 0,
         interactive: false,
       }).addTo(map))
 
