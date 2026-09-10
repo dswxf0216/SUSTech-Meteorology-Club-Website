@@ -147,10 +147,10 @@ button, input { font: inherit; }
 .home-today-weather .forecast-temperature { display: inline-flex; gap: 5px; align-items: baseline; justify-content: center; font-size: 28px; font-weight: 700; }
 .home-today-weather .forecast-weather { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .home-today-weather .forecast-weather-symbols { display: flex; justify-content: center; }
-.home-warning-panel { min-height: 285px; }
+.home-warning-panel { min-height: 285px; display: flex; flex-direction: column; }
 .home-warning-panel h3 { text-align: center; }
 .warning-state { min-height: 190px; display: grid; place-items: center; margin: 0; color: var(--muted); text-align: center; }
-.warning-list { display: grid; gap: 10px; }
+.warning-list { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
 .warning-item { background: white; border: 1px solid var(--line); border-radius: 6px; }
 .warning-summary { display: grid; grid-template-columns: 58px 1fr; gap: 4px 12px; align-items: center; padding: 12px; }
 .warning-icon-button { grid-row: 1 / 3; width: 52px; height: 52px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 7px; background: transparent; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
