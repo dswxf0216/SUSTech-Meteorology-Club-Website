@@ -86,6 +86,7 @@ export function RadarMap() {
   }, [playing, radar])
 
   const selectedFrame = radar?.frames[frameIndex]
+  const legendEntries = getLegendEntries(radar?.colorChart)
 
   return (
     <section className="radar-product" aria-labelledby="radar-title">
@@ -97,6 +98,20 @@ export function RadarMap() {
         <div className="radar-map" ref={containerRef} aria-label="深圳及珠三角天气雷达图">
           {!radar && !failed && <div className="radar-status">正在加载最新雷达图像…</div>}
           {failed && <div className="radar-status">雷达数据暂时无法加载，请稍后再试。</div>}
+          {legendEntries.length > 0 && (
+            <aside className="radar-legend" aria-label="雷达回波强度色阶">
+              <strong>{radar?.colorChart?.dataname || 'CAPPI'}</strong>
+              <small>({radar?.colorChart?.unit || 'dbz'})</small>
+              <div>
+                {legendEntries.map(entry => (
+                  <span key={entry.label}>
+                    <i aria-hidden="true" style={{ backgroundColor: entry.color }} />
+                    <b>{entry.label}</b>
+                  </span>
+                ))}
+              </div>
+            </aside>
+          )}
         </div>
         <div className="radar-controls">
           <button type="button" onClick={() => setPlaying(value => !value)} disabled={!radar}>
@@ -121,4 +136,14 @@ export function RadarMap() {
       </div>
     </section>
   )
+}
+
+function getLegendEntries(colorChart: RadarData['colorChart'] | undefined) {
+  const colors = colorChart?.colors?.filter(color => color !== 'transparent') || []
+  const values = colorChart?.values || []
+
+  return colors.map((color, index) => ({
+    color,
+    label: index === colors.length - 1 ? `>${values[index] || ''}` : values[index] || '',
+  })).filter(entry => entry.label)
 }
