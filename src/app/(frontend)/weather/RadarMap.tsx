@@ -100,7 +100,7 @@ export function RadarMap() {
           {failed && <div className="radar-status">雷达数据暂时无法加载，请稍后再试。</div>}
           {legendEntries.length > 0 && (
             <aside className="radar-legend" aria-label="雷达回波强度色阶">
-              <strong>{radar?.colorChart?.dataname || 'CAPPI'}</strong>
+              <strong>组合反射率</strong>
               <small>({radar?.colorChart?.unit || 'dbz'})</small>
               <div>
                 {legendEntries.map(entry => (
