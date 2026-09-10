@@ -18,7 +18,7 @@ type Warning = {
 
 const categoryLabel = {
   local: '桃源街道直接生效分区预警',
-  other: '深圳其他区域分区预警',
+  other: '深圳其他区域预警',
   citywide: '全市性预警',
 }
 

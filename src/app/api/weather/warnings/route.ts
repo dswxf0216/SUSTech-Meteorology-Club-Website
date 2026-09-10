@@ -52,10 +52,54 @@ function alarmKey(alarm: AlarmSummary) {
   return `${alarm.name || alarm.signalType}-${alarm.signalLevel || ''}-${normalizedTime}`
 }
 
-function categoryFor(alarm: AlarmSummary, localKeys: Set<string>): WarningItem['category'] {
+function normalizedSignalKey(alarm: AlarmSummary) {
+  const type = alarm.signalType || alarm.name
+    ?.replace(/分区|预警信号|预警|黄色|橙色|红色|蓝色|白色/g, '')
+    .replace(/\s+/g, '')
+  const level = alarm.signalLevel || alarm.name?.match(/红色|橙色|黄色|蓝色|白色/)?.[0] || ''
+  return `${type || ''}-${level}`
+}
+
+function warningMinute(value?: string) {
+  const digits = value?.replace(/\D/g, '').slice(0, 12)
+  if (!digits || digits.length < 12) return null
+  const year = Number(digits.slice(0, 4))
+  const month = Number(digits.slice(4, 6))
+  const day = Number(digits.slice(6, 8))
+  const hour = Number(digits.slice(8, 10))
+  const minute = Number(digits.slice(10, 12))
+  return Date.UTC(year, month - 1, day, hour, minute) / 60_000
+}
+
+function isSameWarning(left: AlarmSummary, right: AlarmSummary) {
+  if (normalizedSignalKey(left) !== normalizedSignalKey(right)) return false
+  const leftMinute = warningMinute(left.issueTime)
+  const rightMinute = warningMinute(right.issueTime)
+  if (leftMinute !== null && rightMinute !== null) return Math.abs(leftMinute - rightMinute) <= 30
+  return alarmKey(left) === alarmKey(right)
+}
+
+function mergeDuplicateWarnings(alarms: AlarmSummary[]) {
+  return alarms.reduce<AlarmSummary[]>((merged, alarm) => {
+    const existingIndex = merged.findIndex(existing => isSameWarning(existing, alarm))
+    if (existingIndex === -1) return [...merged, alarm]
+
+    const existing = merged[existingIndex]
+    merged[existingIndex] = {
+      ...alarm,
+      ...existing,
+      area: existing.area?.length ? existing.area : alarm.area,
+      icon: existing.icon || alarm.icon,
+      url: existing.url || alarm.url,
+    }
+    return merged
+  }, [])
+}
+
+function categoryFor(alarm: AlarmSummary, local: AlarmSummary[]): WarningItem['category'] {
   const areas = alarm.area || []
-  if (!alarm.name?.includes('分区') || areas.length === 0 || areas.some(area => area.includes('全市'))) return 'citywide'
-  if (localKeys.has(alarmKey(alarm))) return 'local'
+  if (areas.some(area => /全市|深圳市全域/.test(area))) return 'citywide'
+  if (local.some(item => isSameWarning(item, alarm))) return 'local'
   return 'other'
 }
 
@@ -102,10 +146,9 @@ async function readWarnings() {
 
   const local: AlarmSummary[] = Array.isArray(body.result.areaAlarmList) ? body.result.areaAlarmList : []
   const city: AlarmSummary[] = Array.isArray(body.result.cityAlarmList) ? body.result.cityAlarmList : []
-  const localKeys = new Set(local.map(alarmKey))
-  // Prefer the city list when the same citywide warning is repeated in the
-  // station-effective list. Upstream formats the two timestamps differently.
-  const summaries = [...city, ...local].filter((alarm, index, all) => all.findIndex(item => alarmKey(item) === alarmKey(alarm)) === index)
+  // The upstream may repeat one warning in both lists with "分区" omitted from
+  // one name. Prefer station-effective entries and merge near-identical signals.
+  const summaries = mergeDuplicateWarnings([...local, ...city])
   const detailGroups = await Promise.all([...new Set(summaries.map(item => item.url).filter(Boolean))].map(readDetails))
   const details = detailGroups.flat()
 
@@ -116,7 +159,7 @@ async function readWarnings() {
       ...detail,
       alarmMean: textOnly(detail?.alarmMean),
       measure: textOnly(detail?.measure),
-      category: categoryFor(alarm, localKeys),
+      category: categoryFor(alarm, local),
       iconUrl: alarm.icon ? new URL(alarm.icon, ORIGIN).toString() : null,
     }
   })
