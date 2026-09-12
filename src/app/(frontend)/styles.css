@@ -7,6 +7,8 @@
   --surface: #ffffff;
   --soft: #f3f7fb;
   --line: #d8e3ec;
+  --weather-line: #bfd7e9;
+  --weather-soft: #e5f2fc;
   --shadow: none;
   --radius-lg: 8px;
   --radius-md: 6px;
@@ -367,4 +369,76 @@ button, input { font: inherit; }
   .home-three-day .three-day-list { grid-template-columns: 1fr; }.home-three-day .three-day-list > div { min-height: 170px; }
   .about-lead, .prose-card { padding: 28px; }.about-lead h2 { margin-top: 54px; font-size: 28px; }
   .footer-links { flex-wrap: wrap; }.button { width: 100%; }
+}
+
+/* Hallmark · component: forecast dashboard · genre: modern-minimal · theme: existing brand blue
+ * states: static display; warning controls retain existing default · hover · focus · active · disabled · loading · error · success
+ * typography: preserved · content: preserved · pre-emit critique: P5 H5 E5 S5 R5 V4
+ */
+.home-forecast-dashboard {
+  grid-template-rows: auto auto 1fr;
+  color: var(--ink);
+  background: var(--surface);
+  border-color: var(--weather-line);
+}
+.home-forecast-dashboard-label {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  color: var(--ink);
+  background: var(--surface);
+  border-bottom: 1px solid var(--weather-line);
+  font-size: 14px;
+}
+.home-forecast-dashboard-label strong { font-size: inherit; }
+.home-forecast-dashboard-label span { color: var(--muted); white-space: nowrap; }
+.home-forecast-top {
+  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  color: var(--ink);
+  background: var(--surface);
+}
+.home-today-weather {
+  min-height: 356px;
+  color: var(--ink);
+  background: var(--surface);
+}
+.home-warning-panel {
+  min-height: 356px;
+  color: var(--ink);
+  background: var(--weather-soft);
+}
+.home-three-day {
+  min-height: 352px;
+  color: var(--ink);
+  background: var(--surface);
+}
+.home-three-day .three-day-list {
+  min-height: 248px;
+  align-items: stretch;
+  gap: 0;
+}
+.home-three-day .three-day-list > div {
+  min-width: 0;
+  min-height: 248px;
+  padding: 20px;
+  color: var(--ink);
+  background: var(--surface);
+  border-radius: 0;
+}
+
+@media (max-width: 820px) {
+  .home-forecast-top { grid-template-columns: minmax(0, 1fr); }
+  .home-today-weather,
+  .home-warning-panel { min-height: 300px; }
+  .home-warning-panel { border-top: 1px solid var(--weather-line); }
+}
+
+@media (max-width: 560px) {
+  .home-forecast-dashboard-label { padding-inline: 16px; }
+  .home-three-day { min-height: 0; }
+  .home-three-day .three-day-list { min-height: 0; }
+  .home-three-day .three-day-list > div { min-height: 180px; }
 }
