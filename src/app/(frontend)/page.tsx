@@ -53,7 +53,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               <div className="home-station-dashboard">
                 <div className="home-forecast-dashboard-label">
                   <strong>实时观测</strong>
-                  <span>大学城自动站</span>
                 </div>
                 <WeatherStationCard compact />
               </div>
@@ -63,7 +62,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               <div className="home-forecast-dashboard">
                 <div className="home-forecast-dashboard-label">
                   <strong>天气预报与预警</strong>
-                  <span>每日更新</span>
                 </div>
                 <div className="home-forecast-top">
                   <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} forecastDate={forecasts.docs[0]?.forecastDate} />

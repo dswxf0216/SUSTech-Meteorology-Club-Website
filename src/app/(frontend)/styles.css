@@ -389,7 +389,7 @@ button, input { font: inherit; }
   min-height: 48px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   padding: 12px 20px;
   color: var(--ink);
@@ -398,7 +398,7 @@ button, input { font: inherit; }
   font-size: 14px;
 }
 .home-forecast-dashboard-label strong { font-size: inherit; }
-.home-forecast-dashboard-label span { color: var(--muted); white-space: nowrap; }
+.home-station-dashboard .home-forecast-dashboard-label { background: var(--weather-soft); }
 .home-forecast-top {
   grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
   color: var(--ink);
