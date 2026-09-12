@@ -92,7 +92,6 @@ export function RadarMap() {
     <section className="radar-product" aria-labelledby="radar-title">
       <div className="radar-heading">
         <div><span className="eyebrow">WEATHER RADAR</span><h2 id="radar-title">雷达图像</h2></div>
-        <p>查看珠三角最新雷达回波及其移动变化。</p>
       </div>
       <div className="radar-shell">
         <div className="radar-map" ref={containerRef} aria-label="深圳及珠三角天气雷达图">

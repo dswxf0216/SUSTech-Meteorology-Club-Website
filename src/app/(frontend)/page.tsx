@@ -46,7 +46,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           <div className="home-weather-heading">
             <span className="eyebrow">CAMPUS WEATHER OBSERVATIONS AND FORECASTS</span>
             <h2>校园天气实况与预报</h2>
-            <p>为南科的天空“把脉”</p>
           </div>
           <div className="home-weather-layout">
             <div className="home-weather-column">
