@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { getPayload } from 'payload'
 
@@ -13,8 +14,6 @@ import { RadarMap } from './weather/RadarMap'
 import { ForecastWeather } from './components/ForecastWeather'
 import { ForecastTemperature } from './components/ForecastTemperature'
 import { MediaImage } from './components/MediaImage'
-import styles from './home-workbench.module.css'
-import '../../../tokens.css'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,72 +37,80 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const heroEyebrow = settings.home?.eyebrow || 'SUSTECH METEOROLOGY CLUB'
   const heroHeading = settings.home?.heading || settings.clubName || '南方科技大学气象社'
   const slogan = settings.home?.description || settings.slogan || '关注天气与气候，传播气象知识，连接每一位对大气科学感兴趣的同学。'
+  const logoSrc = typeof settings.logo === 'object' && settings.logo?.url ? settings.logo.url : '/assets/sustech-meteorology-club-logo.png'
+
   return (
-    <div className={styles.home}>
-      <section className={styles.intro}>
-        <div className={styles.introCopy}>
-          <div className={styles.brandLine}>
-            <span>{heroEyebrow}</span>
+    <>
+      <section className="section-pad home-weather-section">
+        <div className="container">
+          <div className="home-weather-heading">
+            <span className="eyebrow">CAMPUS WEATHER OBSERVATIONS AND FORECASTS</span>
+            <h2>校园天气实况与预报</h2>
+            <p>为南科的天空“把脉”</p>
           </div>
-          <h1>{heroHeading}</h1>
-          <p>{slogan}</p>
-        </div>
-        <nav className={styles.quickLinks} aria-label="首页快捷入口">
-          <Link href="/weather">天气信息 <span>↗</span></Link>
-          <Link href="/about">认识我们 <span>↗</span></Link>
-          <Link href="/links">友情链接 <span>↗</span></Link>
-        </nav>
-      </section>
-
-      <main className={styles.workbench}>
-        <header className={styles.workbenchHeader}>
-          <div>
-            <span className={styles.status}><i /> LIVE WEATHER DESK</span>
-            <h2>校园天气工作台</h2>
+          <div className="home-weather-layout">
+            <div className="home-weather-column">
+              <div className="home-station-dashboard">
+                <div className="home-forecast-dashboard-label">
+                  <strong>实时观测</strong>
+                  <span>大学城自动站</span>
+                </div>
+                <WeatherStationCard compact />
+              </div>
+              <Link className="weather-history-link" href="/weather#history">查询过去24小时实况序列 →</Link>
+            </div>
+            <div className="home-weather-column">
+              <div className="home-forecast-dashboard">
+                <div className="home-forecast-dashboard-label">
+                  <strong>天气预报与预警</strong>
+                  <span>每日更新</span>
+                </div>
+                <div className="home-forecast-top">
+                  <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} forecastDate={forecasts.docs[0]?.forecastDate} />
+                  <WeatherWarnings />
+                </div>
+                <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} forecastDate={forecasts.docs[0]?.forecastDate} />
+              </div>
+              <Link className="weather-history-link" href="/weather/forecast">查询南科每日天气预报 →</Link>
+            </div>
           </div>
-          <p>为南科的天空“把脉”</p>
-        </header>
-
-        <div className={styles.radarFrame}>
-          <div className={styles.panelLabel}><span>珠三角雷达</span><span>组合反射率 · 自动更新</span></div>
           <RadarMap />
         </div>
+      </section>
 
-        <div className={styles.observationGrid}>
-          <section className={styles.stationPanel} aria-labelledby="station-panel-title">
-            <div className={styles.panelLabel}><span id="station-panel-title">实时观测</span><span>大学城自动站</span></div>
-            <WeatherStationCard compact />
-            <Link className={styles.inlineLink} href="/weather#history">查询过去24小时实况序列 <span>→</span></Link>
-          </section>
-
-          <section className={styles.forecastPanel} aria-labelledby="forecast-panel-title">
-            <div className={styles.panelLabel}><span id="forecast-panel-title">天气预报与预警</span><span>每日更新</span></div>
-            <div className="home-forecast-dashboard">
-              <div className="home-forecast-top">
-                <TodayWeather day={forecasts.docs[0]?.threeDayForecast?.[0]} forecastDate={forecasts.docs[0]?.forecastDate} />
-                <WeatherWarnings />
-              </div>
-              <ThreeDayWeather days={forecasts.docs[0]?.threeDayForecast} forecastDate={forecasts.docs[0]?.forecastDate} />
+      <section className="hero section-pad">
+        <div className="container hero-grid">
+          <div className="hero-copy">
+            <span className="eyebrow">{heroEyebrow}</span>
+            <h1>{heroHeading}</h1>
+            <p>{slogan}</p>
+            <div className="button-row">
+              <Link className="button button-primary" href="/about">认识我们</Link>
+              <Link className="button button-secondary" href="/links">浏览友情链接</Link>
             </div>
-            <Link className={styles.inlineLink} href="/weather/forecast">查询南科每日天气预报 <span>→</span></Link>
-          </section>
-        </div>
-      </main>
-
-      <section className={styles.resources}>
-        <div className={styles.resourceIntro}>
-          <h2>信息与资源</h2>
-          <p>了解社团信息，查看天气资料，并访问常用的气象相关网站。</p>
-        </div>
-        <div className={styles.resourceLinks}>
-          <Link href="/weather"><strong>天气信息</strong><span>实时观测与每日预报 →</span></Link>
-          <Link href="/about"><strong>社团简介</strong><span>宗旨、文化与主要活动 →</span></Link>
-          <Link href="/links"><strong>友情链接</strong><span>气象资料与合作组织 →</span></Link>
+          </div>
+          <div className="hero-logo-panel">
+            <Image src={logoSrc} alt={`${settings.clubName || '南方科技大学气象社'} Logo`} width={520} height={520} preload />
+          </div>
         </div>
       </section>
 
-      <section className={styles.updates}>
-        <div className={styles.contentColumns}>
+      <section className="section-pad section-soft">
+        <div className="container">
+          <div className="section-heading">
+            <div><span className="eyebrow">网站栏目</span><h2>信息与资源</h2></div>
+            <p>了解社团信息，查看天气资料，并访问常用的气象相关网站。</p>
+          </div>
+          <div className="feature-grid">
+            <Link className="feature-card" href="/weather"><span className="feature-number">01</span><h3>天气信息</h3><p>查看大学城自动气象站实时观测与每日天气预报。</p><span className="text-link">查看天气 →</span></Link>
+            <Link className="feature-card" href="/about"><span className="feature-number">02</span><h3>社团简介</h3><p>了解气象社的宗旨、发展方向、组织文化与主要活动。</p><span className="text-link">认识社团 →</span></Link>
+            <Link className="feature-card" href="/links"><span className="feature-number">03</span><h3>友情链接</h3><p>集中展示气象资料、合作组织与其他常用网站。</p><span className="text-link">浏览链接 →</span></Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad">
+        <div className="container content-columns">
           <ContentSection eyebrow="近期内容" title="最新文章" empty="后台发布文章后，将自动显示在这里。">
             {articles.docs.map((article) => {
               const content = <><div className="content-item-cover"><MediaImage media={article.cover} /></div><div className="content-item-copy"><span>{formatDate(article.publishedAt)}</span><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}</div></>
@@ -117,7 +124,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           </ContentSection>
         </div>
       </section>
-    </div>
+    </>
   )
 }
 
