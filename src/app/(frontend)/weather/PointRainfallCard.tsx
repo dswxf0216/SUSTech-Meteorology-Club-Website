@@ -29,6 +29,11 @@ function formatForecastTime(value: string | null) {
   return `${digits.slice(4, 6)}月${digits.slice(6, 8)}日 ${digits.slice(8, 10)}:${digits.slice(10, 12)}`
 }
 
+function formatRainfall(point: RainfallPoint) {
+  if (point.rainfallMm === null) return point.rainfall
+  return `${point.rainfallMm.toFixed(Number.isInteger(point.rainfallMm) ? 0 : 1)} mm`
+}
+
 export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
   const [data, setData] = useState<PointRainfallData | null>(null)
   const [failed, setFailed] = useState(false)
@@ -81,7 +86,7 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
     {!compact && data?.timeline.length ? <div className="point-rainfall-timeline" aria-label="未来两小时降雨预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(54px, 1fr))` }}>
       {data.timeline.map((point, index) => <div key={`${point.label}-${index}`}>
         <span aria-hidden="true" className="point-rainfall-bar" style={{ height: `${Math.max(4, ((point.rainfallMm || 0) / maxRainfall) * 100)}%` }} />
-        <strong>{point.rainfall}</strong>
+        <strong>{formatRainfall(point)}</strong>
         <small>{point.label}</small>
       </div>)}
     </div> : null}

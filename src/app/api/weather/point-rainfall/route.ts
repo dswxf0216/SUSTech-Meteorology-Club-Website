@@ -35,15 +35,33 @@ function firstText(item: Record<string, unknown>, keys: string[]) {
   return null
 }
 
+const TIME_KEYS = ['time', 'stime', 'dtime', 'forecastTime', 'forecastDate', 'dateTime', 'datetime', 'startTime', 'beginTime', 'hour', 'minute', 'name', 'label']
+const RAIN_KEYS = ['rainfall', 'rain', 'rainfallAmount', 'rainAmount', 'rainValue', 'precipitation', 'precip', 'amount', 'value']
+
+function parseRainfall(value: string) {
+  const parsed = Number.parseFloat(value.replace(/[^\d.-]/g, ''))
+  return Number.isFinite(parsed) ? parsed : null
+}
+
 function normalizeTimeline(list: unknown[]): RainfallPoint[] {
   return list.flatMap((entry, index) => {
-    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return []
-    const item = entry as Record<string, unknown>
-    const label = firstText(item, ['time', 'stime', 'dtime', 'forecastTime', 'hour', 'minute', 'name']) || `时段${index + 1}`
-    const rainfall = firstText(item, ['rainfall', 'rain', 'value', 'rainValue', 'precipitation', 'amount'])
+    let label: string | null = null
+    let rainfall: string | null = null
+
+    if (Array.isArray(entry)) {
+      label = entry[0] === undefined || entry[0] === null ? null : String(entry[0]).trim()
+      rainfall = entry[1] === undefined || entry[1] === null ? null : String(entry[1]).trim()
+    } else if (entry && typeof entry === 'object') {
+      const item = entry as Record<string, unknown>
+      label = firstText(item, TIME_KEYS)
+      rainfall = firstText(item, RAIN_KEYS)
+    } else if (typeof entry === 'string') {
+      const parts = entry.split(/[,，|]/).map(part => part.trim()).filter(Boolean)
+      if (parts.length >= 2) [label, rainfall] = parts
+    }
+
     if (!rainfall) return []
-    const parsed = Number.parseFloat(rainfall.replace(/[^\d.-]/g, ''))
-    return [{ label, rainfall, rainfallMm: Number.isFinite(parsed) ? parsed : null }]
+    return [{ label: label || `时段${index + 1}`, rainfall, rainfallMm: parseRainfall(rainfall) }]
   })
 }
 
