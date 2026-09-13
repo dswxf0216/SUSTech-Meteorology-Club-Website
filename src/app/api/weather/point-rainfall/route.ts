@@ -13,6 +13,7 @@ type RainfallPoint = {
   label: string
   rainfall: string
   rainfallMm: number | null
+  state: string | null
 }
 
 type PointRainfall = {
@@ -24,6 +25,7 @@ type PointRainfall = {
   retrievedAt: string
   stale?: boolean
   timeline: RainfallPoint[]
+  valueKind: 'rolling-hour'
 }
 
 function firstText(item: Record<string, unknown>, keys: string[]) {
@@ -47,6 +49,7 @@ function normalizeTimeline(list: unknown[]): RainfallPoint[] {
   return list.flatMap((entry, index) => {
     let label: string | null = null
     let rainfall: string | null = null
+    let state: string | null = null
 
     if (Array.isArray(entry)) {
       label = entry[0] === undefined || entry[0] === null ? null : String(entry[0]).trim()
@@ -55,13 +58,14 @@ function normalizeTimeline(list: unknown[]): RainfallPoint[] {
       const item = entry as Record<string, unknown>
       label = firstText(item, TIME_KEYS)
       rainfall = firstText(item, RAIN_KEYS)
+      state = firstText(item, ['state', 'period', 'type'])
     } else if (typeof entry === 'string') {
       const parts = entry.split(/[,，|]/).map(part => part.trim()).filter(Boolean)
       if (parts.length >= 2) [label, rainfall] = parts
     }
 
     if (!rainfall) return []
-    return [{ label: label || `时段${index + 1}`, rainfall, rainfallMm: parseRainfall(rainfall) }]
+    return [{ label: label || `时段${index + 1}`, rainfall, rainfallMm: parseRainfall(rainfall), state }]
   })
 }
 
@@ -76,7 +80,11 @@ async function readPointRainfall(): Promise<PointRainfall> {
   const result: SourceResult | undefined = source?.result
   if (!source?.success || !result || !Array.isArray(result.rainfallList)) throw new Error('Invalid rainfall response')
 
-  const timeline = normalizeTimeline(result.rainfallList)
+  const completeTimeline = normalizeTimeline(result.rainfallList)
+  const hasPeriodState = completeTimeline.some(point => point.state)
+  const timeline = hasPeriodState
+    ? completeTimeline.filter(point => point.state?.startsWith('未来'))
+    : completeTimeline
   const hasMeasuredRain = timeline.some(point => point.rainfallMm !== null && point.rainfallMm > 0)
   const hasDescribedRain = timeline.some(point => point.rainfallMm === null && !/^(无降雨|无雨|0(?:\.0+)?(?:mm)?)$/i.test(point.rainfall))
   return {
@@ -87,6 +95,7 @@ async function readPointRainfall(): Promise<PointRainfall> {
     location: '一丹图书馆',
     retrievedAt: new Date().toISOString(),
     timeline,
+    valueKind: 'rolling-hour',
   }
 }
 

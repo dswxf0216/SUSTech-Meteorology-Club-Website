@@ -195,10 +195,15 @@ button, input { font: inherit; }
 .point-rainfall-card header > strong { flex: 0 0 auto; padding: 8px 12px; color: var(--primary-dark); background: var(--surface); border: 1px solid var(--weather-line); border-radius: 4px; font-size: 14px; }
 .point-rainfall-card header > strong[data-rain="expected"] { color: var(--surface); background: var(--primary-dark); border-color: var(--primary-dark); }
 .point-rainfall-status { margin: 22px 0 0; color: var(--ink); font-size: 17px; }
-.point-rainfall-timeline { height: 160px; overflow-x: auto; display: grid; align-items: end; gap: 8px; margin-top: 24px; padding: 16px 12px 0; background: var(--surface); border-bottom: 1px solid var(--weather-line); }
+.point-rainfall-note { margin: 20px 0 8px; color: var(--muted); font-size: 13px; }
+.point-rainfall-chart { display: grid; grid-template-columns: 58px minmax(0,1fr); background: var(--surface); border-bottom: 1px solid var(--weather-line); }
+.point-rainfall-now { display: grid; place-items: end center; padding-bottom: 31px; color: var(--primary-dark); border-right: 1px solid var(--weather-line); font-size: 12px; font-weight: 700; }
+.point-rainfall-now span { writing-mode: vertical-rl; letter-spacing: .12em; }
+.point-rainfall-timeline { height: 160px; overflow-x: auto; display: grid; align-items: end; gap: 8px; padding: 16px 12px 0; }
 .point-rainfall-timeline > div { height: 100%; min-width: 0; display: grid; grid-template-rows: minmax(0,1fr) auto auto; justify-items: center; gap: 4px; }
 .point-rainfall-bar { width: min(28px,70%); align-self: end; display: block; min-height: 4px; background: var(--primary); }
-.point-rainfall-timeline strong { font-size: 13px; }.point-rainfall-timeline small { padding-bottom: 8px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.point-rainfall-bar[data-zero="true"] { opacity: .35; }
+.point-rainfall-value { display: flex; align-items: baseline; gap: 3px; white-space: nowrap; font-size: 13px; }.point-rainfall-value em { color: var(--muted); font-size: 10px; font-style: normal; font-weight: 500; }.point-rainfall-timeline small { padding-bottom: 8px; color: var(--muted); font-size: 11px; white-space: nowrap; }
 .point-rainfall-card footer { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; color: var(--muted); font-size: 13px; }
 .point-rainfall-card-compact { margin-top: 24px; padding: 18px 20px; }.point-rainfall-card-compact h2 { font-size: 20px; }.point-rainfall-card-compact .point-rainfall-status { margin-top: 12px; }
 .radar-product { margin-top: 54px; }

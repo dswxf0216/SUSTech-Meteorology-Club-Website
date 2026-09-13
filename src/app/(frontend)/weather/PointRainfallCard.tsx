@@ -7,6 +7,7 @@ type RainfallPoint = {
   label: string
   rainfall: string
   rainfallMm: number | null
+  state?: string | null
 }
 
 type PointRainfallData = {
@@ -18,6 +19,7 @@ type PointRainfallData = {
   retrievedAt: string
   stale?: boolean
   timeline: RainfallPoint[]
+  valueKind?: 'rolling-hour'
 }
 
 const REFRESH_INTERVAL = 6 * 60_000
@@ -29,9 +31,9 @@ function formatForecastTime(value: string | null) {
   return `${digits.slice(4, 6)}月${digits.slice(6, 8)}日 ${digits.slice(8, 10)}:${digits.slice(10, 12)}`
 }
 
-function formatRainfall(point: RainfallPoint) {
+function formatRainfallValue(point: RainfallPoint) {
   if (point.rainfallMm === null) return point.rainfall
-  return `${point.rainfallMm.toFixed(Number.isInteger(point.rainfallMm) ? 0 : 1)} mm`
+  return point.rainfallMm.toFixed(Number.isInteger(point.rainfallMm) ? 0 : 1)
 }
 
 export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
@@ -83,13 +85,19 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
       <strong data-rain={data?.hasRain ? 'expected' : data ? 'none' : 'loading'}>{data?.hasRain ? '可能有雨' : data ? '暂无降雨' : '读取中'}</strong>
     </header>
     <p className="point-rainfall-status">{status}</p>
-    {!compact && data?.timeline.length ? <div className="point-rainfall-timeline" aria-label="未来两小时降雨预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(54px, 1fr))` }}>
-      {data.timeline.map((point, index) => <div key={`${point.label}-${index}`}>
-        <span aria-hidden="true" className="point-rainfall-bar" style={{ height: `${Math.max(4, ((point.rainfallMm || 0) / maxRainfall) * 100)}%` }} />
-        <strong>{formatRainfall(point)}</strong>
-        <small>{point.label}</small>
-      </div>)}
-    </div> : null}
+    {!compact && data?.timeline.length ? <>
+      <p className="point-rainfall-note">每6分钟更新 · 数值为对应时刻的1小时累计降雨预报</p>
+      <div className="point-rainfall-chart">
+        <div className="point-rainfall-now"><span>现在</span></div>
+        <div className="point-rainfall-timeline" aria-label="未来两小时滚动1小时累计降雨预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(68px, 1fr))` }}>
+          {data.timeline.map((point, index) => <div key={`${point.label}-${index}`} title={point.state || undefined}>
+            <span aria-hidden="true" className="point-rainfall-bar" data-zero={!point.rainfallMm} style={{ height: `${Math.max(2, ((point.rainfallMm || 0) / maxRainfall) * 100)}%` }} />
+            <strong className="point-rainfall-value"><span>{formatRainfallValue(point)}</span><em>mm</em></strong>
+            <small>{point.label}</small>
+          </div>)}
+        </div>
+      </div>
+    </> : null}
     {!compact && data ? <footer>
       <span>预报时间：{formatForecastTime(data.forecastTime)}</span>
       <span>网格位置：{data.gridPoint || '一丹图书馆附近'}</span>
