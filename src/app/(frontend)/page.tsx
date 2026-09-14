@@ -12,7 +12,6 @@ import { WeatherStationCard } from './weather/WeatherStationCard'
 import { WeatherWarnings } from './weather/WeatherWarnings'
 import { RadarMap } from './weather/RadarMap'
 import { PointRainfallCard } from './weather/PointRainfallCard'
-import { CityRainfallTrendCard } from './weather/CityRainfallTrendCard'
 import { ForecastWeather } from './components/ForecastWeather'
 import { ForecastTemperature } from './components/ForecastTemperature'
 import { MediaImage } from './components/MediaImage'
@@ -73,10 +72,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               <Link className="weather-history-link" href="/weather/forecast">查询南科每日天气预报 →</Link>
             </div>
           </div>
-          <div className="home-rainfall-grid">
-            <PointRainfallCard compact />
-            <CityRainfallTrendCard />
-          </div>
+          <PointRainfallCard compact />
           <RadarMap />
         </div>
       </section>
