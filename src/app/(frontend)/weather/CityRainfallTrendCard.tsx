@@ -103,12 +103,10 @@ export function CityRainfallTrendCard() {
   return <section className="city-rainfall-card" aria-labelledby="city-rainfall-title">
     <header>
       <div>
-        <span>全市降水动向</span>
-        <h2 id="city-rainfall-title">深圳全市 · 未来两小时</h2>
+        <h2 id="city-rainfall-title">深圳全市 · 未来两小时降水分布预报</h2>
       </div>
-      <strong>色块预报</strong>
+      <strong>未来两小时降水分布</strong>
     </header>
-    <p>逐帧查看深圳及周边降水区域的移动和变化。</p>
     <div className="city-rainfall-map" ref={containerRef} aria-label="深圳全市未来两小时降水色块预报图">
       {!rainfall && !failed && <div className="city-rainfall-status">正在加载全市降水动向…</div>}
       {failed && <div className="city-rainfall-status">全市降水预报暂时无法加载，请稍后再试。</div>}

@@ -39,6 +39,20 @@ function parseShenzhenForecastTime(value: string | null) {
   return Number.isFinite(timestamp) ? timestamp : null
 }
 
+function rainfallSummary(data: PointRainfallData | null, failed: boolean) {
+  if (!data) return failed ? '定点降雨预报暂不可用' : '正在读取'
+
+  const rainyPoints = data.timeline.filter(point => (point.rainfallMm || 0) > 0)
+  if (!rainyPoints.length) return '未来两小时无降水'
+
+  const hasHeavyPeriod = rainyPoints.some(point => (point.rainfallMm || 0) > 10)
+  const hasPersistentRain = rainyPoints.length * 6 > 60
+  if (hasPersistentRain && hasHeavyPeriod) return '未来两小时将出现持续性降水，部分时段雨强较大，请注意防范'
+  if (hasPersistentRain) return '未来两小时将出现持续性降水，请注意防范'
+  if (hasHeavyPeriod) return '未来两小时将出现降水，部分时段雨强较大，请注意防范'
+  return '未来两小时将出现降水，请注意防范'
+}
+
 function formatForecastTime(value: string | null) {
   if (!value) return '—'
   const digits = value.replace(/\D/g, '')
@@ -96,29 +110,26 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
   if (compact && (!data || !data.hasRain)) return null
 
   const maxRainfall = Math.max(0.1, ...(data?.timeline.map(point => point.rainfallMm || 0) || []))
-  const status = data
-    ? data.hasRain ? '未来两小时可能有雨，请留意临近天气变化。' : '未来两小时暂无降雨。'
-    : failed ? '定点降雨预报暂不可用，正在自动重试。' : '正在读取定点降雨预报…'
+  const summary = rainfallSummary(data, failed)
   const forecastTimestamp = parseShenzhenForecastTime(data?.forecastTime || null)
   const sourceLongDelayed = forecastTimestamp !== null && currentTime - forecastTimestamp > SOURCE_DELAY_WARNING_AFTER
 
   return <section className={`point-rainfall-card${compact ? ' point-rainfall-card-compact' : ''}`} aria-live="polite">
     <header>
-      <div><span>定点降雨预报</span><h2>南方科技大学 · 未来两小时</h2></div>
-      <strong data-rain={data?.hasRain ? 'expected' : data ? 'none' : 'loading'}>{data?.hasRain ? '可能有雨' : data ? '暂无降雨' : '读取中'}</strong>
+      <div><h2>南方科技大学 · 未来两小时详细雨强预报</h2></div>
+      <strong>{summary}</strong>
     </header>
-    <p className="point-rainfall-status">{status}</p>
     {sourceLongDelayed ? <p role="alert" style={{ margin: '12px 0 0', color: 'var(--primary-dark)', fontWeight: 700 }}>
       当前数据源长时间未更新，此为过去起报时段预报结果，请注意甄别
     </p> : null}
     {!compact && data?.timeline.length ? <>
-      <p className="point-rainfall-note">每6分钟更新 · 数值为对应时刻的1小时累计降雨预报</p>
+      <p className="point-rainfall-note">每6分钟更新 · 数值为对应时刻雨强</p>
       <div className="point-rainfall-chart">
         <div className="point-rainfall-now"><span>现在</span></div>
-        <div className="point-rainfall-timeline" aria-label="未来两小时滚动1小时累计降雨预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(68px, 1fr))` }}>
+        <div className="point-rainfall-timeline" aria-label="未来两小时雨强预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(68px, 1fr))` }}>
           {data.timeline.map((point, index) => <div key={`${point.label}-${index}`} title={point.state || undefined}>
             <span aria-hidden="true" className="point-rainfall-bar" data-zero={!point.rainfallMm} style={{ height: `${Math.max(2, ((point.rainfallMm || 0) / maxRainfall) * 100)}%` }} />
-            <strong className="point-rainfall-value"><span>{formatRainfallValue(point)}</span><em>mm</em></strong>
+            <strong className="point-rainfall-value"><span>{formatRainfallValue(point)}</span><em>mm/h</em></strong>
             <small>{point.label}</small>
           </div>)}
         </div>

@@ -193,7 +193,7 @@ button, input { font: inherit; }
 .point-rainfall-card header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .point-rainfall-card header span { color: var(--primary-dark); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
 .point-rainfall-card h2 { min-width: 0; margin: 6px 0 0; overflow-wrap: anywhere; font-size: 24px; }
-.point-rainfall-card header > strong { flex: 0 0 auto; padding: 8px 12px; color: var(--primary-dark); background: var(--surface); border: 1px solid var(--weather-line); border-radius: 4px; font-size: 14px; }
+.point-rainfall-card header > strong { flex: 0 1 440px; max-width: 440px; padding: 10px 14px; color: var(--primary-dark); background: var(--surface); border: 1px solid var(--weather-line); border-radius: 4px; font-size: 14px; text-align: center; }
 .point-rainfall-card header > strong[data-rain="expected"] { color: var(--surface); background: var(--primary-dark); border-color: var(--primary-dark); }
 .point-rainfall-status { margin: 22px 0 0; color: var(--ink); font-size: 17px; }
 .point-rainfall-note { margin: 20px 0 8px; color: var(--muted); font-size: 13px; }
@@ -218,12 +218,12 @@ button, input { font: inherit; }
 .rainfall-forecast-tabs [role="tabpanel"] > .city-rainfall-card { min-height: 520px; border-top-left-radius: 0; }
 .rainfall-forecast-tabs .city-rainfall-map { min-height: 350px; }
 .city-rainfall-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; color: var(--ink); background: var(--weather-soft); border: 1px solid var(--weather-line); border-radius: var(--radius-lg); }
-.city-rainfall-card > header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 20px 0; }
+.city-rainfall-card > header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 24px 0; }
 .city-rainfall-card > header span { color: var(--primary-dark); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
-.city-rainfall-card h2 { margin: 6px 0 0; font-size: 20px; }
-.city-rainfall-card > header > strong { flex: 0 0 auto; padding: 8px 12px; color: var(--surface); background: var(--primary-dark); border-radius: 4px; font-size: 14px; }
+.city-rainfall-card h2 { margin: 0; font-size: 24px; }
+.city-rainfall-card > header > strong { flex: 0 1 440px; max-width: 440px; padding: 10px 14px; color: var(--primary-dark); background: var(--surface); border: 1px solid var(--weather-line); border-radius: 4px; font-size: 14px; text-align: center; }
 .city-rainfall-card > p { margin: 12px 20px; font-size: 15px; }
-.city-rainfall-map { position: relative; z-index: 0; flex: 1; min-height: 260px; margin: 0 20px; background: #dceaf4; border: 1px solid var(--weather-line); }
+.city-rainfall-map { position: relative; z-index: 0; flex: 1; min-height: 260px; margin: 20px 24px 0; background: #dceaf4; border: 1px solid var(--weather-line); }
 .city-rainfall-status { position: absolute; inset: 0; z-index: 500; display: grid; place-items: center; padding: 24px; color: var(--muted); background: var(--weather-soft); text-align: center; }
 .city-rainfall-legend { position: absolute; top: 14px; right: 14px; z-index: 450; min-width: 112px; padding: 10px 11px; color: var(--ink); background: rgba(255,255,255,.92); border: 1px solid rgba(216,227,236,.95); border-radius: 5px; box-shadow: 0 3px 12px rgba(23,50,77,.14); pointer-events: none; }
 .city-rainfall-legend > strong { display: block; margin-bottom: 7px; text-align: center; font-size: 12px; }
@@ -508,4 +508,10 @@ button, input { font: inherit; }
   .home-three-day .three-day-list { min-height: 0; }
   .home-three-day .three-day-list > div { min-height: 180px; }
   .home-three-day .three-day-list > div + div { border-top: 1px solid var(--weather-line); border-left: 0; }
+}
+
+@media (max-width: 600px) {
+  .point-rainfall-card header > strong,
+  .city-rainfall-card > header > strong { width: 100%; max-width: 100%; flex-basis: auto; box-sizing: border-box; }
+  .city-rainfall-card > header { align-items: flex-start; flex-direction: column; gap: 12px; }
 }

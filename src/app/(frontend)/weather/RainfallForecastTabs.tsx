@@ -19,7 +19,7 @@ export function RainfallForecastTabs() {
         onClick={() => setActiveTab('point')}
         role="tab"
         type="button"
-      >定点预报</button>
+      >南科大定点预报</button>
       <button
         aria-controls="city-rainfall-panel"
         aria-selected={activeTab === 'city'}
@@ -27,7 +27,7 @@ export function RainfallForecastTabs() {
         onClick={() => setActiveTab('city')}
         role="tab"
         type="button"
-      >全市降水分布</button>
+      >全市降水分布预报</button>
     </div>
     <div
       aria-labelledby={`${activeTab}-rainfall-tab`}
