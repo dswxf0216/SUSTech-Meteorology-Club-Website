@@ -23,6 +23,21 @@ type PointRainfallData = {
 }
 
 const REFRESH_INTERVAL = 6 * 60_000
+const SOURCE_DELAY_WARNING_AFTER = 30 * 60_000
+
+function parseShenzhenForecastTime(value: string | null) {
+  if (!value) return null
+  const digits = value.replace(/\D/g, '')
+  if (digits.length < 12) return null
+  const timestamp = Date.UTC(
+    Number(digits.slice(0, 4)),
+    Number(digits.slice(4, 6)) - 1,
+    Number(digits.slice(6, 8)),
+    Number(digits.slice(8, 10)) - 8,
+    Number(digits.slice(10, 12)),
+  )
+  return Number.isFinite(timestamp) ? timestamp : null
+}
 
 function formatForecastTime(value: string | null) {
   if (!value) return '—'
@@ -39,6 +54,12 @@ function formatRainfallValue(point: RainfallPoint) {
 export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
   const [data, setData] = useState<PointRainfallData | null>(null)
   const [failed, setFailed] = useState(false)
+  const [currentTime, setCurrentTime] = useState(() => Date.now())
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 60_000)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     let stopped = false
@@ -78,6 +99,8 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
   const status = data
     ? data.hasRain ? '未来两小时可能有雨，请留意临近天气变化。' : '未来两小时暂无降雨。'
     : failed ? '定点降雨预报暂不可用，正在自动重试。' : '正在读取定点降雨预报…'
+  const forecastTimestamp = parseShenzhenForecastTime(data?.forecastTime || null)
+  const sourceLongDelayed = forecastTimestamp !== null && currentTime - forecastTimestamp > SOURCE_DELAY_WARNING_AFTER
 
   return <section className={`point-rainfall-card${compact ? ' point-rainfall-card-compact' : ''}`} aria-live="polite">
     <header>
@@ -85,6 +108,9 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
       <strong data-rain={data?.hasRain ? 'expected' : data ? 'none' : 'loading'}>{data?.hasRain ? '可能有雨' : data ? '暂无降雨' : '读取中'}</strong>
     </header>
     <p className="point-rainfall-status">{status}</p>
+    {sourceLongDelayed ? <p role="alert" style={{ margin: '12px 0 0', color: 'var(--primary-dark)', fontWeight: 700 }}>
+      当前数据源长时间未更新，此为过去起报时段预报结果，请注意甄别
+    </p> : null}
     {!compact && data?.timeline.length ? <>
       <p className="point-rainfall-note">每6分钟更新 · 数值为对应时刻的1小时累计降雨预报</p>
       <div className="point-rainfall-chart">
