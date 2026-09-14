@@ -406,7 +406,7 @@ button, input { font: inherit; }
   border-color: var(--weather-line);
 }
 .home-station-dashboard,
-.home-forecast-dashboard { border-width: 2px; border-color: var(--weather-outline); }
+.home-forecast-dashboard { border-width: 1px; border-color: var(--weather-outline); }
 .home-forecast-dashboard-label {
   min-height: 48px;
   display: flex;
