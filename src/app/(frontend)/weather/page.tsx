@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 
 import { WeatherStationCard } from './WeatherStationCard'
 import { WeatherHistory } from './WeatherHistory'
-import { PointRainfallCard } from './PointRainfallCard'
-import { CityRainfallTrendCard } from './CityRainfallTrendCard'
+import { RainfallForecastTabs } from './RainfallForecastTabs'
 
 export const metadata: Metadata = { title: '天气实况' }
 
@@ -16,10 +15,7 @@ export default function WeatherPage() {
           <p>大学城自动气象站最新实况与最近24小时温湿风雨压序列。</p>
         </header>
         <div className="weather-layout"><div><WeatherStationCard /></div><WeatherHistory /></div>
-        <div className="rainfall-forecast-grid">
-          <PointRainfallCard />
-          <CityRainfallTrendCard />
-        </div>
+        <RainfallForecastTabs />
       </div>
     </div>
   )

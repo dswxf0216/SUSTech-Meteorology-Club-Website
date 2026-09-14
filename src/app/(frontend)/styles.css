@@ -207,8 +207,16 @@ button, input { font: inherit; }
 .point-rainfall-value { display: flex; align-items: baseline; gap: 3px; white-space: nowrap; font-size: 13px; }.point-rainfall-value em { color: var(--muted); font-size: 10px; font-style: normal; font-weight: 500; }.point-rainfall-timeline small { padding-bottom: 8px; color: var(--muted); font-size: 11px; white-space: nowrap; }
 .point-rainfall-card footer { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; color: var(--muted); font-size: 13px; }
 .point-rainfall-card-compact { margin-top: 24px; padding: 18px 20px; }.point-rainfall-card-compact h2 { font-size: 20px; }.point-rainfall-card-compact .point-rainfall-status { margin-top: 12px; }
-.rainfall-forecast-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: stretch; gap: 28px; margin-top: 28px; }
-.rainfall-forecast-grid > .point-rainfall-card { min-width: 0; height: 100%; margin-top: 0; box-sizing: border-box; }
+.rainfall-forecast-tabs { margin-top: 28px; }
+.rainfall-tab-list { display: flex; gap: 0; border-bottom: 1px solid var(--weather-outline); }
+.rainfall-tab-list button { min-width: 180px; padding: 13px 24px; color: var(--muted); background: var(--surface); border: 1px solid var(--weather-line); border-bottom: 0; cursor: pointer; font-weight: 700; }
+.rainfall-tab-list button:first-child { border-radius: var(--radius-lg) 0 0 0; }
+.rainfall-tab-list button:last-child { border-radius: 0 var(--radius-lg) 0 0; }
+.rainfall-tab-list button[aria-selected="true"] { position: relative; color: var(--surface); background: var(--primary-dark); border-color: var(--primary-dark); }
+.rainfall-tab-list button[aria-selected="true"]::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--primary-dark); content: ''; }
+.rainfall-forecast-tabs [role="tabpanel"] > .point-rainfall-card { margin-top: 0; border-top-left-radius: 0; }
+.rainfall-forecast-tabs [role="tabpanel"] > .city-rainfall-card { min-height: 520px; border-top-left-radius: 0; }
+.rainfall-forecast-tabs .city-rainfall-map { min-height: 350px; }
 .city-rainfall-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; color: var(--ink); background: var(--weather-soft); border: 1px solid var(--weather-line); border-radius: var(--radius-lg); }
 .city-rainfall-card > header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 20px 0; }
 .city-rainfall-card > header span { color: var(--primary-dark); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
@@ -245,10 +253,11 @@ button, input { font: inherit; }
 .radar-controls strong { text-align: right; font-variant-numeric: tabular-nums; }
 .radar-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 22px; padding: 6px 20px 16px; color: var(--muted); font-size: 13px; }
 .radar-meta a { margin-left: auto; color: var(--primary-dark); font-weight: 700; }
-@media(max-width:1000px) { .home-weather-layout { grid-template-columns: 1fr; gap: 54px; }.home-forecast-top { grid-template-columns: 1.2fr .8fr; }.rainfall-forecast-grid { grid-template-columns: 1fr; }.city-rainfall-map { min-height: 380px; } }
+@media(max-width:1000px) { .home-weather-layout { grid-template-columns: 1fr; gap: 54px; }.home-forecast-top { grid-template-columns: 1.2fr .8fr; }.city-rainfall-map { min-height: 380px; } }
 @media(max-width:820px) { .weather-layout { grid-template-columns: 1fr; }.home-forecast-top { grid-template-columns: 1fr; }.home-today-weather { border-right: 0; border-bottom: 1px solid #bfd7e9; } }
 @media(max-width:600px) { .warning-modal-backdrop { padding: 14px; }.warning-modal { max-height: calc(100vh - 28px); }.warning-modal header, .warning-modal-detail { padding-right: 20px; padding-left: 20px; } }
 @media(max-width:600px) { .point-rainfall-card { padding: 20px; }.point-rainfall-card header { align-items: flex-start; flex-direction: column; gap: 12px; }.point-rainfall-card header > strong { align-self: flex-start; }.point-rainfall-card footer { flex-direction: column; } }
+@media(max-width:600px) { .rainfall-tab-list button { flex: 1; min-width: 0; padding-inline: 12px; }.rainfall-forecast-tabs [role="tabpanel"] > .city-rainfall-card { min-height: 460px; }.rainfall-forecast-tabs .city-rainfall-map { min-height: 280px; } }
 @media(max-width:600px) { .radar-heading { align-items: flex-start; flex-direction: column; gap: 8px; }.radar-map { height: 520px; min-height: 0; }.radar-legend { top: 10px; right: 10px; width: 82px; padding: 8px; }.radar-legend span { grid-template-columns: 21px 1fr; gap: 5px; min-height: 14px; }.radar-legend i { width: 21px; height: 10px; }.radar-controls { grid-template-columns: auto minmax(0,1fr) 54px; gap: 10px; padding-inline: 14px; }.radar-meta { padding-inline: 14px; }.radar-meta a { width: 100%; margin-left: 0; } }
 .forecast-section { background: var(--soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .forecast-heading { grid-template-columns: 1fr auto 1fr; align-items: end; margin-bottom: 24px; }

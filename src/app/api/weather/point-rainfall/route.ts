@@ -69,6 +69,31 @@ function normalizeTimeline(list: unknown[]): RainfallPoint[] {
   })
 }
 
+function emptyForecastTimeline(forecastTime?: string | null): RainfallPoint[] {
+  const digits = forecastTime?.replace(/\D/g, '') || ''
+  const start = digits.length >= 12
+    ? Date.UTC(
+      Number(digits.slice(0, 4)),
+      Number(digits.slice(4, 6)) - 1,
+      Number(digits.slice(6, 8)),
+      Number(digits.slice(8, 10)),
+      Number(digits.slice(10, 12)),
+    )
+    : Math.floor(Date.now() / (6 * 60_000)) * 6 * 60_000
+  if (!Number.isFinite(start)) return []
+
+  return Array.from({ length: 20 }, (_, index) => {
+    const time = new Date(start + (index + 1) * 6 * 60_000)
+    const label = `${String(time.getUTCHours()).padStart(2, '0')}:${String(time.getUTCMinutes()).padStart(2, '0')}`
+    return {
+      label,
+      rainfall: '0',
+      rainfallMm: 0,
+      state: index < 10 ? '未来1小时' : '未来2小时',
+    }
+  })
+}
+
 async function readPointRainfall(): Promise<PointRainfall> {
   const response = await fetch(SOURCE_URL, {
     cache: 'no-store',
@@ -82,9 +107,10 @@ async function readPointRainfall(): Promise<PointRainfall> {
 
   const completeTimeline = normalizeTimeline(result.rainfallList)
   const hasPeriodState = completeTimeline.some(point => point.state)
-  const timeline = hasPeriodState
+  const futureTimeline = hasPeriodState
     ? completeTimeline.filter(point => point.state?.startsWith('未来'))
     : completeTimeline
+  const timeline = futureTimeline.length ? futureTimeline : emptyForecastTimeline(result.gridRainTime)
   const hasMeasuredRain = timeline.some(point => point.rainfallMm !== null && point.rainfallMm > 0)
   const hasDescribedRain = timeline.some(point => point.rainfallMm === null && !/^(无降雨|无雨|0(?:\.0+)?(?:mm)?)$/i.test(point.rainfall))
   return {
