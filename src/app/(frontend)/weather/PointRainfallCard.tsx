@@ -81,7 +81,7 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
 
   return <section className={`point-rainfall-card${compact ? ' point-rainfall-card-compact' : ''}`} aria-live="polite">
     <header>
-      <div><span>定点降雨预报</span><h2>一丹图书馆 · 未来两小时</h2></div>
+      <div><span>定点降雨预报</span><h2>南方科技大学 · 未来两小时</h2></div>
       <strong data-rain={data?.hasRain ? 'expected' : data ? 'none' : 'loading'}>{data?.hasRain ? '可能有雨' : data ? '暂无降雨' : '读取中'}</strong>
     </header>
     <p className="point-rainfall-status">{status}</p>
