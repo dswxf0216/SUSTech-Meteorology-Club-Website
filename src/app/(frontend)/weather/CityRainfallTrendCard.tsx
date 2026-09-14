@@ -104,8 +104,8 @@ export function CityRainfallTrendCard() {
     <header>
       <div>
         <h2 id="city-rainfall-title">深圳全市 · 未来两小时降水分布预报</h2>
+        <p className="city-rainfall-note">每6分钟更新 · 色块颜色越深，雨强越大</p>
       </div>
-      <strong>未来两小时降水分布</strong>
     </header>
     <div className="city-rainfall-map" ref={containerRef} aria-label="深圳全市未来两小时降水色块预报图">
       {!rainfall && !failed && <div className="city-rainfall-status">正在加载全市降水动向…</div>}
