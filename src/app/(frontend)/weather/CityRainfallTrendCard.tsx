@@ -11,6 +11,7 @@ type CityRainfallData = {
 }
 
 const SHENZHEN: [number, number] = [22.55, 114.05]
+const YIDAN_LIBRARY: [number, number] = [22.6002995, 113.9932586]
 const IMAGE_BOUNDS = {
   south: 19.0419,
   west: 108.505,
@@ -18,6 +19,13 @@ const IMAGE_BOUNDS = {
   east: 117.505,
 }
 const OFFICIAL_URL = 'https://weather.sz.gov.cn/qixiangfuwu/qixiangjiance/jiangyuguce/index.html'
+const RAINFALL_LEGEND = [
+  { color: '#38d8de', label: '小雨' },
+  { color: '#259b37', label: '中雨' },
+  { color: '#f4ed36', label: '大雨' },
+  { color: '#f04b43', label: '暴雨' },
+  { color: '#b52eb4', label: '大暴雨' },
+]
 
 export function CityRainfallTrendCard() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -63,6 +71,13 @@ export function CityRainfallTrendCard() {
         opacity: index === 0 ? 0.7 : 0,
         interactive: false,
       }).addTo(map))
+      L.circleMarker(YIDAN_LIBRARY, {
+        color: '#ffffff',
+        fillColor: '#d9482f',
+        fillOpacity: 1,
+        radius: 7,
+        weight: 3,
+      }).bindTooltip('南方科技大学 · 一丹图书馆', { direction: 'top' }).addTo(map)
       map.setView(SHENZHEN, 8)
     })
     return () => {
@@ -97,6 +112,15 @@ export function CityRainfallTrendCard() {
     <div className="city-rainfall-map" ref={containerRef} aria-label="深圳全市未来两小时降水色块预报图">
       {!rainfall && !failed && <div className="city-rainfall-status">正在加载全市降水动向…</div>}
       {failed && <div className="city-rainfall-status">全市降水预报暂时无法加载，请稍后再试。</div>}
+      {rainfall && <aside className="city-rainfall-legend" aria-label="一小时累计降雨等级图例">
+        <strong>1小时累计降雨</strong>
+        <div>
+          {RAINFALL_LEGEND.map(entry => <span key={entry.label}>
+            <i aria-hidden="true" style={{ backgroundColor: entry.color }} />
+            <b>{entry.label}</b>
+          </span>)}
+        </div>
+      </aside>}
     </div>
     <div className="city-rainfall-controls">
       <button type="button" onClick={() => setPlaying(value => !value)} disabled={!rainfall}>
