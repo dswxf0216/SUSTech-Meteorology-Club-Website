@@ -123,7 +123,7 @@ export function PointRainfallCard({ compact = false }: { compact?: boolean }) {
       当前数据源长时间未更新，此为过去起报时段预报结果，请注意甄别
     </p> : null}
     {!compact && data?.timeline.length ? <>
-      <p className="point-rainfall-note">每6分钟更新 · 数值为对应时刻雨强</p>
+      <p className="point-rainfall-note">每6分钟更新；数值为对应时刻雨强</p>
       <div className="point-rainfall-chart">
         <div className="point-rainfall-now"><span>现在</span></div>
         <div className="point-rainfall-timeline" aria-label="未来两小时雨强预报序列" style={{ gridTemplateColumns: `repeat(${data.timeline.length}, minmax(68px, 1fr))` }}>
