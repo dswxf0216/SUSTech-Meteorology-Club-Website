@@ -226,6 +226,7 @@ button, input { font: inherit; }
 .city-rainfall-card > p { margin: 12px 20px; font-size: 15px; }
 .city-rainfall-map { position: relative; z-index: 0; flex: 1; min-height: 260px; margin: 20px 24px 0; background: #dceaf4; border: 1px solid var(--weather-line); }
 .city-rainfall-status { position: absolute; inset: 0; z-index: 500; display: grid; place-items: center; padding: 24px; color: var(--muted); background: var(--weather-soft); text-align: center; }
+.city-rainfall-disclaimer { margin: 0; padding: 0 20px 16px; color: var(--muted); font-size: 12px; line-height: 1.6; text-align: right; }
 .city-rainfall-legend { position: absolute; top: 14px; right: 14px; z-index: 450; min-width: 112px; padding: 10px 11px; color: var(--ink); background: rgba(255,255,255,.92); border: 1px solid rgba(216,227,236,.95); border-radius: 5px; box-shadow: 0 3px 12px rgba(23,50,77,.14); pointer-events: none; }
 .city-rainfall-legend > strong { display: block; margin-bottom: 7px; text-align: center; font-size: 12px; }
 .city-rainfall-legend > div { display: grid; gap: 3px; }

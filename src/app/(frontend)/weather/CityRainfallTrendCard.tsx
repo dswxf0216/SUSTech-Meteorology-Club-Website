@@ -138,5 +138,6 @@ export function CityRainfallTrendCard() {
       <span>{selectedFrame?.time ? `预报时刻：${selectedFrame.time}` : '约每6分钟更新'}</span>
       <a href={OFFICIAL_URL} rel="noreferrer" target="_blank">打开官方降雨估测图 ↗</a>
     </footer>
+    <p className="city-rainfall-disclaimer">注：短临降水落区和强度存在非常高的不确定性，不同起报时刻的预报结果可能有明显差异，请谨慎参考</p>
   </section>
 }
