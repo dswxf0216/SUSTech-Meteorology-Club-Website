@@ -1,5 +1,5 @@
 const ORIGIN = 'https://weather.121.com.cn/data_cache/'
-const FRAME_PATH = /^radar\/HitCNN_QPF\/1h\/\d{4}\/\d{2}\/\d{2}\/\d{12}\/\d+\.png(?:\?r=\d+)?$/
+const FRAME_PATH = /^radar\/(?:HitCNN|Cotrec)_QPF\/1h\/\d{4}\/\d{2}\/\d{2}\/\d{12}\/\d+\.png(?:\?r=\d+)?$/
 
 export const runtime = 'nodejs'
 
