@@ -36,5 +36,6 @@ export function RainfallForecastTabs() {
     >
       {activeTab === 'point' ? <PointRainfallCard /> : <CityRainfallTrendCard />}
     </div>
+    <p className="rainfall-forecast-disclaimer">注：短临降水落区和强度存在非常高的不确定性，不同起报时刻的预报结果可能有明显差异，请谨慎参考</p>
   </section>
 }
