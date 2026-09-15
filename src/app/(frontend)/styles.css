@@ -53,9 +53,9 @@ button, input { font: inherit; }
 .mobile-nav nav a { padding: 11px 13px; border-radius: 10px; text-decoration: none; }
 .mobile-nav nav a:hover { background: var(--soft); }
 .mobile-nav-submenu summary { width: auto; height: auto; display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border: 0; border-radius: 10px; background: transparent; }
-.mobile-nav-submenu summary::after { content: '⌄'; }
-.mobile-nav-submenu[open] summary::after { transform: rotate(180deg); }
-.mobile-nav-submenu > a { margin-left: 14px; color: var(--muted); }
+.mobile-nav-submenu summary::after { width: 18px; height: 18px; display: grid; flex: 0 0 18px; place-items: center; line-height: 1; content: '⌄'; transform: translateY(-1px); transform-origin: center; }
+.mobile-nav-submenu[open] summary::after { transform: translateY(1px) rotate(180deg); }
+.mobile-nav-submenu > a { display: block; margin-left: 14px; color: var(--muted); }
 
 .hero { background: #ffffff; border-bottom: 1px solid var(--line); }
 .hero-grid { min-height: 500px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 72px; }
@@ -500,18 +500,27 @@ button, input { font: inherit; }
 .home-three-day .three-day-list > div + div { border-left: 1px solid var(--weather-line); }
 
 @media (max-width: 820px) {
-  .home-forecast-top { grid-template-columns: minmax(0, 1fr); }
+  .home-forecast-top { grid-template-columns: minmax(0, 2fr) minmax(105px, 1fr); }
   .home-today-weather,
   .home-warning-panel { min-height: 300px; }
-  .home-warning-panel { border-top: 1px solid var(--weather-line); }
+  .home-today-weather { border-right: 1px solid var(--weather-line); border-bottom: 0; }
+  .home-warning-panel { border-top: 0; }
 }
 
 @media (max-width: 560px) {
   .home-forecast-dashboard-label { padding-inline: 16px; }
+  .home-today-weather,
+  .home-warning-panel { min-height: 300px; padding: 18px 10px; }
+  .home-today-weather h3,
+  .home-warning-panel h3,
+  .home-three-day h3 { font-size: 17px; }
+  .home-today-weather .forecast-temperature { font-size: 22px; }
   .home-three-day { min-height: 0; }
-  .home-three-day .three-day-list { min-height: 0; }
-  .home-three-day .three-day-list > div { min-height: 180px; }
-  .home-three-day .three-day-list > div + div { border-top: 1px solid var(--weather-line); border-left: 0; }
+  .home-three-day .three-day-list { min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-three-day .three-day-list > div { min-height: 180px; padding-inline: 6px; }
+  .home-three-day .three-day-list > div + div { border-top: 0; border-left: 1px solid var(--weather-line); }
+  .home-three-day .forecast-date { font-size: 13px; }
+  .home-three-day .forecast-temperature { font-size: 17px; }
 }
 
 @media (max-width: 600px) {
