@@ -47,7 +47,7 @@ export function RadarMap() {
       if (cancelled || !containerRef.current) return
       const map = L.map(containerRef.current, { attributionControl: true, zoomControl: true })
       mapRef.current = map
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('/api/weather/map-tile?z={z}&x={x}&y={y}', {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 18,
       }).addTo(map)

@@ -68,7 +68,7 @@ function DesktopWeatherMenu({ label }: { label: string }) {
 function MobileWeatherMenu({ label }: { label: string }) {
   return (
     <details className="mobile-nav-submenu">
-      <summary>{label}</summary>
+      <summary>{label}<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary>
       <Link href="/weather">天气实况</Link>
       <Link href="/weather/forecast">天气预报</Link>
     </details>

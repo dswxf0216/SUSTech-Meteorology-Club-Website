@@ -53,8 +53,8 @@ button, input { font: inherit; }
 .mobile-nav nav a { padding: 11px 13px; border-radius: 10px; text-decoration: none; }
 .mobile-nav nav a:hover { background: var(--soft); }
 .mobile-nav-submenu summary { width: auto; height: auto; display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border: 0; border-radius: 10px; background: transparent; }
-.mobile-nav-submenu summary::after { width: 18px; height: 18px; display: grid; flex: 0 0 18px; place-items: center; line-height: 1; content: '⌄'; transform: translateY(-1px); transform-origin: center; }
-.mobile-nav-submenu[open] summary::after { transform: translateY(1px) rotate(180deg); }
+.mobile-nav-submenu summary svg { width: 12px; height: 8px; display: block; flex: 0 0 12px; overflow: visible; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; transition: transform .18s ease; }
+.mobile-nav-submenu[open] summary svg { transform: rotate(180deg); }
 .mobile-nav-submenu > a { display: block; margin-left: 14px; color: var(--muted); }
 
 .hero { background: #ffffff; border-bottom: 1px solid var(--line); }
