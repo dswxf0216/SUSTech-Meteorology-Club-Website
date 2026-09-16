@@ -532,6 +532,10 @@ button, input { font: inherit; }
 }
 
 .home-weather-tabs { margin-top: 54px; }
+.module-band { background: #fff; border-bottom: 1px solid #cbd2d9; }
+.module-band-gray { background: #f3f4f6; }
+.home-nowcast-section .home-weather-tabs,
+.weather-radar-section .radar-product { margin-top: 0; }
 .radar-product-embedded { margin-top: 0; }
 .radar-product-embedded .radar-shell { border-top-left-radius: 0; }
 .home-weather-tabs .rainfall-tab-list button { min-width: 0; }

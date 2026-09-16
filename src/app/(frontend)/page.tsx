@@ -41,7 +41,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
   return (
     <>
-      <section className="section-pad home-weather-section">
+      <section className="section-pad home-weather-section module-band">
         <div className="container">
           <div className="home-weather-heading">
             <span className="eyebrow">CAMPUS WEATHER OBSERVATIONS AND FORECASTS</span>
@@ -71,11 +71,14 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               <Link className="weather-history-link" href="/weather/forecast">查询南科每日天气预报 →</Link>
             </div>
           </div>
-          <RainfallForecastTabs includeRadar />
         </div>
       </section>
 
-      <section className="hero section-pad">
+      <section className="section-pad module-band module-band-gray home-nowcast-section">
+        <div className="container"><RainfallForecastTabs includeRadar /></div>
+      </section>
+
+      <section className="hero section-pad module-band">
         <div className="container hero-grid">
           <div className="hero-copy">
             <span className="eyebrow">{heroEyebrow}</span>
@@ -92,7 +95,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section-pad section-soft">
+      <section className="section-pad module-band module-band-gray">
         <div className="container">
           <div className="section-heading">
             <div><span className="eyebrow">网站栏目</span><h2>信息与资源</h2></div>
@@ -106,7 +109,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="section-pad">
+      <section className="section-pad module-band">
         <div className="container content-columns">
           <ContentSection eyebrow="近期内容" title="最新文章" empty="后台发布文章后，将自动显示在这里。">
             {articles.docs.map((article) => {

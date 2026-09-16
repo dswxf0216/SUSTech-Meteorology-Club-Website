@@ -8,15 +8,17 @@ export const metadata: Metadata = { title: '天气实况' }
 
 export default function WeatherPage() {
   return (
-    <div className="page-wrap section-pad">
-      <div className="container">
+    <div className="page-wrap">
+      <section className="section-pad module-band"><div className="container">
         <header className="page-heading">
           <span className="eyebrow">校园及周边观测</span><h1>天气实况</h1>
           <p>大学城自动气象站最新实况与最近24小时温湿风雨压序列。</p>
         </header>
         <div className="weather-layout"><div><WeatherStationCard /></div><WeatherHistory /></div>
-        <RadarMap />
-      </div>
+      </div></section>
+      <section className="section-pad module-band module-band-gray weather-radar-section">
+        <div className="container"><RadarMap /></div>
+      </section>
     </div>
   )
 }
