@@ -530,3 +530,13 @@ button, input { font: inherit; }
   .city-rainfall-card > header > strong { width: 100%; max-width: 100%; flex-basis: auto; box-sizing: border-box; }
   .city-rainfall-card > header { align-items: flex-start; flex-direction: column; gap: 12px; }
 }
+
+.home-weather-tabs { margin-top: 54px; }
+.radar-product-embedded { margin-top: 0; }
+.radar-product-embedded .radar-shell { border-top-left-radius: 0; }
+.home-weather-tabs .rainfall-tab-list button { min-width: 0; }
+
+@media (max-width: 600px) {
+  .home-weather-tabs .rainfall-tab-list { width: 100%; }
+  .home-weather-tabs .rainfall-tab-list button { padding: 12px 6px; font-size: 12px; }
+}

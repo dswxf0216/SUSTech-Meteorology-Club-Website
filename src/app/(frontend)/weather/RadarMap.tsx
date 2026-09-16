@@ -15,7 +15,7 @@ type RadarData = {
 const YIDAN_LIBRARY: [number, number] = [22.6002995, 113.9932586]
 const OFFICIAL_RADAR_URL = `https://szqxapp1.121.com.cn/phone/api/RedirectWxRadar.do?lat=${YIDAN_LIBRARY[0]}&lon=${YIDAN_LIBRARY[1]}`
 
-export function RadarMap() {
+export function RadarMap({ embedded = false }: { embedded?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const overlaysRef = useRef<ImageOverlay[]>([])
@@ -89,10 +89,10 @@ export function RadarMap() {
   const legendEntries = getLegendEntries(radar?.colorChart)
 
   return (
-    <section className="radar-product" aria-labelledby="radar-title">
-      <div className="radar-heading">
+    <section className={`radar-product${embedded ? ' radar-product-embedded' : ''}`} aria-label="雷达图像">
+      {!embedded && <div className="radar-heading">
         <div><span className="eyebrow">WEATHER RADAR</span><h2 id="radar-title">雷达图像</h2></div>
-      </div>
+      </div>}
       <div className="radar-shell">
         <div className="radar-map" ref={containerRef} aria-label="深圳及珠三角天气雷达图">
           {!radar && !failed && <div className="radar-status">正在加载最新雷达图像…</div>}

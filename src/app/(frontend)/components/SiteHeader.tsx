@@ -59,7 +59,8 @@ function DesktopWeatherMenu({ label }: { label: string }) {
       </button>
       <div className="desktop-nav-submenu">
         <Link href="/weather">天气实况</Link>
-        <Link href="/weather/forecast">天气预报</Link>
+        <Link href="/weather/rainfall">降水预报</Link>
+        <Link href="/weather/forecast">每日预报</Link>
       </div>
     </div>
   )
@@ -70,7 +71,8 @@ function MobileWeatherMenu({ label }: { label: string }) {
     <details className="mobile-nav-submenu">
       <summary>{label}<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary>
       <Link href="/weather">天气实况</Link>
-      <Link href="/weather/forecast">天气预报</Link>
+      <Link href="/weather/rainfall">降水预报</Link>
+      <Link href="/weather/forecast">每日预报</Link>
     </details>
   )
 }
