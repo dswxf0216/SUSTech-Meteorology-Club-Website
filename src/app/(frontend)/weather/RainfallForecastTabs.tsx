@@ -16,6 +16,10 @@ export function RainfallForecastTabs({ includeRadar = false }: { includeRadar?: 
     : [{ id: 'point', label: '南科大定点预报' }, { id: 'city', label: '全市降水分布预报' }]
 
   return <section className={`rainfall-forecast-tabs${includeRadar ? ' home-weather-tabs' : ''}`} aria-label={includeRadar ? '降水预报与雷达' : '降雨预报'}>
+    {includeRadar && <div className="home-weather-heading">
+      <span className="eyebrow">RADAR IMAGERY &amp; PRECIPITATION NOWCASTING</span>
+      <h2>雷达图像与短临降水预报</h2>
+    </div>}
     <div className="rainfall-tab-list" role="tablist" aria-label="切换降雨预报类型">
       {tabs.map(tab => <button
         key={tab.id}
