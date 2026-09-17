@@ -1,2 +1,3 @@
 /* Portable entry point for the quiz's scoped design tokens. */
 @import './src/app/(frontend)/quiz/tokens.css';
+@import './src/app/(frontend)/baitu/tokens.css';

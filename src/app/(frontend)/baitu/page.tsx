@@ -5,6 +5,7 @@ import '../quiz/quiz.css'
 import './baitu.css'
 export const metadata: Metadata = { title: '百团专区' }
 const sticker = '一张贴纸'
+const stickerDraw = '一张贴纸＋参与抽奖'
 const draw = '一张贴纸或一个文件袋＋参与抽奖'
 const bottle = '一张贴纸或一个文件袋＋一个气象瓶'
 function Rewards({ rows }: { rows: [string, string][] }) {
@@ -48,8 +49,8 @@ export default function BaituPage() {
           <Rewards
             rows={[
               ['相差不超过三个月', sticker],
-              ['相差不超过三旬', draw],
-              ['精确猜对旬', '一张贴纸或一个文件袋＋该张明信片'],
+              ['相差不超过三旬', stickerDraw],
+              ['精确猜对旬', '一张贴纸＋该张明信片'],
             ]}
           />
           <p className="baitu-note">
@@ -65,7 +66,7 @@ export default function BaituPage() {
           <Rewards
             rows={[
               ['正确判断温度高低', sticker],
-              ['任选两个，猜对温差（四舍五入至整数）', draw],
+              ['任选两个，猜对温差（四舍五入至整数）', stickerDraw],
               ['任选一个，猜测温度与实际相差不超过0.5℃', bottle],
             ]}
           />
@@ -109,7 +110,7 @@ export default function BaituPage() {
               <Rewards
                 rows={[
                   ['总用时3分钟以内', sticker],
-                  ['总用时1分30秒以内', draw],
+                  ['总用时1分30秒以内', stickerDraw],
                   ['总用时40秒以内', bottle],
                 ]}
               />

@@ -1,0 +1,7 @@
+:root {
+  --color-baitu-reward: oklch(42% 0.075 185);
+  --color-baitu-reward-paper: oklch(97% 0.009 185);
+  --color-baitu-lottery: oklch(43% 0.085 65);
+  --color-baitu-lottery-paper: oklch(97% 0.018 80);
+  --color-baitu-lottery-rule: oklch(70% 0.04 80);
+}

@@ -14,6 +14,11 @@ try {
     await page.waitForFunction(() => [...document.querySelectorAll('.baitu-code img')].length === 3 && [...document.querySelectorAll('.baitu-code img')].every(img => img.complete && img.naturalWidth > 0))
     assert.equal(await page.locator('.baitu-activity').count(), 5)
     assert.equal(await page.locator('.baitu-code img').count(), 3)
+    const activity = name => page.locator('.baitu-activity').filter({ has: page.getByRole('heading', { name, exact: true }) })
+    assert.deepEqual(await activity('光影溯源').locator('.baitu-rewards dd').allTextContents(), ['一张贴纸', '一张贴纸＋参与抽奖', '一张贴纸＋该张明信片'])
+    assert.equal(await activity('冷暖先知').locator('.baitu-rewards dd').nth(1).textContent(), '一张贴纸＋参与抽奖')
+    assert.equal(await activity('气象配对').locator('.baitu-rewards dd').nth(1).textContent(), '一张贴纸＋参与抽奖')
+    assert.equal(await activity('预报体验').locator('.baitu-rewards dd').nth(1).textContent(), '一张贴纸或一个文件袋＋参与抽奖')
     const metrics = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > innerWidth,
       unloaded: [...document.querySelectorAll('.baitu-code img')].some(img => !img.complete || !img.naturalWidth),
@@ -34,7 +39,13 @@ try {
         return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722
       }
       const style = getComputedStyle(el)
-      return ['--color-ink', '--color-muted', '--color-accent'].map(name => 1.05 / (luminance(style.getPropertyValue(name)) + 0.05))
+      return [
+        ['--color-ink', '--color-baitu-reward-paper'],
+        ['--color-muted', '--color-baitu-lottery-paper'],
+        ['--color-accent', '--color-baitu-reward-paper'],
+        ['--color-baitu-reward', '--color-baitu-reward-paper'],
+        ['--color-baitu-lottery', '--color-baitu-lottery-paper'],
+      ].map(([ink, paper]) => (luminance(style.getPropertyValue(paper)) + 0.05) / (luminance(style.getPropertyValue(ink)) + 0.05))
     })
     assert.ok(contrasts.every(ratio => ratio >= 4.5), `Contrast ratios: ${contrasts}`)
     await page.evaluate(() => scrollTo(0, 0))

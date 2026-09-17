@@ -1,4 +1,4 @@
-/* Hallmark · macrostructure: Catalogue · theme: existing club blue-white
+/* Hallmark · macrostructure: Catalogue · theme: existing club blue-white with teal rewards and amber lottery
  * nav/footer: preserved site chrome · enrichment: existing QR codes · motion: none
  * pre-emit critique: P4 H5 E4 S5 R5 V4 */
 .quiz-page.baitu-page {
@@ -28,6 +28,7 @@
 .baitu-lottery h3 {
   margin-block: var(--space-md) var(--space-xs);
   font-size: 16px;
+  color: var(--color-baitu-reward);
 }
 .baitu-activity p {
   margin-block: var(--space-xs) var(--space-sm);
@@ -41,9 +42,14 @@
   gap: var(--space-sm);
   padding-block: var(--space-xs);
   border-bottom: 1px solid var(--color-rule);
+  padding-inline: var(--space-xs);
+}
+.baitu-activity .baitu-rewards > div:nth-child(odd) {
+  background-color: var(--color-baitu-reward-paper);
 }
 .baitu-rewards dt {
   font-weight: 700;
+  color: var(--color-baitu-reward);
 }
 .baitu-rewards dd {
   margin: 0;
@@ -99,9 +105,18 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-md);
-  padding-block: var(--space-lg);
-  border-block: 1px solid var(--color-rule);
+  padding: var(--space-lg) var(--space-md);
+  background-color: var(--color-baitu-lottery-paper);
+  border-block: 1px solid var(--color-baitu-lottery-rule);
   margin-block: var(--space-lg) var(--space-md);
+}
+.baitu-lottery h2,
+.baitu-lottery h3,
+.baitu-lottery .baitu-rewards dt {
+  color: var(--color-baitu-lottery);
+}
+.baitu-lottery .baitu-rewards > div {
+  border-color: var(--color-baitu-lottery-rule);
 }
 .baitu-final-note {
   color: var(--color-muted);
