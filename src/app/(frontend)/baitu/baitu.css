@@ -1,31 +1,141 @@
-.baitu-games {
+/* Hallmark · macrostructure: Catalogue · theme: existing club blue-white
+ * nav/footer: preserved site chrome · enrichment: existing QR codes · motion: none
+ * pre-emit critique: P4 H5 E4 S5 R5 V4 */
+.quiz-page.baitu-page {
+  max-width: 1240px;
+}
+.baitu-lead {
+  color: var(--color-muted);
+  margin-block: calc(-1 * var(--space-xs)) var(--space-lg);
+}
+.baitu-activities {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-lg);
 }
-.baitu-game {
+.quiz-page .baitu-activity {
   border-top: 1px solid var(--color-rule);
-  padding-block: var(--space-lg);
-  margin-bottom: 0 !important;
+  padding-block: var(--space-md);
+  margin-bottom: 0;
+  min-width: 0;
 }
-.baitu-game h2 {
-  margin-top: 0;
+.baitu-activity h2,
+.baitu-lottery h2 {
+  margin-block: 0 var(--space-sm);
+  font-size: 24px;
 }
-.baitu-game img {
+.baitu-activity h3,
+.baitu-lottery h3 {
+  margin-block: var(--space-md) var(--space-xs);
+  font-size: 16px;
+}
+.baitu-activity p {
+  margin-block: var(--space-xs) var(--space-sm);
+}
+.baitu-rewards {
+  margin-block: var(--space-xs) 0;
+}
+.baitu-rewards > div {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-sm);
+  padding-block: var(--space-xs);
+  border-bottom: 1px solid var(--color-rule);
+}
+.baitu-rewards dt {
+  font-weight: 700;
+}
+.baitu-rewards dd {
+  margin: 0;
+}
+.baitu-rewards dt,
+.baitu-rewards dd {
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.baitu-note,
+.baitu-code p {
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.baitu-game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md);
+}
+.baitu-code {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.baitu-code img {
   display: block;
+  width: 168px;
   max-width: 100%;
   height: auto;
-  margin-block: var(--space-md);
 }
-.baitu-game > a:last-child {
+.baitu-code > a:first-child {
+  display: block;
+}
+.baitu-code p {
+  margin-block: var(--space-xs) 0;
+}
+.baitu-open {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   white-space: nowrap;
+  color: var(--color-accent);
 }
-@media (min-width: 40rem) {
-  .baitu-games {
+.baitu-open:hover {
+  text-decoration-thickness: 2px;
+}
+.baitu-open:active {
+  text-decoration: none;
+}
+.quiz-page .baitu-lottery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md);
+  padding-block: var(--space-lg);
+  border-block: 1px solid var(--color-rule);
+  margin-block: var(--space-lg) var(--space-md);
+}
+.baitu-final-note {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+@media (min-width: 48rem) {
+  .baitu-activities {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg) var(--space-xl);
+  }
+  .baitu-forecast {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-xl);
+  }
+  .baitu-forecast h3 {
+    margin-top: 0;
+  }
+  .quiz-page .baitu-lottery {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--space-xl);
+  }
+  .baitu-lottery h3 {
+    margin-top: 0;
+  }
+}
+@media (min-width: 70rem) {
+  .baitu-game-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 168px);
+    gap: var(--space-lg);
+  }
+  .baitu-game-layout .baitu-rewards > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
 }

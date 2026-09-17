@@ -4,34 +4,154 @@ import Link from 'next/link'
 import '../quiz/quiz.css'
 import './baitu.css'
 export const metadata: Metadata = { title: '百团专区' }
+const sticker = '一张贴纸'
+const draw = '一张贴纸或一个文件袋＋参与抽奖'
+const bottle = '一张贴纸或一个文件袋＋一个气象瓶'
+function Rewards({ rows }: { rows: [string, string][] }) {
+  return (
+    <dl className="baitu-rewards">
+      {rows.map(([condition, prize]) => (
+        <div key={condition}>
+          <dt>{condition}</dt>
+          <dd>{prize}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+function GameCode({ href, src, name }: { href: string; src: string; name: string }) {
+  return (
+    <div className="baitu-code">
+      <Link href={href} aria-label={`打开${name}`}>
+        <Image unoptimized src={src} alt={`扫码体验${name}`} width={168} height={168} />
+      </Link>
+      <p>扫码体验，或直接打开</p>
+      <Link className="baitu-open" href={href}>
+        打开{name} →
+      </Link>
+    </div>
+  )
+}
 export default function BaituPage() {
   return (
-    <div className="quiz-page container">
+    <div className="quiz-page baitu-page container">
       <h1>百团专区</h1>
-      <div className="baitu-games">
-        <section className="baitu-game">
-          <h2>配对游戏</h2>
-          <Link href="/game" aria-label="体验配对游戏">
-            <Image unoptimized src="/game-qr.png" alt="扫码体验配对游戏" width={232} height={232} />
-          </Link>
-          <p>完成5组、共22对气象配对题，选项随机排列；配错后可重试，每错一次加5秒。</p>
-          <p>总用时＝实际用时＋配错惩罚，按总用时从短到长排行。</p>
-          <Link href="/game">打开配对游戏 →</Link>
-        </section>
-        <section className="baitu-game">
-          <h2>答题游戏</h2>
-          <Link href="/quiz" aria-label="体验答题游戏">
-            <Image unoptimized src="/quiz-qr.png" alt="扫码体验答题游戏" width={232} height={232} />
-          </Link>
+      <p className="baitu-lead">活动玩法、评奖标准与游戏入口</p>
+      <div className="baitu-activities">
+        <section className="baitu-activity">
+          <h2>光影溯源</h2>
           <p>
-            共10题，每题10分，满分100分；多选全对得10分，只漏选得5分，错选不得分。全部提交后才显示答案与解析。
+            抽取一张照片，以“月份＋旬”猜测拍摄时间，例如“9月下旬”。每人可猜三次，取最接近实际时间的一次；每次作答后可能获得提示。
           </p>
-          <p>先按分数从高到低，同分再按实际用时从短到长排行；答错不加时。</p>
-          <Link href="/quiz">打开答题游戏 →</Link>
+          <p>和好友一起参加时，可各猜不同照片，也可共同猜同一张。</p>
+          <h3>评奖标准</h3>
+          <Rewards
+            rows={[
+              ['相差不超过三个月', sticker],
+              ['相差不超过三旬', draw],
+              ['精确猜对旬', '一张贴纸或一个文件袋＋该张明信片'],
+            ]}
+          />
+          <p className="baitu-note">
+            例如：猜6月下旬、实际9月下旬，符合“三个月”；猜8月下旬、实际9月下旬，符合“三旬”。
+          </p>
+        </section>
+        <section className="baitu-activity">
+          <h2>冷暖先知</h2>
+          <p>
+            竞猜不同观测环境中的设备所记录的实时温度，精确到0.1℃。环境可能包括草坪、桌椅和塑胶跑道，以现场实际布置为准。
+          </p>
+          <h3>评奖标准</h3>
+          <Rewards
+            rows={[
+              ['正确判断温度高低', sticker],
+              ['任选两个，猜对温差（四舍五入至整数）', draw],
+              ['任选一个，猜测温度与实际相差不超过0.5℃', bottle],
+            ]}
+          />
+          <p className="baitu-note">
+            例如：猜温差2℃、实际1.8℃，符合温差条件；猜32.5℃、实际32.1℃，符合具体温度条件。
+          </p>
+        </section>
+        <section className="baitu-activity baitu-forecast">
+          <div>
+            <h2>预报体验</h2>
+            <p>参与预报员模拟体验小游戏，体验预报员的判断过程。</p>
+            <p className="baitu-note">扫码入口请咨询现场工作人员。</p>
+          </div>
+          <div>
+            <h3>评奖标准</h3>
+            <Rewards
+              rows={[
+                ['C等级及以上', sticker],
+                ['A等级', draw],
+              ]}
+            />
+          </div>
+        </section>
+        <section className="baitu-activity">
+          <h2>气象配对</h2>
+          <div className="baitu-game-layout">
+            <div>
+              <p>
+                完成5组、共22对配对题。选项随机排列，配错后可重试，每配错一次加5秒；总用时为实际用时与惩罚用时之和。
+              </p>
+              <h3>评奖标准</h3>
+              <Rewards
+                rows={[
+                  ['总用时3分钟以内', sticker],
+                  ['总用时1分30秒以内', draw],
+                  ['总用时40秒以内', bottle],
+                ]}
+              />
+            </div>
+            <GameCode href="/game" src="/game-qr.png" name="配对游戏" />
+          </div>
+        </section>
+        <section className="baitu-activity">
+          <h2>气象答题</h2>
+          <div className="baitu-game-layout">
+            <div>
+              <p>
+                共10题，每题10分，满分100分。多选全对得10分，只漏选得5分，错选不得分；全部提交后显示答案与解析。
+              </p>
+              <h3>评奖标准</h3>
+              <Rewards
+                rows={[
+                  ['30分及以上', sticker],
+                  ['60分及以上', draw],
+                  ['90分及以上', bottle],
+                ]}
+              />
+            </div>
+            <GameCode href="/quiz" src="/quiz-qr.png" name="答题游戏" />
+          </div>
         </section>
       </div>
-      <p className="quiz-muted">
-        两个游戏均可不填昵称，但匿名不参与排行。同一浏览器每个游戏只能完成一次，管理员不限次数。
+      <p className="baitu-note">
+        配对与答题游戏均可不填昵称，匿名不参与排行榜。同一浏览器每个游戏只能完成一次，管理员不限次数。配对按总用时排行；答题先按分数，同分按用时排行。
+      </p>
+      <section className="baitu-lottery">
+        <div>
+          <h2>抽奖规则</h2>
+          <p>
+            关注微信公众号“南风之韵”，回复“抽奖”，点击链接加入抽奖。百团临近尾声时统一开奖，请及时关注微信服务通知；中奖后可回到摊位兑奖。
+          </p>
+        </div>
+        <div>
+          <h3>抽奖奖品</h3>
+          <Rewards
+            rows={[
+              ['一等奖 · 共5人', '气象瓶×1或气象书籍×1（二者任选）'],
+              ['二等奖 · 共10人', '明信片×4'],
+              ['三等奖 · 共30人', '贴纸或文件袋×5'],
+            ]}
+          />
+          <p className="baitu-note">奖项和中奖人数可能视实际情况调整。</p>
+        </div>
+      </section>
+      <p className="baitu-final-note">
+        注：贴纸可以自选；明信片、文件袋和气象瓶数量有限，先到先得。
       </p>
     </div>
   )
