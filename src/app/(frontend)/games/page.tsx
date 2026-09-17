@@ -16,7 +16,7 @@ export default function GamesPage() {
       </section>
       <section className="quiz-explanation">
         <h2>答题游戏</h2>
-        <p>10道题，共100分；提交后查看答案解析。按分数、总用时依次排名。</p>
+        <p>10道题，共100分；提交后查看答案解析。按分数、实际用时依次排名，答错不加时。</p>
         <Link href="/quiz">开始答题游戏 →</Link>
       </section>
     </main>

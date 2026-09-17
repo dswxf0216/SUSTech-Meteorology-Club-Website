@@ -62,7 +62,7 @@ export const quizQuestions: QuestionWithAnswer[] = [
     options: [2, 3, 4, 5].map((n, i) => ({
       id: 'ABCD'[i],
       text: `卫星云图${'ABCD'[i]}`,
-      image: `/quiz-images/image${n}.jpeg`,
+      image: `/quiz-images/image${n}-clean.png`,
     })),
     answer: ['D'],
     explanation:

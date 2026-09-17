@@ -50,7 +50,7 @@ assert.equal(
   (await request({ action: 'answer', sessionId: id, questionId: '1', selected: ['Z'] })).status,
   400,
 )
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 9; i++) {
   // Partial multi-select must receive zero points rather than partial credit.
   const selected = i === 8 ? ['B'] : Array.isArray(answers[i]) ? answers[i] : [answers[i]]
   const r = await request({ action: 'answer', sessionId: id, questionId: String(i + 1), selected })
@@ -58,11 +58,16 @@ for (let i = 0; i < 10; i++) {
   assert.equal('result' in r.data, false)
   assert.equal(JSON.stringify(r.data).includes('correctAnswer'), false)
 }
-const final = await request({ action: 'submit', sessionId: id })
+const final = await request({
+  action: 'submit',
+  sessionId: id,
+  questionId: '10',
+  selected: ['A', 'C'],
+})
 assert.equal(final.status, 200)
 assert.equal(final.data.result.score, 90)
-assert.equal(final.data.result.penaltyMs, 5000)
-assert.equal(final.data.result.elapsedMs, final.data.result.actualMs + 5000)
+assert.equal(final.data.result.penaltyMs, 0)
+assert.equal(final.data.result.elapsedMs, final.data.result.actualMs)
 assert.equal(final.data.result.answers.length, 10)
 assert.equal(final.data.result.answers[8].correct, false)
 assert.deepEqual(
@@ -111,5 +116,5 @@ for (let i = 1; i < board.length; i++)
       (board[i - 1].score === board[i].score && board[i - 1].elapsedMs <= board[i].elapsedMs),
   )
 console.log(
-  'PASS: 10 questions; no early answers; exact multi-select; server timing + penalty; score-first leaderboard; resume; one browser once; anonymous privacy; administrator stats protected.',
+  'PASS: 10 questions; no early answers; exact multi-select; direct final submission; server timing without penalty; score-first leaderboard; resume; one browser once; anonymous privacy; administrator stats protected.',
 )

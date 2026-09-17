@@ -43,8 +43,7 @@ export function QuizGame() {
     [ready, setReady] = useState(false)
   const [index, setIndex] = useState(0),
     [selected, setSelected] = useState<string[]>([])
-  const [review, setReview] = useState(false),
-    [busy, setBusy] = useState(false),
+  const [busy, setBusy] = useState(false),
     [error, setError] = useState('')
   const [elapsed, setElapsed] = useState(0)
   const flight = useRef(false),
@@ -136,11 +135,10 @@ export function QuizGame() {
         i = first < 0 ? 0 : first
       setIndex(i)
       setSelected(next.selections[next.questions[i].id] || [])
-      setReview(false)
       focusHeading()
     }
   }
-  async function move(nextIndex: number, toReview = false) {
+  async function move(nextIndex: number) {
     if (!game) return
     const next = await run({
       action: 'answer',
@@ -151,16 +149,19 @@ export function QuizGame() {
     if (next) {
       setIndex(nextIndex)
       setSelected(next.selections[next.questions[nextIndex].id] || [])
-      setReview(toReview)
       focusHeading()
     }
   }
   async function submit() {
     if (!game) return
-    const next = await run({ action: 'submit', sessionId: game.sessionId })
+    const next = await run({
+      action: 'submit',
+      sessionId: game.sessionId,
+      questionId: game.questions[index].id,
+      selected,
+    })
     if (next?.result) {
       setCompleted(true)
-      setReview(false)
       focusHeading()
       try {
         const data = await api()
@@ -173,8 +174,7 @@ export function QuizGame() {
   const q = game?.questions[index]
   const answered = game
     ? game.questions.filter(
-        (q) =>
-          (q.id === game.questions[index].id && !review ? selected : game.selections[q.id])?.length,
+        (q) => (q.id === game.questions[index].id ? selected : game.selections[q.id])?.length,
       ).length
     : 0
 
@@ -186,7 +186,7 @@ export function QuizGame() {
           <p>10道题，每题10分。全部提交后查看答案与解析。</p>
           <ul className="quiz-rules">
             <li>8道单选、2道多选；多选须完整选对，漏选或错选不得分。</li>
-            <li>每错一题，总用时加5秒。排行榜先比较分数，同分再比较总用时。</li>
+            <li>答错不加时。排行榜先比较分数，同分再比较实际用时。</li>
             <li>计时从开始答题到提交为止；提交前可以返回修改。</li>
             <li>同一浏览器只能完成一次本游戏；中断后1小时内可恢复，期间继续计时。</li>
           </ul>
@@ -234,35 +234,26 @@ export function QuizGame() {
               <button
                 key={question.id}
                 type="button"
-                aria-current={!review && i === index ? 'step' : undefined}
-                aria-label={`第${i + 1}题${(question.id === q?.id && !review ? selected : game.selections[question.id])?.length ? '，已作答' : '，未作答'}`}
+                aria-current={i === index ? 'step' : undefined}
+                aria-label={`第${i + 1}题${(question.id === q?.id ? selected : game.selections[question.id])?.length ? '，已作答' : '，未作答'}`}
                 data-answered={
-                  (question.id === q?.id && !review ? selected : game.selections[question.id])
-                    ?.length
+                  (question.id === q?.id ? selected : game.selections[question.id])?.length
                     ? 'true'
                     : undefined
                 }
                 disabled={busy}
-                onClick={() =>
-                  review
-                    ? (setIndex(i),
-                      setSelected(game.selections[question.id] || []),
-                      setReview(false),
-                      focusHeading())
-                    : void move(i)
-                }
+                onClick={() => void move(i)}
               >
                 {i + 1}
                 <small>
-                  {(question.id === q?.id && !review ? selected : game.selections[question.id])
-                    ?.length
+                  {(question.id === q?.id ? selected : game.selections[question.id])?.length
                     ? '✓'
                     : '—'}
                 </small>
               </button>
             ))}
           </nav>
-          {!review && q && (
+          {q && (
             <>
               <h1 ref={heading} tabIndex={-1}>
                 第{index + 1}题 <small>{q.multiple ? '多选题' : '单选题'} · 10分</small>
@@ -323,51 +314,22 @@ export function QuizGame() {
                 ) : (
                   <button
                     className="quiz-primary"
-                    disabled={busy || !selected.length}
-                    onClick={() => void move(index, true)}
+                    disabled={busy || answered !== 10}
+                    aria-busy={busy}
+                    onClick={() => void submit()}
                   >
-                    {busy ? '正在保存…' : '检查并提交'}
+                    {busy ? '正在提交…' : '提交全部答案'}
                   </button>
                 )}
               </div>
               <p className="quiz-muted">
-                选择会在切换题目时保存；不会提前显示对错。{!selected.length ? '请先选择答案。' : ''}
+                选择会在切换题目或提交时保存；不会提前显示对错。
+                {index === 9 && answered !== 10
+                  ? '请完成所有题目后再提交。'
+                  : !selected.length
+                    ? '请先选择答案。'
+                    : ''}
               </p>
-            </>
-          )}
-          {review && (
-            <>
-              <h1 ref={heading} tabIndex={-1}>
-                检查作答
-              </h1>
-              <p>已完成 {answered}/10 题。提交后不能修改，计时将结束并显示答案解析。</p>
-              <div className="quiz-review-list">
-                {game.questions.map((question, i) => (
-                  <button
-                    key={question.id}
-                    disabled={busy}
-                    onClick={() => {
-                      setIndex(i)
-                      setSelected(game.selections[question.id] || [])
-                      setReview(false)
-                      focusHeading()
-                    }}
-                  >
-                    第{i + 1}题{' '}
-                    <strong>{game.selections[question.id]?.join('、') || '未作答'}</strong>
-                    <span>修改</span>
-                  </button>
-                ))}
-              </div>
-              <button
-                className="quiz-primary"
-                disabled={busy || answered !== 10}
-                aria-busy={busy}
-                onClick={() => void submit()}
-              >
-                {busy ? '正在提交…' : '提交全部答案'}
-              </button>
-              {answered !== 10 && <p className="quiz-muted">请完成所有题目后再提交。</p>}
             </>
           )}
         </section>
@@ -380,12 +342,9 @@ export function QuizGame() {
           <p className="quiz-result-score">
             <strong>{game.result.score}</strong> / 100分
           </p>
-          <h2>总用时 {time(game.result.elapsedMs)}</h2>
+          <h2>实际用时 {time(game.result.actualMs)}</h2>
           <p>
-            实际用时 {time(game.result.actualMs)} ＋ 错题惩罚 {time(game.result.penaltyMs)}
-          </p>
-          <p>
-            答对 {10 - game.result.mistakes}/10 题，答错 {game.result.mistakes}题，每题加5秒。
+            答对 {10 - game.result.mistakes}/10 题，答错 {game.result.mistakes}题。
             {!game.nickname && '匿名作答，不参与排行榜。'}
           </p>
           <h2>答案与解析</h2>
@@ -429,7 +388,6 @@ export function QuizGame() {
               className="quiz-primary"
               onClick={() => {
                 setGame(null)
-                setReview(false)
                 setError('')
                 try {
                   localStorage.removeItem(sessionKey)
@@ -467,7 +425,7 @@ export function QuizGame() {
             刷新排行
           </button>
         </div>
-        <p className="quiz-muted">先按分数，再按总用时排序。总用时＝实际用时＋每错一题5秒。</p>
+        <p className="quiz-muted">先按分数，再按实际用时排序；答错不加时。</p>
         {scores.length ? (
           <ol className="quiz-board">
             {scores.map((s, i) => (

@@ -34,6 +34,9 @@ const devicePath = (id: string) => path.join(root, `device-${id}.json`)
 export async function quizDeviceCompleted(id: string) {
   return (await readJSON<Device>(devicePath(id)))?.completed === true
 }
+function withoutPenalty(result: QuizResult): QuizResult {
+  return { ...result, penaltyMs: 0, elapsedMs: result.actualMs }
+}
 function publicSession(s: Session): QuizSession {
   return {
     sessionId: s.id,
@@ -41,7 +44,7 @@ function publicSession(s: Session): QuizSession {
     startedAt: s.startedAt,
     serverNow: Date.now(),
     selections: s.selections,
-    result: s.result,
+    result: s.result ? withoutPenalty(s.result) : undefined,
     // Explicitly strip the answer key and explanations until submission.
     questions: quizQuestions.map(({ answer: _answer, explanation: _explanation, ...q }) => q),
   }
@@ -109,7 +112,7 @@ export async function quizAction(
       return publicSession(s)
     }
     if (Date.now() - s.startedAt > MAX_AGE) throw new Error('游戏已超过一小时，请重新开始。')
-    if (action === 'answer') {
+    if (action === 'answer' || (action === 'submit' && questionId !== undefined)) {
       const v = validateSelection(questionId, selected)
       s.selections[v.q.id] = v.selected
     }
@@ -127,15 +130,14 @@ export async function quizAction(
         explanation: q.explanation,
       }))
       const mistakes = answers.filter((a) => !a.correct).length
-      const actualMs = Math.max(0, Date.now() - s.startedAt),
-        penaltyMs = mistakes * 5000
+      const actualMs = Math.max(0, Date.now() - s.startedAt)
       s.result = {
         id: s.id,
         nickname: s.nickname,
         score: (10 - mistakes) * 10,
         actualMs,
-        penaltyMs,
-        elapsedMs: actualMs + penaltyMs,
+        penaltyMs: 0,
+        elapsedMs: actualMs,
         mistakes,
         finishedAt: new Date().toISOString(),
         answers,
@@ -155,7 +157,7 @@ async function results() {
     const batch = await Promise.all(
       files.slice(i, i + 25).map((f) => readJSON<QuizResult>(path.join(submissions, f))),
     )
-    for (const r of batch) if (r) values.push(r)
+    for (const r of batch) if (r) values.push(withoutPenalty(r))
   }
   return values
 }

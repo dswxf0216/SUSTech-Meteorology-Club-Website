@@ -79,7 +79,7 @@ export function QuizAdmin() {
                 </small>
               </summary>
               <p>
-                实际用时 {time(r.actualMs)} ＋ 惩罚 {time(r.penaltyMs)}（{r.mistakes}道错题）
+                实际用时 {time(r.actualMs)}；答错 {r.mistakes}题
               </p>
               <p className="quiz-muted">记录编号：{r.id}</p>
               {r.answers.map((a) => (

@@ -24,7 +24,7 @@ export default function BaituPage() {
             <Image unoptimized src="/quiz-qr.png" alt="扫码体验答题游戏" width={232} height={232} />
           </Link>
           <p>共10题，每题10分，满分100分；多选题须完整选对，全部提交后才显示答案与解析。</p>
-          <p>每错一题加5秒，先按分数从高到低、同分再按总用时从短到长排行。</p>
+          <p>先按分数从高到低，同分再按实际用时从短到长排行；答错不加时。</p>
           <Link href="/quiz">打开答题游戏 →</Link>
         </section>
       </div>
