@@ -7,7 +7,7 @@ type Score = { nickname: string; elapsedMs: number; actualMs: number; penaltyMs:
 type Game = { sessionId: string; startedAt: number; nickname: string; roundIndex: number; totalRounds: number; totalPairs: number; completedBefore: number; matched: string[]; matchedRight: string[]; mistakes: number; correct?: boolean; result?: Score; round: { title: string; leftLabel: string; rightLabel: string; left: Option[]; right: Option[] } }
 export function formatTime(ms: number) {
   const seconds = Math.floor(ms / 1000)
-  return `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}.${Math.floor(ms % 1000 / 100)}`
+  return [Math.floor(seconds / 3600), Math.floor(seconds / 60) % 60, seconds % 60].map(value => value.toString().padStart(2, '0')).join(':')
 }
 export function MatchingGame() {
   const [nickname, setNickname] = useState('')
