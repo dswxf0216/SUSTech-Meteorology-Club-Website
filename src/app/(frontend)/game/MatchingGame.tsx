@@ -136,10 +136,6 @@ export function MatchingGame() {
           {rankError ? <p role="alert">{rankError}</p> : !scores.length ? <p>{rankBusy ? '正在读取成绩…' : '还没有通关记录，来留下第一份成绩。'}</p> : <ol>{scores.map((score, index) => <li key={`${score.finishedAt}-${index}`}><span className="matching-rank-number">{index + 1}</span><div><strong>{score.nickname}</strong><span>配错{score.mistakes}次</span></div><strong className="matching-time">{formatTime(score.elapsedMs)}</strong></li>)}</ol>}
         </aside>
       </div>
-      <section className="matching-qr" aria-label="扫码体验">
-        <img src="/game-qr.png" alt="扫码打开气象配对挑战：https://nkweather.top/game" width={232} height={232} />
-        <div><h2>扫码体验气象配对挑战</h2><p>使用手机扫码即可开始游戏，无需下载。</p><a href="https://nkweather.top/game">nkweather.top/game</a></div>
-      </section>
     </div>
   </div>
 }

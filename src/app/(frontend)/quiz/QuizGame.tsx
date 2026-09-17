@@ -430,20 +430,6 @@ export function QuizGame() {
         )}
         {admin && <Link href="/quiz/admin">查看每题正确率与作答记录 →</Link>}
       </section>
-      <section className="quiz-scan">
-        <a href="https://nkweather.top/quiz">
-          <Image
-            unoptimized
-            src="/quiz-qr.png"
-            alt="扫码体验气象答题挑战"
-            width={232}
-            height={232}
-            loading="lazy"
-          />
-        </a>
-        <p>扫码在手机上体验答题游戏</p>
-        <Link href="/game">体验配对游戏 →</Link>
-      </section>
     </main>
   )
 }
