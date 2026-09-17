@@ -77,7 +77,16 @@ export default function BaituPage() {
           <div>
             <h2>预报体验</h2>
             <p>参与预报员模拟体验小游戏，体验预报员的判断过程。</p>
-            <p className="baitu-note">扫码入口请咨询现场工作人员。</p>
+            <div className="baitu-code">
+              <Image
+                unoptimized
+                src="/forecast-experience-code.png"
+                alt="预报体验微信小程序码"
+                width={168}
+                height={168}
+              />
+              <p>使用微信扫码体验预报员模拟小游戏</p>
+            </div>
           </div>
           <div>
             <h3>评奖标准</h3>
