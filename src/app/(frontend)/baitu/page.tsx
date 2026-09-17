@@ -38,28 +38,45 @@ export default function BaituPage() {
     <div className="quiz-page baitu-page container">
       <div className="baitu-intro">
         <div>
-          <h1>百团专区</h1>
-          <p className="baitu-lead">活动玩法、评奖标准与游戏入口</p>
+          <h1>气象社百团活动介绍</h1>
+          <p className="baitu-lead">欢迎大家参与！</p>
         </div>
-        <aside className="baitu-join" aria-labelledby="baitu-join-title">
-          <div>
-            <h2 id="baitu-join-title">加入气象交流群</h2>
-            <p>使用QQ扫码加入群聊</p>
-            <p className="baitu-group-number">QQ群号：784685108</p>
-          </div>
-          <Image
-            className="baitu-qq-image"
-            unoptimized
-            src="/club-qq-code.jpg"
-            alt="南科大气象爱好者QQ群二维码，群号784685108"
-            width={1080}
-            height={1920}
-          />
+        <aside className="baitu-join" aria-label="社团交流与关注二维码">
+          <figure>
+            <figcaption>
+              <h2>社团QQ群</h2>
+              <p className="baitu-group-number">群号：784685108</p>
+            </figcaption>
+            <div className="baitu-qq-frame">
+              <Image
+                className="baitu-qq-image"
+                unoptimized
+                src="/club-qq-code.jpg"
+                alt="南科大气象爱好者QQ群二维码，群号784685108"
+                width={1080}
+                height={1920}
+              />
+            </div>
+          </figure>
+          <figure>
+            <figcaption>
+              <h2>社团微信公众号：</h2>
+              <p>南风之韵</p>
+            </figcaption>
+            <Image
+              className="baitu-wechat-image"
+              unoptimized
+              src="/club-wechat-code.jpg"
+              alt="社团微信公众号南风之韵二维码"
+              width={430}
+              height={430}
+            />
+          </figure>
         </aside>
       </div>
       <div className="baitu-activities">
         <section className="baitu-activity">
-          <h2>光影溯源</h2>
+          <h2>1. 光影溯源</h2>
           <p>
             抽取一张照片，以“月份＋旬”猜测拍摄时间，例如“9月下旬”。每人可猜三次，取最接近实际时间的一次；每次作答后可能获得提示。
           </p>
@@ -77,7 +94,7 @@ export default function BaituPage() {
           </p>
         </section>
         <section className="baitu-activity">
-          <h2>冷暖先知</h2>
+          <h2>2. 冷暖先知</h2>
           <p>
             竞猜不同观测环境中的设备所记录的实时温度，精确到0.1℃。环境可能包括草坪、桌椅和塑胶跑道，以现场实际布置为准。
           </p>
@@ -95,20 +112,8 @@ export default function BaituPage() {
         </section>
         <section className="baitu-activity baitu-forecast">
           <div>
-            <h2>预报体验</h2>
+            <h2>3. 预报体验</h2>
             <p>参与预报员模拟体验小游戏，体验预报员的判断过程。</p>
-            <div className="baitu-code">
-              <Image
-                unoptimized
-                src="/forecast-experience-code.png"
-                alt="预报体验微信小程序码"
-                width={168}
-                height={168}
-              />
-              <p>使用微信扫码体验预报员模拟小游戏</p>
-            </div>
-          </div>
-          <div>
             <h3>评奖标准</h3>
             <Rewards
               rows={[
@@ -117,9 +122,19 @@ export default function BaituPage() {
               ]}
             />
           </div>
+          <div className="baitu-code">
+            <Image
+              unoptimized
+              src="/forecast-experience-code.png"
+              alt="预报体验微信小程序码"
+              width={168}
+              height={168}
+            />
+            <p>使用微信扫码体验预报员模拟小游戏</p>
+          </div>
         </section>
         <section className="baitu-activity">
-          <h2>气象配对</h2>
+          <h2>4. 气象配对</h2>
           <div className="baitu-game-layout">
             <div>
               <p>
@@ -138,7 +153,7 @@ export default function BaituPage() {
           </div>
         </section>
         <section className="baitu-activity">
-          <h2>气象答题</h2>
+          <h2>5. 气象答题</h2>
           <div className="baitu-game-layout">
             <div>
               <p>

@@ -16,41 +16,63 @@
 .baitu-intro .baitu-lead {
   margin-bottom: 0;
 }
+.baitu-intro h1 {
+  margin-bottom: var(--space-sm);
+}
 .baitu-join {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: var(--space-md);
   min-width: 0;
+  width: 100%;
+  max-width: 416px;
 }
 .baitu-join h2 {
   color: var(--color-accent);
-  font-size: 20px;
-  margin-block: 0 var(--space-xs);
+  font-size: 16px;
+  margin: 0;
+}
+.baitu-join figure {
+  margin: 0;
+  min-width: 0;
+}
+.baitu-join figcaption {
+  min-height: 64px;
 }
 .baitu-join p {
-  margin-block: 0 var(--space-xs);
+  font-size: 14px;
+  margin-block: var(--space-xs) 0;
 }
 .baitu-group-number {
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
-.baitu-qq-image {
+.baitu-qq-frame,
+.baitu-wechat-image {
   display: block;
-  width: 244px;
-  max-width: 100%;
-  height: 312px;
-  object-fit: cover;
-  object-position: 50% 40%;
+  width: min(100%, 200px);
+  aspect-ratio: 1;
 }
-@media (min-width: 40rem) {
-  .baitu-join {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 244px);
-  }
+.baitu-qq-frame {
+  position: relative;
+  overflow: hidden;
+}
+/* Display only the code region; retain the supplied original image intact. */
+.baitu-qq-image {
+  position: absolute;
+  width: 140%;
+  max-width: none;
+  height: auto;
+  left: -20%;
+  top: -80%;
+}
+.baitu-wechat-image {
+  height: auto;
 }
 @media (min-width: 60rem) {
   .baitu-intro {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 416px);
     gap: var(--space-xl);
   }
 }
@@ -180,11 +202,8 @@
   .baitu-forecast {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 200px);
     gap: var(--space-xl);
-  }
-  .baitu-forecast h3 {
-    margin-top: 0;
   }
   .quiz-page .baitu-lottery {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
