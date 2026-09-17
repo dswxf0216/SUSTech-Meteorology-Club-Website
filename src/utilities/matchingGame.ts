@@ -10,7 +10,27 @@ const MAX_AGE = 60 * 60 * 1000
 type Option = { id: string; text: string; image?: boolean }
 type Round = { title: string; leftLabel: string; rightLabel: string; left: Option[]; right: Option[]; answers: Record<string, string> }
 type Score = { id: string; nickname: string; elapsedMs: number; actualMs?: number; penaltyMs?: number; mistakes: number; finishedAt: string }
-type Session = { id: string; nickname: string; startedAt: number; rounds: Round[]; round: number; matched: string[]; mistakes: number; result?: Score }
+type Session = { id: string; nickname: string; startedAt: number; rounds: Round[]; round: number; matched: string[]; mistakes: number; deviceId?: string; result?: Score }
+type Device = { sessionId: string; startedAt: number; completed?: boolean }
+async function readDevice(id: string): Promise<Device | null> {
+  try { return JSON.parse(await readFile(path.join(root, `device-${id}.json`), 'utf8')) } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+    throw error
+  }
+}
+export async function deviceCompleted(id: string) { return (await readDevice(id))?.completed === true }
+export async function startDeviceGame(nickname: string, deviceId?: string) {
+  if (!deviceId) return startGame(nickname)
+  await mkdir(sessions, { recursive: true })
+  return locked(path.join(root, `device-${deviceId}.lock`), async () => {
+    const device = await readDevice(deviceId)
+    if (device?.completed) throw new Error('此浏览器已完成一次挑战，不能再次作答。')
+    if (device && Date.now() - device.startedAt <= MAX_AGE) return gameAction(device.sessionId, undefined, undefined, false, true, deviceId)
+    const game = await startGame(nickname, deviceId)
+    await atomicWrite(path.join(root, `device-${deviceId}.json`), { sessionId: game.sessionId, startedAt: game.startedAt })
+    return game
+  })
+}
 
 function shuffle<T>(items: T[]) {
   const result = [...items]
@@ -74,7 +94,7 @@ async function saveScore(score: Score) {
     await atomicWrite(path.join(root, 'scores.json'), scores.slice(0, 1000))
   })
 }
-export async function startGame(nickname: string) {
+export async function startGame(nickname: string, deviceId?: string) {
   await mkdir(sessions, { recursive: true })
   // Expired game sessions are not retained; leaderboard entries remain.
   const files = await readdir(sessions)
@@ -90,11 +110,11 @@ export async function startGame(nickname: string) {
     }
     return { title: r.title, leftLabel: r.leftLabel, rightLabel: r.rightLabel, left: shuffle(left), right: shuffle(right), answers }
   })
-  const session: Session = { id: randomUUID(), nickname, startedAt: Date.now(), rounds, round: 0, matched: [], mistakes: 0 }
+  const session: Session = { id: randomUUID(), nickname, startedAt: Date.now(), rounds, round: 0, matched: [], mistakes: 0, deviceId }
   await atomicWrite(path.join(sessions, `${session.id}.json`), session)
   return publicSession(session)
 }
-export async function gameAction(id: string, leftId?: string, rightId?: string, advance = false, resume = false) {
+export async function gameAction(id: string, leftId?: string, rightId?: string, advance = false, resume = false, deviceId?: string) {
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('游戏无效，请重新开始。')
   await mkdir(sessions, { recursive: true })
   return locked(path.join(sessions, `${id}.lock`), async () => {
@@ -103,6 +123,7 @@ export async function gameAction(id: string, leftId?: string, rightId?: string, 
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') throw new Error('游戏已失效，请重新开始。')
       throw error
     }
+    if (deviceId && session.deviceId !== deviceId) throw new Error('游戏不属于此浏览器，请重新开始。')
     if (Date.now() - session.startedAt > MAX_AGE) throw new Error('游戏超过一小时，请重新开始。')
     let correct: boolean | undefined
     if (!session.result && !resume) {
@@ -122,7 +143,10 @@ export async function gameAction(id: string, leftId?: string, rightId?: string, 
       // Persist finish first. A retry can safely resume a failed leaderboard write.
       await atomicWrite(path.join(sessions, `${id}.json`), session)
     }
-    if (session.result) await saveScore(scored(session.result))
+    if (session.result) {
+      if (session.deviceId) await atomicWrite(path.join(root, `device-${session.deviceId}.json`), { sessionId: id, startedAt: session.startedAt, completed: true })
+      await saveScore(scored(session.result))
+    }
     return { ...publicSession(session), correct }
   })
 }

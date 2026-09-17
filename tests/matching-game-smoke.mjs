@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 
 const base = process.env.GAME_TEST_URL || 'http://localhost:3104'
+let cookie = ''
 const expected = [
   {'山竹':'2018年','苏拉':'2023年','摩羯':'2024年','桦加沙':'2025年','红霞':'2026年'},
   {'深圳':'亚热带季风气候','哈尔滨':'温带季风气候','阿姆斯特丹':'温带海洋性气候','芝加哥':'温带大陆性气候','孟买':'热带季风气候'},
@@ -9,13 +10,18 @@ const expected = [
   {'雪深杆':'/game-equipment/image5.jpeg','百叶箱':'/game-equipment/image6.jpeg','风速计':'/game-equipment/image7.jpeg','雨量筒':'/game-equipment/image8.jpeg'},
 ]
 async function post(body, status = 200) {
-  const response = await fetch(`${base}/api/game/matching`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  const response = await fetch(`${base}/api/game/matching`, {method:'POST',headers:{'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify(body)})
+  const setCookie = response.headers.get('set-cookie')
+  if(setCookie) cookie = setCookie.split(';')[0]
   const data = await response.json()
   assert.equal(response.status,status,JSON.stringify(data)); return data
 }
 const scores = () => fetch(`${base}/api/game/matching`).then(r=>r.json())
 async function complete(nickname) {
+  cookie = '' // A separate browser for each test player.
   let game = await post({action:'start',nickname})
+  const resumed = await post({action:'start',nickname:'不要创建新游戏'})
+  assert.equal(resumed.sessionId,game.sessionId)
   assert.equal(game.totalPairs,22); assert.equal(game.totalRounds,5); assert.equal(game.round.answers,undefined)
   const first = game.round.left[0], right = game.round.right.find(r=>r.text !== expected[0][first.text])
   game = await post({action:'match',sessionId:game.sessionId,leftId:first.id,rightId:right.id})
@@ -36,6 +42,11 @@ async function complete(nickname) {
   assert.equal(game.result.penaltyMs,5000)
   assert.equal(game.result.elapsedMs,game.result.actualMs+5000)
   const retry=await post(lastRequest); assert.deepEqual(retry.result,game.result)
+  await post({action:'start',nickname},400)
+  const savedCookie = cookie
+  cookie = 'matching-device=forged'
+  await post({action:'state',sessionId:game.sessionId},400)
+  cookie = savedCookie
   return game
 }
 const before=(await scores()).scores.length
@@ -49,4 +60,4 @@ assert.equal(after.find(s=>s.nickname===nickname).elapsedMs,named.result.elapsed
 assert.ok(after.every((s,i)=>!i||after[i-1].elapsedMs<=s.elapsedMs))
 await post({action:'start',nickname:'a'.repeat(17)},400)
 await post({action:'match',sessionId:'../scores'},400)
-console.log('PASS: 22 document pairs across five rounds, penalties, progress, wrong/retry, anonymous exclusion, rankings, idempotent finish')
+console.log('PASS: five rounds, penalties, resume, one completion per browser, forged cookie rejection, anonymous exclusion, rankings, idempotent finish')

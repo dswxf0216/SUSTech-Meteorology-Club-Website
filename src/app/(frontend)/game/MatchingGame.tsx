@@ -19,6 +19,7 @@ export function MatchingGame() {
   const [elapsed, setElapsed] = useState(0)
   const [scores, setScores] = useState<Score[]>([]), [rankError, setRankError] = useState('')
   const [rankBusy, setRankBusy] = useState(false), [imageFailed, setImageFailed] = useState(false)
+  const [admin, setAdmin] = useState(false), [deviceDone, setDeviceDone] = useState(false), [identityReady, setIdentityReady] = useState(false)
   const clock = useRef({ start: 0, base: 0 }), inFlight = useRef(false)
   const heading = useRef<HTMLHeadingElement>(null)
   async function refreshScores() {
@@ -27,6 +28,7 @@ export function MatchingGame() {
       const r = await fetch('/api/game/matching', { cache: 'no-store' }), body = await r.json()
       if (!r.ok) throw new Error(body.error)
       setScores(body.scores)
+      setAdmin(body.admin === true); setDeviceDone(body.completed === true); setIdentityReady(true)
     } catch { setRankError('排行榜暂时无法读取，请点击刷新重试。') }
     finally { setRankBusy(false) }
   }
@@ -56,7 +58,7 @@ export function MatchingGame() {
       if (!r.ok) throw new Error(body.error || '请求失败，请重试。')
       const next = body as Game
       if (data.action === 'start') {
-        clock.current = { base: performance.now() - sentAt, start: performance.now() }; setElapsed(clock.current.base)
+        clock.current = { base: Math.max(performance.now() - sentAt, Date.now() - next.startedAt), start: performance.now() }; setElapsed(clock.current.base)
       }
       setGame(next)
       if (next.correct === false) { setMessage('配对不正确，总用时 +5秒，请重新选择。'); setFeedback('error'); setRight(null) }
@@ -87,11 +89,12 @@ export function MatchingGame() {
           {!game ? <>
             <p>依次完成五组共22对题目。各组选项随机排列，点击左右两边各一个选项进行配对，配错可继续尝试。</p>
             <p className="matching-penalty-rule"><strong>每配错一次，总用时增加5秒。最终成绩 = 实际用时 + 配错惩罚用时。</strong></p>
+            <p>{admin ? '管理员模式：可不限次数挑战。' : deviceDone ? '此浏览器已完成一次挑战，不能再次作答。' : '普通用户每个浏览器仅可完成一次挑战；中途退出后点击开始可恢复，超过一小时未完成可重新开始。'}</p>
             <form onSubmit={event => { event.preventDefault(); void action({ action: 'start', nickname }) }}>
               <label htmlFor="game-nickname">昵称（可不填）</label>
               <input id="game-nickname" value={nickname} maxLength={16} onChange={event => setNickname(event.target.value)} autoComplete="off" aria-describedby="nickname-help" disabled={busy} />
               <p id="nickname-help">填写昵称即同意在公开排行榜展示昵称、用时和配错次数。留空可正常玩，但不参与排行；请勿填写真实姓名或联系方式。</p>
-              <button className="matching-primary" disabled={busy || !imagesReady} type="submit">{busy ? '正在开始…' : !imagesReady ? '正在加载题图…' : '开始计时挑战'}</button>
+              <button className="matching-primary" disabled={busy || !imagesReady || !identityReady || deviceDone} type="submit">{deviceDone ? '本设备已完成挑战' : busy ? '正在开始…' : !imagesReady ? '正在加载题图…' : !identityReady ? '正在检查参与资格…' : '开始或恢复挑战'}</button>
               {imageFailed && <p role="alert">题图加载失败，请刷新页面重试。</p>}
             </form>
           </> : game.result ? <>
@@ -100,7 +103,7 @@ export function MatchingGame() {
             <p>总用时 = 实际用时 <span className="matching-time">{formatTime(game.result.actualMs)}</span> + 配错惩罚用时 <span className="matching-time">{formatTime(game.result.penaltyMs)}</span>（{game.result.mistakes} × 5秒）</p>
             <p>完成{game.totalPairs}对 · 配错{game.result.mistakes}次</p>
             <p>{game.nickname ? `成绩已记入排行榜，昵称：${game.nickname}` : '本次为匿名挑战，成绩不参与排行榜。'}</p>
-            <button className="matching-primary" disabled={busy} onClick={() => { setGame(null); setElapsed(0); setMessage(''); setLeft(null); setRight(null) }}>再挑战一次</button>
+            {admin ? <button className="matching-primary" disabled={busy} onClick={() => { setGame(null); setElapsed(0); setMessage(''); setLeft(null); setRight(null) }}>再挑战一次</button> : <p>本浏览器的挑战机会已使用，感谢参与！</p>}
           </> : <>
             <div className="matching-status"><span>第{game.roundIndex + 1} / {game.totalRounds}组 · 已完成{completed} / {game.totalPairs}对</span><strong className="matching-time" aria-label="当前总用时">{formatTime(elapsed + game.mistakes * 5000)}</strong></div>
             <progress max={game.totalPairs} value={completed} aria-label="完成进度" />
