@@ -3,20 +3,23 @@
  * pre-emit critique: P4 H5 E4 S5 R5 V4 */
 .quiz-page.baitu-page {
   max-width: 1240px;
+  padding-top: var(--space-md);
 }
 /* Hallmark · component: recruitment group entry · genre: modern-minimal
  * theme: existing blue-white · static content, no motion · pre-emit critique: P4 H5 E4 S5 R4 V4 */
 .baitu-intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: var(--space-lg);
   margin-bottom: var(--space-lg);
 }
 .baitu-intro .baitu-lead {
   margin-bottom: 0;
+  font-size: 20px;
 }
-.baitu-intro h1 {
+.quiz-page .baitu-intro h1 {
+  font-size: clamp(28px, 3.5vw, 44px);
   margin-bottom: var(--space-sm);
 }
 .baitu-join {
@@ -55,17 +58,13 @@
   aspect-ratio: 1;
 }
 .baitu-qq-frame {
-  position: relative;
-  overflow: hidden;
+  aspect-ratio: auto;
 }
-/* Display only the code region; retain the supplied original image intact. */
 .baitu-qq-image {
-  position: absolute;
-  width: 140%;
-  max-width: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
   height: auto;
-  left: -20%;
-  top: -80%;
 }
 .baitu-wechat-image {
   height: auto;

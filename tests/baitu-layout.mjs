@@ -91,6 +91,15 @@ try {
     assert.equal(positions.codeOrder, true)
     assert.equal(positions.captionsAbove, true)
     if (width >= 768) assert.equal(positions.forecastRight, true)
+    const imageDisplay = await page.locator('.baitu-qq-image').evaluate(img => ({
+      ratio: img.getBoundingClientRect().width / img.getBoundingClientRect().height,
+      originalRatio: img.naturalWidth / img.naturalHeight,
+      position: getComputedStyle(img).position,
+      wrapperOverflow: getComputedStyle(img.parentElement).overflow,
+    }))
+    assert.ok(Math.abs(imageDisplay.ratio - imageDisplay.originalRatio) < 0.001)
+    assert.equal(imageDisplay.position, 'static')
+    assert.equal(imageDisplay.wrapperOverflow, 'visible')
     const contrasts = await page.locator('.baitu-page').evaluate((el) => {
       const context = document.createElement('canvas').getContext('2d')
       const luminance = (color) => {
