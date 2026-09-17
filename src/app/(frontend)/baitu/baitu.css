@@ -1,0 +1,31 @@
+.baitu-games {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lg);
+}
+.baitu-game {
+  border-top: 1px solid var(--color-rule);
+  padding-block: var(--space-lg);
+  margin-bottom: 0 !important;
+}
+.baitu-game h2 {
+  margin-top: 0;
+}
+.baitu-game img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-block: var(--space-md);
+}
+.baitu-game > a:last-child {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  white-space: nowrap;
+}
+@media (min-width: 40rem) {
+  .baitu-games {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl);
+  }
+}
