@@ -136,6 +136,7 @@ export function MatchingGame() {
           {rankError ? <p role="alert">{rankError}</p> : !scores.length ? <p>{rankBusy ? '正在读取成绩…' : '还没有通关记录，来留下第一份成绩。'}</p> : <ol>{scores.map((score, index) => <li key={`${score.finishedAt}-${index}`}><span className="matching-rank-number">{index + 1}</span><div><strong>{score.nickname}</strong><span>配错{score.mistakes}次</span></div><strong className="matching-time">{formatTime(score.elapsedMs)}</strong></li>)}</ol>}
         </aside>
       </div>
+      {admin && <p><a href="/game/admin">查看全部作答记录（含匿名） →</a></p>}
     </div>
   </div>
 }
