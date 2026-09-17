@@ -414,7 +414,7 @@ export function QuizGame() {
             刷新排行
           </button>
         </div>
-        <p className="quiz-muted">先按分数，再按实际用时排序；答错不加时。</p>
+        <p className="quiz-muted">先按分数，再按实际用时排序。</p>
         {scores.length ? (
           <ol className="quiz-board">
             {scores.map((s, i) => (
