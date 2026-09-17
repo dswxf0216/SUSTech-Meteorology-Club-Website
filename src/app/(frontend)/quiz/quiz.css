@@ -142,17 +142,16 @@ body:has(.quiz-page) .brand strong {
   min-height: 44px;
   font-variant-numeric: tabular-nums;
 }
-.quiz-progress small {
-  margin-inline-start: 4px;
-  font-size: 10px;
-}
 .quiz-progress [aria-current='step'] {
   background: var(--color-accent);
   color: var(--color-accent-ink);
 }
 .quiz-progress [data-answered='true']:not([aria-current]) {
-  background: var(--color-paper-2);
+  background: #c5e6f8;
   color: var(--color-ink);
+}
+.quiz-explanation-text {
+  color: #1663a0;
 }
 .quiz-prompt {
   font-size: 18px;

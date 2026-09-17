@@ -186,13 +186,8 @@ export function QuizGame() {
           <p>10道题，每题10分。全部提交后查看答案与解析。</p>
           <ul className="quiz-rules">
             <li>8道单选、2道多选；多选须完整选对，漏选或错选不得分。</li>
-            <li>答错不加时。排行榜先比较分数，同分再比较实际用时。</li>
-            <li>计时从开始答题到提交为止；提交前可以返回修改。</li>
             <li>同一浏览器只能完成一次本游戏；中断后1小时内可恢复，期间继续计时。</li>
           </ul>
-          <p className="quiz-muted">
-            题目日期按百团活动题单情境，不随当前日期改变。时间格式：分：秒：百分之一秒。
-          </p>
           {admin && <p className="quiz-success">管理员模式：可不限次数作答。</p>}
           <form
             onSubmit={(e) => {
@@ -210,7 +205,7 @@ export function QuizGame() {
               aria-describedby="quiz-privacy"
             />
             <p id="quiz-privacy" className="quiz-muted">
-              留空不参与排行。昵称公开显示，请勿填写真实姓名、学号或手机号。
+              留空不参与排行，填写后昵称会公开显示
             </p>
             <button
               className="quiz-primary"
@@ -245,11 +240,6 @@ export function QuizGame() {
                 onClick={() => void move(i)}
               >
                 {i + 1}
-                <small>
-                  {(question.id === q?.id ? selected : game.selections[question.id])?.length
-                    ? '✓'
-                    : '—'}
-                </small>
               </button>
             ))}
           </nav>
@@ -267,9 +257,7 @@ export function QuizGame() {
                 aria-labelledby="quiz-question"
                 disabled={busy}
               >
-                <legend className="quiz-muted">
-                  {q.multiple ? '可选择多个选项' : '请选择一个选项'}
-                </legend>
+                {q.multiple && <legend className="quiz-muted">可选择多个选项</legend>}
                 {q.options.map((o) => (
                   <label
                     className="quiz-option"
@@ -379,7 +367,7 @@ export function QuizGame() {
                 <p className={a.correct ? 'quiz-success' : 'quiz-error'}>
                   你的答案：{a.selected.join('、')}；正确答案：{a.correctAnswer.join('、')}
                 </p>
-                <p>{a.explanation}</p>
+                <p className="quiz-explanation-text">{a.explanation}</p>
               </article>
             )
           })}
