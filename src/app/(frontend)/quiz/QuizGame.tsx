@@ -4,20 +4,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { formatGameTime as time } from '@/utilities/formatGameTime'
+import { fetchJsonWithTimeout } from '@/utilities/fetchJsonWithTimeout'
 import type { QuizQuestion, QuizScore, QuizSession } from '@/utilities/quizTypes'
 
 const sessionKey = 'club-quiz-session-v1'
 async function api(body?: object) {
-  const response = await fetch('/api/game/quiz', {
+  return fetchJsonWithTimeout<
+    QuizSession & { scores: QuizScore[]; admin: boolean; completed: boolean }
+  >('/api/game/quiz', {
     method: body ? 'POST' : 'GET',
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
     cache: 'no-store',
-    signal: AbortSignal.timeout(20000),
   })
-  const data = await response.json()
-  if (!response.ok) throw new Error(data.error || '请求失败，请稍后重试。')
-  return data
 }
 function QuestionImages({ q }: { q: QuizQuestion }) {
   return q.image ? (

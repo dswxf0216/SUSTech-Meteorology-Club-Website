@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import type { QuizStatistics } from '@/utilities/quizTypes'
 import { formatGameTime as time } from '@/utilities/formatGameTime'
+import { fetchJsonWithTimeout } from '@/utilities/fetchJsonWithTimeout'
 
 export function QuizAdmin() {
   const [data, setData] = useState<QuizStatistics | null>(null),
@@ -12,12 +13,9 @@ export function QuizAdmin() {
     setBusy(true)
     setError('')
     try {
-      const r = await fetch(`/api/game/quiz/stats?page=${page}`, {
+      const d = await fetchJsonWithTimeout<QuizStatistics>(`/api/game/quiz/stats?page=${page}`, {
         cache: 'no-store',
-        signal: AbortSignal.timeout(20000),
       })
-      const d = await r.json()
-      if (!r.ok) throw new Error(d.error || '统计读取失败，请重试。')
       setData(d)
     } catch (e) {
       setError(e instanceof Error ? e.message : '统计读取失败，请重试。')
