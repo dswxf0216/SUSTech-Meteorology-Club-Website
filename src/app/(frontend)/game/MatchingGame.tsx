@@ -81,6 +81,7 @@ export function MatchingGame() {
   }
   const roundDone = game && game.matched.length === game.round.left.length
   const completed = game ? game.completedBefore + game.matched.length : 0
+  const pictureRound = game?.round.right.some(option => option.image) === true
   return <div className="matching-page">
     <div className="matching-wrap">
       <header className="matching-heading"><h1 ref={!game ? heading : undefined} tabIndex={-1}>气象配对挑战</h1></header>
@@ -108,16 +109,16 @@ export function MatchingGame() {
             <div className="matching-status"><span>第{game.roundIndex + 1} / {game.totalRounds}组 · 已完成{completed} / {game.totalPairs}对</span><strong className="matching-time" aria-label="当前总用时">{formatTime(elapsed + game.mistakes * 5000)}</strong></div>
             <progress max={game.totalPairs} value={completed} aria-label="完成进度" />
             <h2 ref={heading} tabIndex={-1}>{game.round.title}</h2>
-            <p className="matching-instruction">点击两侧各一个选项完成配对。配错次数：{game.mistakes}</p>
-            <div className="matching-columns">
-              {(['left', 'right'] as const).map(side => <div key={side}>
+            <p className="matching-instruction">{pictureRound ? '点击一张图片和一个名称完成配对。' : '点击两侧各一个选项完成配对。'}配错次数：{game.mistakes}</p>
+            <div className={`matching-columns${pictureRound ? ' matching-picture-round' : ''}`}>
+              {(pictureRound ? ['right', 'left'] as const : ['left', 'right'] as const).map(side => <div key={side}>
                 <h3>{side === 'left' ? game.round.leftLabel : game.round.rightLabel}</h3>
                 <div className="matching-options">{game.round[side].map((option, index) => {
                   const done = (side === 'left' ? game.matched : game.matchedRight).includes(option.id)
                   const selected = (side === 'left' ? left : right) === option.id
                   return <button key={option.id} className={`matching-option${selected ? ' is-selected' : ''}${done ? ' is-matched' : ''}`} aria-pressed={selected} aria-label={option.image ? `照片${index + 1}${done ? '，已配对' : ''}` : `${option.text}${done ? '，已配对' : ''}`} disabled={busy || done} onClick={() => pick(side, option.id)}>
-                    {option.image ? <><img src={option.text} alt={`待配对照片${index + 1}`} width={300} height={180} /><span>照片{index + 1}</span></> : <span>{option.text}</span>}
-                    {done && <span className="matching-check">✓ 已配对</span>}
+                    {option.image ? <img src={option.text} alt={`待配对照片${index + 1}`} width={300} height={180} /> : <span>{option.text}</span>}
+                    {done && <span className="matching-check">{option.image ? '✓' : '✓ 已配对'}</span>}
                   </button>
                 })}</div>
               </div>)}
