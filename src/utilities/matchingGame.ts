@@ -49,7 +49,8 @@ function compareScores(a: Score, b: Score) {
 function publicSession(session: Session) {
   const r = session.rounds[session.round]
   return { sessionId: session.id, startedAt: session.startedAt, nickname: session.nickname,
-    roundIndex: session.round, totalRounds: session.rounds.length, totalPairs: 18,
+    roundIndex: session.round, totalRounds: session.rounds.length, totalPairs: session.rounds.reduce((sum, round) => sum + round.left.length, 0),
+    completedBefore: session.rounds.slice(0, session.round).reduce((sum, round) => sum + round.left.length, 0),
     matched: session.matched, matchedRight: session.matched.map(id => r.answers[id]), mistakes: session.mistakes, result: session.result && scored(session.result),
     round: r && { title: r.title, leftLabel: r.leftLabel, rightLabel: r.rightLabel, left: r.left, right: r.right },
   }

@@ -1,6 +1,6 @@
 import 'server-only'
 
-export const QUESTION_VERSION = 'baitu-2026-v1'
+export const QUESTION_VERSION = 'baitu-2026-v2'
 export const matchingRounds = [
   { title: '台风与年份', leftLabel: '台风名称', rightLabel: '年份', pairs: [
     ['山竹', '2018年'], ['苏拉', '2023年'], ['摩羯', '2024年'], ['桦加沙', '2025年'], ['红霞', '2026年'],
@@ -14,4 +14,7 @@ export const matchingRounds = [
   { title: '地方天气名称与地区', leftLabel: '特色天气', rightLabel: '地区', pairs: [
     ['回南天', '华南'], ['梅雨', '长江中下游地区'], ['华西秋雨', '西南、关中'], ['冷流雪', '胶东半岛'],
   ] },
+  { title: '观测设备与图片', leftLabel: '观测设备', rightLabel: '设备照片', pairs: [
+    ['雪深杆', '/game-equipment/image5.jpeg'], ['百叶箱', '/game-equipment/image6.jpeg'], ['风速计', '/game-equipment/image7.jpeg'], ['雨量筒', '/game-equipment/image8.jpeg'],
+  ], images: true },
 ]

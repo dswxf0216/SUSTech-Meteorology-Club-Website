@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 type Option = { id: string; text: string; image?: boolean }
 type Score = { nickname: string; elapsedMs: number; actualMs: number; penaltyMs: number; mistakes: number; finishedAt: string; rank?: number }
-type Game = { sessionId: string; startedAt: number; nickname: string; roundIndex: number; totalRounds: number; totalPairs: number; matched: string[]; matchedRight: string[]; mistakes: number; correct?: boolean; result?: Score; round: { title: string; leftLabel: string; rightLabel: string; left: Option[]; right: Option[] } }
+type Game = { sessionId: string; startedAt: number; nickname: string; roundIndex: number; totalRounds: number; totalPairs: number; completedBefore: number; matched: string[]; matchedRight: string[]; mistakes: number; correct?: boolean; result?: Score; round: { title: string; leftLabel: string; rightLabel: string; left: Option[]; right: Option[] } }
 export function formatTime(ms: number) {
   const seconds = Math.floor(ms / 1000)
   return `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}.${Math.floor(ms % 1000 / 100)}`
@@ -41,7 +41,7 @@ export function MatchingGame() {
   const [imagesReady, setImagesReady] = useState(false)
   useEffect(() => {
     let live = true
-    Promise.all(['/game-clouds/image1.png', '/game-clouds/image2.jpeg', '/game-clouds/image3.jpeg', '/game-clouds/image4.jpeg'].map(src => new Promise<void>((resolve, reject) => {
+    Promise.all(['/game-clouds/image1.png', '/game-clouds/image2.jpeg', '/game-clouds/image3.jpeg', '/game-clouds/image4.jpeg', '/game-equipment/image5.jpeg', '/game-equipment/image6.jpeg', '/game-equipment/image7.jpeg', '/game-equipment/image8.jpeg'].map(src => new Promise<void>((resolve, reject) => {
       const img = new window.Image(); img.onload = () => resolve(); img.onerror = () => reject(); img.src = src
     }))).then(() => { if (live) setImagesReady(true) }).catch(() => { if (live) setImageFailed(true) })
     return () => { live = false }
@@ -78,15 +78,14 @@ export function MatchingGame() {
     if (l && rr && game) void action({ action: 'match', sessionId: game.sessionId, leftId: l, rightId: rr })
   }
   const roundDone = game && game.matched.length === game.round.left.length
-  const completed = game ? (game.roundIndex === 0 ? 0 : game.roundIndex === 1 ? 5 : game.roundIndex === 2 ? 10 : 14) + game.matched.length : 0
+  const completed = game ? game.completedBefore + game.matched.length : 0
   return <div className="matching-page">
     <div className="matching-wrap">
-      <header className="matching-heading"><h1>气象配对挑战</h1><p>南科大气象社 · 百团大战</p></header>
+      <header className="matching-heading"><h1 ref={!game ? heading : undefined} tabIndex={-1}>气象配对挑战</h1></header>
       <div className="matching-layout">
         <section className="matching-play" aria-label="配对游戏">
           {!game ? <>
-            <h2 ref={heading} tabIndex={-1}>从台风到云，找出正确搭档。</h2>
-            <p>依次完成四组共18对题目。各组选项随机排列，点击左右两边各一个选项进行配对，配错可继续尝试。</p>
+            <p>依次完成五组共22对题目。各组选项随机排列，点击左右两边各一个选项进行配对，配错可继续尝试。</p>
             <p className="matching-penalty-rule"><strong>每配错一次，总用时增加5秒。最终成绩 = 实际用时 + 配错惩罚用时。</strong></p>
             <form onSubmit={event => { event.preventDefault(); void action({ action: 'start', nickname }) }}>
               <label htmlFor="game-nickname">昵称（可不填）</label>
@@ -99,12 +98,12 @@ export function MatchingGame() {
             <h2 ref={heading} tabIndex={-1}>全部配对完成</h2>
             <strong className="matching-time matching-final-time">{formatTime(game.result.elapsedMs)}</strong>
             <p>总用时 = 实际用时 <span className="matching-time">{formatTime(game.result.actualMs)}</span> + 配错惩罚用时 <span className="matching-time">{formatTime(game.result.penaltyMs)}</span>（{game.result.mistakes} × 5秒）</p>
-            <p>完成18对 · 配错{game.result.mistakes}次</p>
+            <p>完成{game.totalPairs}对 · 配错{game.result.mistakes}次</p>
             <p>{game.nickname ? `成绩已记入排行榜，昵称：${game.nickname}` : '本次为匿名挑战，成绩不参与排行榜。'}</p>
             <button className="matching-primary" disabled={busy} onClick={() => { setGame(null); setElapsed(0); setMessage(''); setLeft(null); setRight(null) }}>再挑战一次</button>
           </> : <>
-            <div className="matching-status"><span>第{game.roundIndex + 1} / {game.totalRounds}组 · 已完成{completed} / 18对</span><strong className="matching-time" aria-label="当前总用时">{formatTime(elapsed + game.mistakes * 5000)}</strong></div>
-            <progress max={18} value={completed} aria-label="完成进度" />
+            <div className="matching-status"><span>第{game.roundIndex + 1} / {game.totalRounds}组 · 已完成{completed} / {game.totalPairs}对</span><strong className="matching-time" aria-label="当前总用时">{formatTime(elapsed + game.mistakes * 5000)}</strong></div>
+            <progress max={game.totalPairs} value={completed} aria-label="完成进度" />
             <h2 ref={heading} tabIndex={-1}>{game.round.title}</h2>
             <p className="matching-instruction">点击两侧各一个选项完成配对。配错次数：{game.mistakes}</p>
             <div className="matching-columns">
@@ -114,7 +113,7 @@ export function MatchingGame() {
                   const done = (side === 'left' ? game.matched : game.matchedRight).includes(option.id)
                   const selected = (side === 'left' ? left : right) === option.id
                   return <button key={option.id} className={`matching-option${selected ? ' is-selected' : ''}${done ? ' is-matched' : ''}`} aria-pressed={selected} aria-label={option.image ? `照片${index + 1}${done ? '，已配对' : ''}` : `${option.text}${done ? '，已配对' : ''}`} disabled={busy || done} onClick={() => pick(side, option.id)}>
-                    {option.image ? <><img src={option.text} alt={`待配对云照片${index + 1}`} width={300} height={180} /><span>照片{index + 1}</span></> : <span>{option.text}</span>}
+                    {option.image ? <><img src={option.text} alt={`待配对照片${index + 1}`} width={300} height={180} /><span>照片{index + 1}</span></> : <span>{option.text}</span>}
                     {done && <span className="matching-check">✓ 已配对</span>}
                   </button>
                 })}</div>
