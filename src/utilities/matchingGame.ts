@@ -40,12 +40,12 @@ function shuffle<T>(items: T[]) {
   }
   return result
 }
-async function atomicWrite(file: string, value: unknown) {
+export async function atomicWrite(file: string, value: unknown) {
   const temp = `${file}.${randomUUID()}.tmp`
   await writeFile(temp, JSON.stringify(value), { mode: 0o600 })
   try { await rename(temp, file) } finally { await rm(temp, { force: true }) }
 }
-async function locked<T>(lock: string, work: () => Promise<T>) {
+export async function locked<T>(lock: string, work: () => Promise<T>) {
   const deadline = Date.now() + 5000
   while (true) {
     try { await mkdir(lock); break } catch (error) {

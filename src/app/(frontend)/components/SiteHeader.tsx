@@ -13,7 +13,11 @@ const defaultNavigation = [
 export async function SiteHeader() {
   const settings = await getSiteSettings()
   const configuredNavigation = settings.navigation?.filter((item) => item.label && item.url)
-  const navigation = configuredNavigation?.length ? configuredNavigation : defaultNavigation
+  const navigation = [...(configuredNavigation?.length ? configuredNavigation : defaultNavigation)]
+  if (!navigation.some(item => item.url === '/games')) {
+    const linksIndex = navigation.findIndex(item => item.url === '/links')
+    navigation.splice(linksIndex < 0 ? navigation.length : linksIndex, 0, { id: 'games', label: '其它功能', newTab: false, url: '/games' })
+  }
   const clubName = settings.clubName || '南方科技大学气象社'
   const logoSrc = typeof settings.logo === 'object' && settings.logo?.url ? settings.logo.url : '/assets/sustech-meteorology-club-logo.png'
 
@@ -27,6 +31,8 @@ export async function SiteHeader() {
         <nav className="desktop-nav" aria-label="主要导航">
           {navigation.map((item, index) => isWeatherNavigation(item.url)
             ? <DesktopWeatherMenu key={item.id || `${item.url}-${index}`} label={item.label} />
+            : item.url === '/games'
+              ? <DesktopGamesMenu key={item.id || `${item.url}-${index}`} />
             : item.url === '/about'
               ? <DesktopClubMenu key={item.id || `${item.url}-${index}`} />
             : item.newTab
@@ -38,6 +44,8 @@ export async function SiteHeader() {
           <nav aria-label="移动端导航">
             {navigation.map((item, index) => isWeatherNavigation(item.url)
               ? <MobileWeatherMenu key={item.id || `${item.url}-${index}`} label={item.label} />
+              : item.url === '/games'
+                ? <MobileGamesMenu key={item.id || `${item.url}-${index}`} />
               : item.url === '/about'
                 ? <MobileClubMenu key={item.id || `${item.url}-${index}`} />
               : item.newTab
@@ -62,7 +70,7 @@ function DesktopClubMenu() {
         <svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg>
       </button>
       <div className="desktop-nav-submenu">
-        <Link href="/game">百团专区</Link>
+        <Link href="/baitu">百团专区</Link>
       </div>
     </div>
   )
@@ -72,7 +80,7 @@ function MobileClubMenu() {
   return (
     <details className="mobile-nav-submenu">
       <summary>走进社团<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary>
-      <Link href="/game">百团专区</Link>
+      <Link href="/baitu">百团专区</Link>
     </details>
   )
 }
@@ -91,6 +99,14 @@ function DesktopWeatherMenu({ label }: { label: string }) {
       </div>
     </div>
   )
+}
+
+function DesktopGamesMenu() {
+  return <div className="desktop-nav-menu"><button type="button" aria-haspopup="true">其它功能<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></button><div className="desktop-nav-submenu"><Link href="/game">配对游戏</Link><Link href="/quiz">答题游戏</Link></div></div>
+}
+
+function MobileGamesMenu() {
+  return <details className="mobile-nav-submenu"><summary>其它功能<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary><Link href="/game">配对游戏</Link><Link href="/quiz">答题游戏</Link></details>
 }
 
 function MobileWeatherMenu({ label }: { label: string }) {

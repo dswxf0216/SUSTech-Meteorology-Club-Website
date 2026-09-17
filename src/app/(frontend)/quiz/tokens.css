@@ -1,0 +1,22 @@
+.quiz-page {
+  --color-paper: oklch(98% 0.005 245);
+  --color-paper-2: oklch(95% 0.012 245);
+  --color-ink: oklch(28% 0.05 245);
+  --color-muted: oklch(46% 0.035 245);
+  --color-rule: oklch(65% 0.025 245);
+  --color-accent: oklch(46% 0.12 245);
+  --color-accent-ink: oklch(98% 0.005 245);
+  --color-focus: oklch(28% 0.05 245);
+  --color-error: oklch(45% 0.16 25);
+  --color-success: oklch(39% 0.09 155);
+  --font-display: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --font-body: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --font-number: 'Consolas', 'Courier New', monospace;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 120ms;
+}
