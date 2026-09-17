@@ -45,6 +45,9 @@ html, body { overflow-x: clip; }
 .matching-ranking li div { display: grid; gap: 4px; overflow-wrap: anywhere; }
 .matching-ranking li div span { font-size: 14px; color: var(--color-muted); }
 .matching-rank-number { font-family: var(--font-number); color: var(--color-accent); }
+.matching-qr { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg); margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-rule); }
+.matching-qr img { width: 232px; max-width: 100%; height: auto; background: white; }
+.matching-page .matching-penalty-rule { color: var(--color-accent); }
 @media (hover:hover) { .matching-page button:not(:disabled):hover, .matching-play input:hover { background: var(--color-paper-2); } }
 @media (min-width:960px) { .matching-layout { grid-template-columns: minmax(0,2fr) minmax(0,1fr); gap: 64px; } .matching-ranking { border-top: 0; border-left: 1px solid var(--color-rule); padding: 0 0 0 var(--space-lg); } .matching-columns { gap: var(--space-lg); } }
 @media (prefers-reduced-motion: reduce) { .matching-page button { transition: none; } .matching-page button:active { transform: none; } }

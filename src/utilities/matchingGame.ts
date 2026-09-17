@@ -9,7 +9,7 @@ const sessions = path.join(root, 'sessions')
 const MAX_AGE = 60 * 60 * 1000
 type Option = { id: string; text: string; image?: boolean }
 type Round = { title: string; leftLabel: string; rightLabel: string; left: Option[]; right: Option[]; answers: Record<string, string> }
-type Score = { id: string; nickname: string; elapsedMs: number; mistakes: number; finishedAt: string }
+type Score = { id: string; nickname: string; elapsedMs: number; actualMs?: number; penaltyMs?: number; mistakes: number; finishedAt: string }
 type Session = { id: string; nickname: string; startedAt: number; rounds: Round[]; round: number; matched: string[]; mistakes: number; result?: Score }
 
 function shuffle<T>(items: T[]) {
@@ -38,16 +38,24 @@ async function locked<T>(lock: string, work: () => Promise<T>) {
   }
   try { return await work() } finally { await rm(lock, { recursive: true, force: true }) }
 }
+function scored(score: Score) {
+  const actualMs = score.actualMs ?? score.elapsedMs
+  const penaltyMs = score.mistakes * 5000
+  return { ...score, actualMs, penaltyMs, elapsedMs: actualMs + penaltyMs }
+}
+function compareScores(a: Score, b: Score) {
+  return a.elapsedMs - b.elapsedMs || a.mistakes - b.mistakes || a.finishedAt.localeCompare(b.finishedAt)
+}
 function publicSession(session: Session) {
   const r = session.rounds[session.round]
   return { sessionId: session.id, startedAt: session.startedAt, nickname: session.nickname,
     roundIndex: session.round, totalRounds: session.rounds.length, totalPairs: 18,
-    matched: session.matched, matchedRight: session.matched.map(id => r.answers[id]), mistakes: session.mistakes, result: session.result,
+    matched: session.matched, matchedRight: session.matched.map(id => r.answers[id]), mistakes: session.mistakes, result: session.result && scored(session.result),
     round: r && { title: r.title, leftLabel: r.leftLabel, rightLabel: r.rightLabel, left: r.left, right: r.right },
   }
 }
 async function readScores(): Promise<Score[]> {
-  try { return JSON.parse(await readFile(path.join(root, 'scores.json'), 'utf8')) } catch (error) {
+  try { return (JSON.parse(await readFile(path.join(root, 'scores.json'), 'utf8')) as Score[]).map(scored).sort(compareScores) } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []
     throw error
   }
@@ -61,7 +69,7 @@ async function saveScore(score: Score) {
   await locked(path.join(root, 'scores.lock'), async () => {
     const scores = await readScores()
     if (!scores.some(s => s.id === score.id)) scores.push(score)
-    scores.sort((a, b) => a.elapsedMs - b.elapsedMs || a.mistakes - b.mistakes || a.finishedAt.localeCompare(b.finishedAt))
+    scores.sort(compareScores)
     await atomicWrite(path.join(root, 'scores.json'), scores.slice(0, 1000))
   })
 }
@@ -107,13 +115,13 @@ export async function gameAction(id: string, leftId?: string, rightId?: string, 
         if (correct && !session.matched.includes(leftId)) session.matched.push(leftId)
         else if (!correct) session.mistakes++
         if (session.round === session.rounds.length - 1 && session.matched.length === round.left.length) {
-          session.result = { id, nickname: session.nickname, elapsedMs: Date.now() - session.startedAt, mistakes: session.mistakes, finishedAt: new Date().toISOString() }
+          session.result = scored({ id, nickname: session.nickname, elapsedMs: Date.now() - session.startedAt, mistakes: session.mistakes, finishedAt: new Date().toISOString() })
         }
       }
       // Persist finish first. A retry can safely resume a failed leaderboard write.
       await atomicWrite(path.join(sessions, `${id}.json`), session)
     }
-    if (session.result) await saveScore(session.result)
+    if (session.result) await saveScore(scored(session.result))
     return { ...publicSession(session), correct }
   })
 }

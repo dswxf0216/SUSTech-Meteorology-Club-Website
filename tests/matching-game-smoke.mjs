@@ -31,6 +31,8 @@ async function complete(nickname) {
     if(i<3) game=await post({action:'next',sessionId:game.sessionId})
   }
   assert.ok(game.result); assert.ok(game.result.elapsedMs>0); assert.equal(game.result.mistakes,1)
+  assert.equal(game.result.penaltyMs,5000)
+  assert.equal(game.result.elapsedMs,game.result.actualMs+5000)
   const retry=await post(lastRequest); assert.deepEqual(retry.result,game.result)
   return game
 }
