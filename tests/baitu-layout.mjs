@@ -9,6 +9,9 @@ try {
   for (const width of [320, 375, 414, 768, 1280, 1920]) {
     await page.setViewportSize({ width, height: 800 })
     await page.goto(`${process.env.PREVIEW_URL || 'http://localhost:3104'}/baitu`)
+    await page.locator('.baitu-qq-image').scrollIntoViewIfNeeded()
+    await page.waitForFunction(() => document.querySelector('.baitu-qq-image').complete && document.querySelector('.baitu-qq-image').naturalWidth > 0)
+    assert.equal(await page.getByText('QQ群号：784685108', { exact: true }).count(), 1)
     await page.locator('.baitu-code img').last().scrollIntoViewIfNeeded()
     await page.locator('.baitu-forecast img').scrollIntoViewIfNeeded()
     await page.waitForFunction(() => [...document.querySelectorAll('.baitu-code img')].length === 3 && [...document.querySelectorAll('.baitu-code img')].every(img => img.complete && img.naturalWidth > 0))
@@ -49,6 +52,7 @@ try {
     })
     assert.ok(contrasts.every(ratio => ratio >= 4.5), `Contrast ratios: ${contrasts}`)
     await page.evaluate(() => scrollTo(0, 0))
+    await page.locator('.baitu-intro').screenshot({ path: `output/baitu/intro-${width}.png` })
     await page.screenshot({ path: `output/baitu/${width}.png`, fullPage: true })
     console.log(`PASS ${width}px: five activities, three scan codes, responsive columns, no overflow`)
   }

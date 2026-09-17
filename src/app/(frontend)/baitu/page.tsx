@@ -36,8 +36,27 @@ function GameCode({ href, src, name }: { href: string; src: string; name: string
 export default function BaituPage() {
   return (
     <div className="quiz-page baitu-page container">
-      <h1>百团专区</h1>
-      <p className="baitu-lead">活动玩法、评奖标准与游戏入口</p>
+      <div className="baitu-intro">
+        <div>
+          <h1>百团专区</h1>
+          <p className="baitu-lead">活动玩法、评奖标准与游戏入口</p>
+        </div>
+        <aside className="baitu-join" aria-labelledby="baitu-join-title">
+          <div>
+            <h2 id="baitu-join-title">加入气象交流群</h2>
+            <p>使用QQ扫码加入群聊</p>
+            <p className="baitu-group-number">QQ群号：784685108</p>
+          </div>
+          <Image
+            className="baitu-qq-image"
+            unoptimized
+            src="/club-qq-code.jpg"
+            alt="南科大气象爱好者QQ群二维码，群号784685108"
+            width={1080}
+            height={1920}
+          />
+        </aside>
+      </div>
       <div className="baitu-activities">
         <section className="baitu-activity">
           <h2>光影溯源</h2>
