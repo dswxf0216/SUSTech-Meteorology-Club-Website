@@ -85,7 +85,8 @@ export function QuizAdmin() {
               {r.answers.map((a) => (
                 <p key={a.questionId}>
                   第{a.questionId}题：选择 {a.selected.join('、')}；正确答案{' '}
-                  {a.correctAnswer.join('、')}；{a.correct ? '正确 · 10分' : '错误 · 0分'}
+                  {a.correctAnswer.join('、')}；
+                  {a.correct ? '正确' : a.points === 5 ? '漏选' : '错误'} · {a.points}分
                 </p>
               ))}
             </details>

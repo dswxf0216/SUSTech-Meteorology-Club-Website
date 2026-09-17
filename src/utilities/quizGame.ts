@@ -34,8 +34,26 @@ const devicePath = (id: string) => path.join(root, `device-${id}.json`)
 export async function quizDeviceCompleted(id: string) {
   return (await readJSON<Device>(devicePath(id)))?.completed === true
 }
+function answerPoints(selected: string[], answer: string[], multiple: boolean) {
+  if (selected.length === answer.length && selected.every((id) => answer.includes(id))) return 10
+  return multiple && selected.length > 0 && selected.every((id) => answer.includes(id)) ? 5 : 0
+}
 function withoutPenalty(result: QuizResult): QuizResult {
-  return { ...result, penaltyMs: 0, elapsedMs: result.actualMs }
+  const answers = result.answers.map((a) => ({
+    ...a,
+    points: answerPoints(
+      a.selected,
+      a.correctAnswer,
+      quizQuestions.find((q) => q.id === a.questionId)?.multiple === true,
+    ),
+  }))
+  return {
+    ...result,
+    answers,
+    score: answers.reduce((sum, a) => sum + a.points, 0),
+    penaltyMs: 0,
+    elapsedMs: result.actualMs,
+  }
 }
 function publicSession(s: Session): QuizSession {
   return {
@@ -126,6 +144,7 @@ export async function quizAction(
         questionId: q.id,
         selected: s.selections[q.id],
         correct: [...s.selections[q.id]].sort().join('') === [...q.answer].sort().join(''),
+        points: answerPoints(s.selections[q.id], q.answer, q.multiple),
         correctAnswer: q.answer,
         explanation: q.explanation,
       }))
@@ -134,7 +153,7 @@ export async function quizAction(
       s.result = {
         id: s.id,
         nickname: s.nickname,
-        score: (10 - mistakes) * 10,
+        score: answers.reduce((sum, a) => sum + a.points, 0),
         actualMs,
         penaltyMs: 0,
         elapsedMs: actualMs,

@@ -51,7 +51,7 @@ assert.equal(
   400,
 )
 for (let i = 0; i < 9; i++) {
-  // Partial multi-select must receive zero points rather than partial credit.
+  // Selecting only correct options but omitting one earns five points.
   const selected = i === 8 ? ['B'] : Array.isArray(answers[i]) ? answers[i] : [answers[i]]
   const r = await request({ action: 'answer', sessionId: id, questionId: String(i + 1), selected })
   assert.equal(r.status, 200)
@@ -65,11 +65,13 @@ const final = await request({
   selected: ['A', 'C'],
 })
 assert.equal(final.status, 200)
-assert.equal(final.data.result.score, 90)
+assert.equal(final.data.result.score, 95)
 assert.equal(final.data.result.penaltyMs, 0)
 assert.equal(final.data.result.elapsedMs, final.data.result.actualMs)
 assert.equal(final.data.result.answers.length, 10)
 assert.equal(final.data.result.answers[8].correct, false)
+assert.equal(final.data.result.answers[8].points, 5)
+assert.equal(final.data.result.answers[9].points, 10)
 assert.deepEqual(
   (await request({ action: 'submit', sessionId: id })).data.result,
   final.data.result,
@@ -84,7 +86,7 @@ assert.equal(
 )
 assert.equal((await fetch(`${endpoint}/stats`)).status, 403)
 
-async function finish(nickname, mistakes = 0) {
+async function finish(nickname, mistakes = 0, multiSelection) {
   const c = client()
   await c()
   const { data: g } = await c({ action: 'start', nickname })
@@ -93,7 +95,14 @@ async function finish(nickname, mistakes = 0) {
       action: 'answer',
       sessionId: g.sessionId,
       questionId: String(i + 1),
-      selected: i < mistakes ? ['A'] : Array.isArray(answers[i]) ? answers[i] : [answers[i]],
+      selected:
+        i === 8 && multiSelection
+          ? multiSelection
+          : i < mistakes
+            ? ['A']
+            : Array.isArray(answers[i])
+              ? answers[i]
+              : [answers[i]],
     })
   return (await c({ action: 'submit', sessionId: g.sessionId })).data.result
 }
@@ -103,6 +112,9 @@ assert.equal(perfect.score, 100)
 assert.equal(perfect.penaltyMs, 0)
 const anonymous = await finish('')
 assert.equal(anonymous.nickname, '')
+const wrongMulti = await finish('', 0, ['A', 'B'])
+assert.equal(wrongMulti.score, 90)
+assert.equal(wrongMulti.answers[8].points, 0)
 const board = (await request()).data.scores
 assert.equal(board.filter((s) => s.nickname === start.data.nickname).length, 1)
 assert.ok(

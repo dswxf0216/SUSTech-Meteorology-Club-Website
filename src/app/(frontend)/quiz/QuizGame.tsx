@@ -185,7 +185,7 @@ export function QuizGame() {
           <h1>气象答题挑战</h1>
           <p>10道题，每题10分。全部提交后查看答案与解析。</p>
           <ul className="quiz-rules">
-            <li>8道单选、2道多选；多选须完整选对，漏选或错选不得分。</li>
+            <li>8道单选、2道多选；多选全部选对得10分，只漏选得5分，错选不得分。</li>
             <li>同一浏览器只能完成一次本游戏；中断后1小时内可恢复，期间继续计时。</li>
           </ul>
           {admin && <p className="quiz-success">管理员模式：可不限次数作答。</p>}
@@ -330,7 +330,7 @@ export function QuizGame() {
           <p className="quiz-result-score">
             <strong>{game.result.score}</strong> / 100分
           </p>
-          <h2>实际用时 {time(game.result.actualMs)}</h2>
+          <h2>用时 {time(game.result.actualMs)}</h2>
           <p>
             答对 {10 - game.result.mistakes}/10 题，答错 {game.result.mistakes}题。
             {!game.nickname && '匿名作答，不参与排行榜。'}
@@ -341,7 +341,8 @@ export function QuizGame() {
             return (
               <article className="quiz-explanation" key={question.id}>
                 <h3>
-                  第{question.id}题 · {a.correct ? '答对 · 10分' : '答错 · 0分'}
+                  第{question.id}题 · {a.correct ? '答对' : a.points === 5 ? '漏选' : '答错'} ·{' '}
+                  {a.points}分
                 </h3>
                 <p>{question.prompt}</p>
                 <QuestionImages q={question} />

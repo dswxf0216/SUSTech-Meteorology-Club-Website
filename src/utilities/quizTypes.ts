@@ -10,6 +10,7 @@ export type QuizAnswer = {
   questionId: string
   selected: string[]
   correct: boolean
+  points: number
   correctAnswer: string[]
   explanation: string
 }
