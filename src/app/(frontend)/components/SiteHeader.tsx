@@ -6,7 +6,7 @@ import { getSiteSettings } from '@/utilities/getSiteSettings'
 const defaultNavigation = [
   { id: 'home', label: '主页', newTab: false, url: '/' },
   { id: 'weather', label: '天气信息', newTab: false, url: '/weather' },
-  { id: 'about', label: '社团简介', newTab: false, url: '/about' },
+  { id: 'about', label: '走进社团', newTab: false, url: '/about' },
   { id: 'links', label: '友情链接', newTab: false, url: '/links' },
 ]
 
@@ -27,6 +27,8 @@ export async function SiteHeader() {
         <nav className="desktop-nav" aria-label="主要导航">
           {navigation.map((item, index) => isWeatherNavigation(item.url)
             ? <DesktopWeatherMenu key={item.id || `${item.url}-${index}`} label={item.label} />
+            : item.url === '/about'
+              ? <DesktopClubMenu key={item.id || `${item.url}-${index}`} />
             : item.newTab
               ? <a href={item.url} key={item.id || `${item.url}-${index}`} rel="noreferrer" target="_blank">{item.label}</a>
               : <Link href={item.url} key={item.id || `${item.url}-${index}`}>{item.label}</Link>)}
@@ -36,6 +38,8 @@ export async function SiteHeader() {
           <nav aria-label="移动端导航">
             {navigation.map((item, index) => isWeatherNavigation(item.url)
               ? <MobileWeatherMenu key={item.id || `${item.url}-${index}`} label={item.label} />
+              : item.url === '/about'
+                ? <MobileClubMenu key={item.id || `${item.url}-${index}`} />
               : item.newTab
                 ? <a href={item.url} key={item.id || `${item.url}-${index}`} rel="noreferrer" target="_blank">{item.label}</a>
                 : <Link href={item.url} key={item.id || `${item.url}-${index}`}>{item.label}</Link>)}
@@ -48,6 +52,29 @@ export async function SiteHeader() {
 
 function isWeatherNavigation(url: string) {
   return url === '/weather' || url.startsWith('/weather?') || url.startsWith('/weather#')
+}
+
+function DesktopClubMenu() {
+  return (
+    <div className="desktop-nav-menu">
+      <button type="button" aria-haspopup="true">
+        走进社团
+        <svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg>
+      </button>
+      <div className="desktop-nav-submenu">
+        <Link href="/game">百团专区</Link>
+      </div>
+    </div>
+  )
+}
+
+function MobileClubMenu() {
+  return (
+    <details className="mobile-nav-submenu">
+      <summary>走进社团<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary>
+      <Link href="/game">百团专区</Link>
+    </details>
+  )
 }
 
 function DesktopWeatherMenu({ label }: { label: string }) {
