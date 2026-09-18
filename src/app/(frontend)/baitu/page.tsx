@@ -37,12 +37,12 @@ export default function BaituPage() {
   return (
     <div className="quiz-page baitu-page container">
       <div className="baitu-intro">
-        <div>
+        <div className="baitu-welcome">
           <h1>气象社百团活动介绍</h1>
           <p className="baitu-lead">欢迎大家参与！</p>
         </div>
         <aside className="baitu-join" aria-label="社团交流与关注二维码">
-          <figure>
+          <figure className="baitu-qq-entry">
             <figcaption>
               <h2>社团QQ群</h2>
               <p className="baitu-group-number">群号：784685108</p>
@@ -58,7 +58,7 @@ export default function BaituPage() {
               />
             </div>
           </figure>
-          <figure>
+          <figure className="baitu-wechat-entry">
             <figcaption>
               <h2>社团微信公众号：</h2>
               <p>南风之韵</p>

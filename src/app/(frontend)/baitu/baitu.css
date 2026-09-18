@@ -9,9 +9,10 @@
  * theme: existing blue-white · static content, no motion · pre-emit critique: P4 H5 E4 S5 R4 V4 */
 .baitu-intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: 'welcome welcome' 'wechat qq';
   align-items: start;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   margin-bottom: var(--space-lg);
 }
 .baitu-intro .baitu-lead {
@@ -23,13 +24,21 @@
   margin-bottom: var(--space-sm);
 }
 .baitu-join {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: var(--space-md);
-  min-width: 0;
-  width: 100%;
-  max-width: 416px;
+  display: contents;
+}
+.baitu-welcome {
+  grid-area: welcome;
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: var(--space-md);
+}
+.baitu-wechat-entry {
+  grid-area: wechat;
+}
+.baitu-qq-entry {
+  grid-area: qq;
+  border-left: 1px solid var(--color-rule);
+  padding-left: var(--space-md);
+  align-self: stretch;
 }
 .baitu-join h2 {
   color: var(--color-accent);
@@ -71,8 +80,13 @@
 }
 @media (min-width: 60rem) {
   .baitu-intro {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 416px);
-    gap: var(--space-xl);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+    grid-template-areas: 'welcome qq' 'wechat qq';
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: var(--space-lg);
+  }
+  .baitu-wechat-entry {
+    align-self: end;
   }
 }
 .baitu-lead {

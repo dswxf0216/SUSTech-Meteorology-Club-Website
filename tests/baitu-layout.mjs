@@ -83,7 +83,7 @@ try {
       const codes = figures.map(figure => figure.lastElementChild.getBoundingClientRect())
       const forecast = document.querySelector('.baitu-forecast')
       return {
-        codeOrder: codes[0].right <= codes[1].left,
+        codeOrder: codes[1].right <= codes[0].left,
         captionsAbove: figures.every((figure, index) => figure.querySelector('figcaption').getBoundingClientRect().bottom <= codes[index].top),
         forecastRight: forecast.firstElementChild.getBoundingClientRect().right <= forecast.lastElementChild.getBoundingClientRect().left,
       }
