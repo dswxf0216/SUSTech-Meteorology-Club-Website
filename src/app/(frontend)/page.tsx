@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { getPayload } from 'payload'
 
@@ -6,7 +5,6 @@ import config from '@/payload.config'
 import type { DailyForecast } from '@/payload-types'
 import { getArticlePath } from '@/utilities/articlePath'
 import { resolveForecastDayDate } from '@/utilities/forecastDates'
-import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 import { WeatherStationCard } from './weather/WeatherStationCard'
 import { WeatherWarnings } from './weather/WeatherWarnings'
@@ -20,8 +18,7 @@ export const dynamic = 'force-dynamic'
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ forecastId?: string }> }) {
   const { forecastId } = await searchParams
   const payload = await getPayload({ config })
-  const [settings, forecasts, articles, activities] = await Promise.all([
-    getSiteSettings(),
+  const [forecasts, articles, activities] = await Promise.all([
     payload.find({
       collection: 'daily-forecasts',
       limit: 1,
@@ -33,11 +30,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     payload.find({ collection: 'articles', limit: 3, sort: '-publishedAt', where: { _status: { equals: 'published' } } }),
     payload.find({ collection: 'activities', limit: 3, sort: '-startAt', where: { _status: { equals: 'published' } } }),
   ])
-
-  const heroEyebrow = settings.home?.eyebrow || 'SUSTECH METEOROLOGY CLUB'
-  const heroHeading = settings.home?.heading || settings.clubName || '南方科技大学气象社'
-  const slogan = settings.home?.description || settings.slogan || '关注天气与气候，传播气象知识，连接每一位对大气科学感兴趣的同学。'
-  const logoSrc = typeof settings.logo === 'object' && settings.logo?.url ? settings.logo.url : '/assets/sustech-meteorology-club-logo.png'
 
   return (
     <>
@@ -76,37 +68,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
       <section className="section-pad module-band module-band-gray home-nowcast-section">
         <div className="container"><RainfallForecastTabs includeRadar /></div>
-      </section>
-
-      <section className="hero section-pad module-band">
-        <div className="container hero-grid">
-          <div className="hero-copy">
-            <span className="eyebrow">{heroEyebrow}</span>
-            <h1>{heroHeading}</h1>
-            <p>{slogan}</p>
-            <div className="button-row">
-              <Link className="button button-primary" href="/about">认识我们</Link>
-              <Link className="button button-secondary" href="/links">浏览友情链接</Link>
-            </div>
-          </div>
-          <div className="hero-logo-panel">
-            <Image src={logoSrc} alt={`${settings.clubName || '南方科技大学气象社'} Logo`} width={520} height={520} preload />
-          </div>
-        </div>
-      </section>
-
-      <section className="section-pad module-band module-band-gray">
-        <div className="container">
-          <div className="section-heading">
-            <div><span className="eyebrow">网站栏目</span><h2>信息与资源</h2></div>
-            <p>了解社团信息，查看天气资料，并访问常用的气象相关网站。</p>
-          </div>
-          <div className="feature-grid">
-            <Link className="feature-card" href="/weather"><span className="feature-number">01</span><h3>天气信息</h3><p>查看大学城自动气象站实时观测与每日天气预报。</p><span className="text-link">查看天气 →</span></Link>
-            <Link className="feature-card" href="/about"><span className="feature-number">02</span><h3>社团简介</h3><p>了解气象社的宗旨、发展方向、组织文化与主要活动。</p><span className="text-link">认识社团 →</span></Link>
-            <Link className="feature-card" href="/links"><span className="feature-number">03</span><h3>友情链接</h3><p>集中展示气象资料、合作组织与其他常用网站。</p><span className="text-link">浏览链接 →</span></Link>
-          </div>
-        </div>
       </section>
 
       <section className="section-pad module-band">
