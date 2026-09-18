@@ -31,11 +31,13 @@
 }
 .baitu-welcome {
   grid-area: welcome;
+  text-align: center;
   border-bottom: 1px solid var(--color-rule);
   padding-bottom: var(--space-md);
 }
 .baitu-wechat-entry {
   grid-area: wechat;
+  width: min(100%, 200px);
   justify-self: center;
   text-align: center;
 }
