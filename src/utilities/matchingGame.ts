@@ -28,6 +28,7 @@ type Score = {
   finishedAt: string
 }
 type Session = {
+  submitIp?: string
   id: string
   nickname: string
   startedAt: number
@@ -229,6 +230,7 @@ export async function gameAction(
   advance = false,
   resume = false,
   deviceId?: string,
+  submitIp?: string,
 ) {
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('游戏无效，请重新开始。')
   await mkdir(sessions, { recursive: true })
@@ -279,6 +281,7 @@ export async function gameAction(
           session.round === session.rounds.length - 1 &&
           session.matched.length === round.left.length
         ) {
+          session.submitIp = submitIp
           session.result = scored({
             id,
             nickname: session.nickname,
@@ -336,6 +339,7 @@ export async function matchingRecords(page = 1): Promise<MatchingRecords> {
             s.updatedAt ?? (s.result ? Date.parse(s.result.finishedAt) : s.startedAt)
           if ((collected.get(s.id)?.updatedAt ?? 0) > updatedAt) continue
           collected.set(s.id, {
+            submitIp: s.submitIp,
             id: s.id,
             nickname: s.nickname,
             startedAt: s.startedAt,

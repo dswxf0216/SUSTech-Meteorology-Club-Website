@@ -56,13 +56,16 @@ function withoutPenalty(result: QuizResult): QuizResult {
   }
 }
 function publicSession(s: Session): QuizSession {
+  const { submitIp: _submitIp, ...publicResult } = s.result
+    ? withoutPenalty(s.result)
+    : ({} as QuizResult)
   return {
     sessionId: s.id,
     nickname: s.nickname,
     startedAt: s.startedAt,
     serverNow: Date.now(),
     selections: s.selections,
-    result: s.result ? withoutPenalty(s.result) : undefined,
+    result: s.result ? publicResult : undefined,
     // Explicitly strip the answer key and explanations until submission.
     questions: quizQuestions.map(({ answer: _answer, explanation: _explanation, ...q }) => q),
   }
@@ -119,6 +122,7 @@ export async function quizAction(
   deviceId?: string,
   questionId?: unknown,
   selected?: unknown,
+  submitIp?: string,
 ) {
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('游戏不存在，请重新开始。')
   await initialize()
@@ -151,6 +155,7 @@ export async function quizAction(
       const mistakes = answers.filter((a) => !a.correct).length
       const actualMs = Math.max(0, Date.now() - s.startedAt)
       s.result = {
+        submitIp,
         id: s.id,
         nickname: s.nickname,
         score: answers.reduce((sum, a) => sum + a.points, 0),
@@ -188,7 +193,7 @@ export async function quizLeaderboard() {
     .filter((r) => r.nickname)
     .sort(compareQuizScores)
     .slice(0, 50)
-    .map(({ id: _id, answers: _answers, ...r }, i) => ({ ...r, rank: i + 1 }))
+    .map(({ id: _id, answers: _answers, submitIp: _submitIp, ...r }, i) => ({ ...r, rank: i + 1 }))
 }
 export async function quizStatistics(page = 1): Promise<QuizStatistics> {
   const all = (await results()).sort((a, b) => b.finishedAt.localeCompare(a.finishedAt))

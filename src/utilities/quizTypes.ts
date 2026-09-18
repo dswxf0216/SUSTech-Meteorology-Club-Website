@@ -15,6 +15,7 @@ export type QuizAnswer = {
   explanation: string
 }
 export type QuizResult = {
+  submitIp?: string
   id: string
   nickname: string
   score: number
@@ -34,7 +35,7 @@ export type QuizSession = {
   selections: Record<string, string[]>
   result?: QuizResult
 }
-export type QuizScore = Omit<QuizResult, 'id' | 'answers'> & { rank: number }
+export type QuizScore = Omit<QuizResult, 'id' | 'answers' | 'submitIp'> & { rank: number }
 export type QuizStatistics = {
   total: number
   questions: {

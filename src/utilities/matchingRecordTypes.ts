@@ -6,6 +6,7 @@ export type MatchingAttempt = {
   correct: boolean
 }
 export type MatchingRecord = {
+  submitIp?: string
   id: string
   nickname: string
   startedAt: number

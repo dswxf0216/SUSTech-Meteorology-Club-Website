@@ -1,4 +1,5 @@
 import { gameIdentity } from '@/utilities/gameIdentity'
+import { submissionIp } from '@/utilities/submissionIp'
 import { quizAction, quizDeviceCompleted, quizLeaderboard, startQuiz } from '@/utilities/quizGame'
 
 export const runtime = 'nodejs'
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
         who.admin ? undefined : who.deviceId,
         body.questionId,
         body.selected,
+        submissionIp(request),
       ),
       { headers: who.headers },
     )

@@ -80,6 +80,7 @@ export function QuizAdmin() {
                 实际用时 {time(r.actualMs)}；答错 {r.mistakes}题
               </p>
               <p className="quiz-muted">记录编号：{r.id}</p>
+              <p className="quiz-muted">提交IP：{r.submitIp || '未记录'}</p>
               {r.answers.map((a) => (
                 <p key={a.questionId}>
                   第{a.questionId}题：选择 {a.selected.join('、')}；正确答案{' '}
