@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
         pathname: '/assets/**',
         search: '',
       },
+      {
+        pathname: '/about-images/**',
+        search: '',
+      },
     ],
   },
   webpack: (webpackConfig) => {

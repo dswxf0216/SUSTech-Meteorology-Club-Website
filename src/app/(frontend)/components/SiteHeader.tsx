@@ -70,6 +70,7 @@ function DesktopClubMenu() {
         <svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg>
       </button>
       <div className="desktop-nav-submenu">
+        <Link href="/about">社团简介</Link>
         <Link href="/baitu">百团专区</Link>
       </div>
     </div>
@@ -80,6 +81,7 @@ function MobileClubMenu() {
   return (
     <details className="mobile-nav-submenu">
       <summary>走进社团<svg aria-hidden="true" viewBox="0 0 12 8"><path d="m1 1.5 5 5 5-5" /></svg></summary>
+      <Link href="/about">社团简介</Link>
       <Link href="/baitu">百团专区</Link>
     </details>
   )

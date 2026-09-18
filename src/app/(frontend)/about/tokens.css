@@ -1,0 +1,23 @@
+:root {
+  --club-color-paper: oklch(99% 0.003 245);
+  --club-color-soft: oklch(96% 0.012 245);
+  --club-color-ink: oklch(30% 0.045 245);
+  --club-color-muted: oklch(46% 0.035 245);
+  --club-color-accent: oklch(46% 0.115 245);
+  --club-color-rule: oklch(83% 0.025 245);
+  --club-color-gold: oklch(45% 0.075 75);
+  --club-color-gold-soft: oklch(97% 0.015 75);
+  --club-font-body: 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
+  --club-font-declaration: 'STKaiti', 'KaiTi', 'Songti SC', 'SimSun', serif;
+  --club-space-xs: 0.5rem;
+  --club-space-sm: 0.75rem;
+  --club-space-md: 1rem;
+  --club-space-lg: 1.5rem;
+  --club-space-xl: 2rem;
+  --club-space-section: 2.5rem;
+  --club-text-caption: 0.875rem;
+  --club-text-body: 1rem;
+  --club-text-heading: 1.5rem;
+  --club-text-declaration: clamp(2rem, 4vw, 3.25rem);
+  --club-rule: 1px;
+}
