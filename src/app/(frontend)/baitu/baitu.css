@@ -9,6 +9,9 @@
  * theme: existing blue-white · static content, no motion · pre-emit critique: P4 H5 E4 S5 R4 V4 */
 .baitu-intro {
   display: grid;
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-areas: 'welcome welcome' 'wechat qq';
   align-items: start;
@@ -33,6 +36,8 @@
 }
 .baitu-wechat-entry {
   grid-area: wechat;
+  justify-self: center;
+  text-align: center;
 }
 .baitu-qq-entry {
   grid-area: qq;
