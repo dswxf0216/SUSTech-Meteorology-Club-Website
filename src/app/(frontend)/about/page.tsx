@@ -51,7 +51,18 @@ export default function AboutPage() {
           <div>
             <h1>南方科技大学气象社</h1>
             <p className="club-declaration">{club.declaration}</p>
-            <p className="club-opening-note">成立于2024年12月 · 学术科技类社团</p>
+          </div>
+          <div className="club-opening-codes" aria-label="社团交流与关注二维码">
+            <figure>
+              <figcaption><strong>社团QQ群</strong><span>群号：784685108</span></figcaption>
+              <div className="club-qq-crop">
+                <Image unoptimized src="/club-qq-code.jpg" alt="社团QQ群二维码" width={1080} height={1920} />
+              </div>
+            </figure>
+            <figure>
+              <figcaption><strong>社团微信公众号：</strong><span>南风之韵</span></figcaption>
+              <Image className="club-wechat-code" unoptimized src="/club-wechat-code.jpg" alt="南风之韵微信公众号二维码" width={430} height={430} />
+            </figure>
           </div>
           <Image
             className="club-opening-logo"

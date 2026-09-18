@@ -13,6 +13,16 @@ try {
     await page.goto(base + '/about', { waitUntil: 'networkidle', timeout: 60000 })
     await page.locator('.club-declaration').waitFor()
     assert.equal(await page.locator('.club-declaration').innerText(), '绽放属于你的气象万千')
+    assert.equal(await page.locator('.club-opening h1').innerText(), '南方科技大学气象社')
+    assert.equal(await page.locator('.club-opening-note').count(), 0)
+    assert.equal(await page.locator('.club-opening-codes figure').count(), 2)
+    await page.waitForFunction(() => [...document.querySelectorAll('.club-opening-codes img')].every((image) => image.complete && image.naturalWidth > 0))
+    const codeBoxes = await page.locator('.club-opening-codes figure').evaluateAll((figures) => figures.map((figure) => {
+      const code = figure.querySelector('.club-qq-crop, .club-wechat-code').getBoundingClientRect()
+      return { top: code.top, width: code.width, height: code.height }
+    }))
+    assert.ok(Math.abs(codeBoxes[0].top - codeBoxes[1].top) < 1, 'QR codes must align')
+    assert.ok(Math.abs(codeBoxes[0].width - codeBoxes[1].width) < 1, 'QR codes must have equal size')
     assert.equal(await page.locator('.club-honors li').count(), 7)
     assert.equal(await page.locator('.club-history tbody tr').count(), 10)
     for (const image of await page.locator('.club-photo img').all()) await image.scrollIntoViewIfNeeded()

@@ -32,7 +32,8 @@ body:has(.club-about) {
   margin-bottom: var(--club-space-lg);
 }
 .club-opening {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   justify-content: space-between;
   gap: var(--club-space-lg);
@@ -43,9 +44,9 @@ body:has(.club-about) {
   min-width: 0;
 }
 .club-opening h1 {
-  font-size: var(--club-text-body);
-  font-weight: 400;
-  color: var(--club-color-muted);
+  font-size: var(--club-text-title);
+  font-weight: 800;
+  color: var(--club-color-ink);
 }
 .club-declaration {
   margin: var(--club-space-sm) 0;
@@ -56,12 +57,16 @@ body:has(.club-about) {
   color: var(--club-color-accent);
   overflow-wrap: anywhere;
 }
-.club-opening-note {
-  margin: 0;
-  color: var(--club-color-muted);
-  font-size: var(--club-text-caption);
-  line-height: 1.6;
-}
+.club-opening-codes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--club-space-md); }
+.club-opening-codes figure { margin: 0; min-width: 0; }
+.club-opening-codes figcaption { min-height: 3.5rem; font-size: var(--club-text-caption); line-height: 1.6; margin-bottom: var(--club-space-xs); }
+.club-opening-codes strong, .club-opening-codes span { display: block; }
+.club-opening-codes strong { color: var(--club-color-accent); }
+.club-opening-codes span { color: var(--club-color-muted); }
+.club-wechat-code, .club-qq-crop { display: block; width: 100%; max-width: 160px; aspect-ratio: 1; height: auto; }
+/* Viewport crop only: retain the original QQ image used by the fair page. */
+.club-qq-crop { position: relative; overflow: clip; }
+.club-qq-crop img { position: absolute; width: 142.1053%; max-width: none; height: auto; left: -21.0526%; top: -82.8947%; }
 .club-opening-logo {
   display: none;
   flex-shrink: 0;
@@ -267,8 +272,12 @@ body:has(.club-about) {
   }
 }
 @media (min-width: 40rem) {
+  .club-opening { grid-template-columns: minmax(0, 1fr) 120px; }
+  .club-opening-codes { grid-column: 1; grid-row: 2; max-width: 336px; }
   .club-opening-logo {
     display: block;
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
   .club-gallery {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -280,6 +289,9 @@ body:has(.club-about) {
   }
 }
 @media (min-width: 60rem) {
+  .club-opening { grid-template-columns: minmax(0, 1fr) 336px 120px; }
+  .club-opening-codes { grid-column: 2; grid-row: 1; }
+  .club-opening-logo { grid-column: 3; grid-row: 1; }
   .club-introduction {
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--club-space-xl);

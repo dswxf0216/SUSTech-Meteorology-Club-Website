@@ -18,6 +18,7 @@
   --club-text-caption: 0.875rem;
   --club-text-body: 1rem;
   --club-text-heading: 1.5rem;
-  --club-text-declaration: clamp(2rem, 4vw, 3.25rem);
+  --club-text-title: clamp(1.75rem, 2.5vw, 2.25rem);
+  --club-text-declaration: clamp(1.25rem, 1.8vw, 1.625rem);
   --club-rule: 1px;
 }
