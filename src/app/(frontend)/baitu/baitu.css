@@ -4,6 +4,7 @@
 .quiz-page.baitu-page {
   max-width: 1240px;
   padding-top: var(--space-md);
+  font-size: 18px;
 }
 /* Hallmark · component: recruitment group entry · genre: modern-minimal
  * theme: existing blue-white · static content, no motion · pre-emit critique: P4 H5 E4 S5 R4 V4 */
@@ -12,18 +13,18 @@
   width: 100%;
   max-width: 760px;
   margin-inline: auto;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-areas: 'welcome welcome' 'wechat qq';
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'welcome';
   align-items: start;
   gap: var(--space-md);
   margin-bottom: var(--space-lg);
 }
 .baitu-intro .baitu-lead {
   margin-bottom: 0;
-  font-size: 20px;
+  font-size: 24px;
 }
 .quiz-page .baitu-intro h1 {
-  font-size: clamp(28px, 3.5vw, 44px);
+  font-size: clamp(32px, 4vw, 48px);
   margin-bottom: var(--space-sm);
 }
 .baitu-join {
@@ -85,17 +86,6 @@
 .baitu-wechat-image {
   height: auto;
 }
-@media (min-width: 60rem) {
-  .baitu-intro {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
-    grid-template-areas: 'welcome qq' 'wechat qq';
-    grid-template-rows: auto minmax(0, 1fr);
-    column-gap: var(--space-lg);
-  }
-  .baitu-wechat-entry {
-    align-self: end;
-  }
-}
 .baitu-lead {
   color: var(--color-muted);
   margin-block: calc(-1 * var(--space-xs)) var(--space-lg);
@@ -114,12 +104,12 @@
 .baitu-activity h2,
 .baitu-lottery h2 {
   margin-block: 0 var(--space-sm);
-  font-size: 24px;
+  font-size: 28px;
 }
 .baitu-activity h3,
 .baitu-lottery h3 {
   margin-block: var(--space-md) var(--space-xs);
-  font-size: 16px;
+  font-size: 20px;
   color: var(--color-baitu-reward);
 }
 .baitu-activity p {
@@ -154,7 +144,7 @@
 .baitu-note,
 .baitu-code p {
   color: var(--color-muted);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.7;
 }
 .baitu-game-layout {
@@ -212,7 +202,7 @@
 }
 .baitu-final-note {
   color: var(--color-muted);
-  font-size: 14px;
+  font-size: 16px;
 }
 @media (min-width: 48rem) {
   .baitu-activities {

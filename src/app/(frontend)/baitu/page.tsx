@@ -41,38 +41,6 @@ export default function BaituPage() {
           <h1>气象社百团活动介绍</h1>
           <p className="baitu-lead">欢迎大家参与！</p>
         </div>
-        <aside className="baitu-join" aria-label="社团交流与关注二维码">
-          <figure className="baitu-qq-entry">
-            <figcaption>
-              <h2>社团QQ群</h2>
-              <p className="baitu-group-number">群号：784685108</p>
-            </figcaption>
-            <div className="baitu-qq-frame">
-              <Image
-                className="baitu-qq-image"
-                unoptimized
-                src="/club-qq-code.jpg"
-                alt="南科大气象爱好者QQ群二维码，群号784685108"
-                width={1080}
-                height={1920}
-              />
-            </div>
-          </figure>
-          <figure className="baitu-wechat-entry">
-            <figcaption>
-              <h2>社团微信公众号：</h2>
-              <p>南风之韵</p>
-            </figcaption>
-            <Image
-              className="baitu-wechat-image"
-              unoptimized
-              src="/club-wechat-code.jpg"
-              alt="社团微信公众号南风之韵二维码"
-              width={430}
-              height={430}
-            />
-          </figure>
-        </aside>
       </div>
       <div className="baitu-activities">
         <section className="baitu-activity">
@@ -173,13 +141,13 @@ export default function BaituPage() {
         </section>
       </div>
       <p className="baitu-note">
-        配对与答题游戏均可不填昵称，匿名不参与排行榜。同一浏览器每个游戏只能完成一次，管理员不限次数。配对按总用时排行；答题先按分数，同分按用时排行。
+        配对与答题游戏均可不填昵称，匿名不参与排行榜。每个游戏只有一次作答机会。
       </p>
       <section className="baitu-lottery">
         <div>
           <h2>抽奖规则</h2>
           <p>
-            关注微信公众号“南风之韵”，回复“抽奖”，点击链接加入抽奖。百团临近尾声时统一开奖，请及时关注微信服务通知；中奖后可回到摊位兑奖。
+            关注微信公众号“南风之韵”，回复“抽奖”，点击链接加入抽奖。百团临近尾声时统一开奖，请及时关注微信服务通知；中奖后我们会联系您送出奖品。
           </p>
         </div>
         <div>
@@ -188,7 +156,7 @@ export default function BaituPage() {
             rows={[
               ['一等奖 · 共5人', '气象瓶×1或气象书籍×1（二者任选）'],
               ['二等奖 · 共10人', '明信片×4'],
-              ['三等奖 · 共30人', '贴纸或文件袋×5'],
+              ['三等奖 · 共30人', '贴纸或文件袋×3'],
             ]}
           />
           <p className="baitu-note">奖项和中奖人数可能视实际情况调整。</p>
