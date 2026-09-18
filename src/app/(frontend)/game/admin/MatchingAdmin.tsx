@@ -71,6 +71,7 @@ export function MatchingAdmin() {
               <p className="quiz-muted">
                 提交IP：{r.submitIp || (r.status === 'completed' ? '未记录' : '尚未提交')}
               </p>
+              <p className="quiz-muted">IP归属地区：{r.submitRegion || '未知地区'}（仅供参考）</p>
               {r.legacy && <p className="quiz-muted">旧记录未保存完整的逐次配对明细。</p>}
               {r.attempts.length ? (
                 <ol>

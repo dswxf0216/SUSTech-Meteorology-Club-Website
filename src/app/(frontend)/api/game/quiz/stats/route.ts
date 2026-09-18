@@ -1,5 +1,6 @@
 import { isGameAdmin } from '@/utilities/gameIdentity'
 import { quizStatistics } from '@/utilities/quizGame'
+import { ipRegion } from '@/utilities/ipRegion'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export async function GET(request: Request) {
@@ -11,9 +12,19 @@ export async function GET(request: Request) {
         { status: 403, headers },
       )
     const value = Number(new URL(request.url).searchParams.get('page') || '1')
-    return Response.json(await quizStatistics(Number.isFinite(value) ? Math.floor(value) : 1), {
-      headers,
-    })
+    const data = await quizStatistics(Number.isFinite(value) ? Math.floor(value) : 1)
+    const records = await Promise.all(
+      data.records.map(async (record) => ({
+        ...record,
+        submitRegion: await ipRegion(record.submitIp),
+      })),
+    )
+    return Response.json(
+      { ...data, records },
+      {
+        headers,
+      },
+    )
   } catch {
     return Response.json({ error: '答题统计暂时无法读取，请稍后重试。' }, { status: 503, headers })
   }

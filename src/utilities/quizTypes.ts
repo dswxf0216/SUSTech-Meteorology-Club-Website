@@ -46,7 +46,7 @@ export type QuizStatistics = {
     rate: number | null
     correctAnswer: string[]
   }[]
-  records: QuizResult[]
+  records: (QuizResult & { submitRegion?: string })[]
   page: number
   pages: number
 }

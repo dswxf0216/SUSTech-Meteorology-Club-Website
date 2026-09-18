@@ -7,6 +7,7 @@ export type MatchingAttempt = {
 }
 export type MatchingRecord = {
   submitIp?: string
+  submitRegion?: string
   id: string
   nickname: string
   startedAt: number
