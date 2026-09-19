@@ -221,7 +221,7 @@ export function compareQuizScores(a: QuizResult, b: QuizResult) {
 }
 export async function quizLeaderboard(admin = false) {
   return (await results())
-    .filter((r) => r.nickname && includedInLeaderboard(r, admin))
+    .filter((r) => (admin || r.nickname) && includedInLeaderboard(r, admin))
     .sort(compareQuizScores)
     .slice(0, 50)
     .map(

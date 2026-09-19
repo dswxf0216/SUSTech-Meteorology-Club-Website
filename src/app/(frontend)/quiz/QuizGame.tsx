@@ -204,7 +204,7 @@ export function QuizGame() {
               aria-describedby="quiz-privacy"
             />
             <p id="quiz-privacy" className="quiz-muted">
-              留空不参与排行，填写后昵称会公开显示
+              留空仅在管理员排行榜显示，填写后昵称会公开显示
             </p>
             <button
               className="quiz-primary"
@@ -332,7 +332,7 @@ export function QuizGame() {
           <h2>用时 {time(game.result.actualMs)}</h2>
           <p>
             答对 {10 - game.result.mistakes}/10 题，答错 {game.result.mistakes}题。
-            {!game.nickname && '匿名作答，不参与排行榜。'}
+            {!game.nickname && '匿名作答，仅在管理员排行榜显示。'}
           </p>
           <h2>答案与解析</h2>
           {game.questions.map((question) => {
@@ -419,7 +419,7 @@ export function QuizGame() {
             {scores.map((s, i) => (
               <li key={`${s.finishedAt}-${i}`}>
                 <span>{s.rank}</span>
-                <span className="quiz-board-name">{s.nickname}</span>
+                <span className="quiz-board-name">{s.nickname || '匿名用户'}</span>
                 <strong>{s.score}分</strong>
                 <span className="quiz-number">{time(s.elapsedMs)}</span>
               </li>

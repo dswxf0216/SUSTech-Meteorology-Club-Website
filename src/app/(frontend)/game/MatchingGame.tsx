@@ -94,7 +94,7 @@ export function MatchingGame() {
             <form onSubmit={event => { event.preventDefault(); void action({ action: 'start', nickname }) }}>
               <label htmlFor="game-nickname">昵称（可不填）</label>
               <input id="game-nickname" value={nickname} maxLength={16} onChange={event => setNickname(event.target.value)} autoComplete="off" aria-describedby="nickname-help" disabled={busy} />
-              <p id="nickname-help">填写昵称即同意在公开排行榜展示昵称、用时和配错次数。留空可正常玩，但不参与排行；请勿填写真实姓名或联系方式。</p>
+              <p id="nickname-help">填写昵称即同意在公开排行榜展示昵称、用时和配错次数。留空可正常玩，匿名成绩仅在管理员排行榜显示；请勿填写真实姓名或联系方式。</p>
               <button className="matching-primary" disabled={busy || !imagesReady || !identityReady || deviceDone} type="submit">{deviceDone ? '本设备已完成挑战' : busy ? '正在开始…' : !imagesReady ? '正在加载题图…' : !identityReady ? '正在检查参与资格…' : '开始或恢复挑战'}</button>
               {imageFailed && <p role="alert">题图加载失败，请刷新页面重试。</p>}
             </form>
@@ -103,7 +103,7 @@ export function MatchingGame() {
             <strong className="matching-time matching-final-time">{formatTime(game.result.elapsedMs)}</strong>
             <p>总用时 = 实际用时 <span className="matching-time">{formatTime(game.result.actualMs)}</span> + 配错惩罚用时 <span className="matching-time">{formatTime(game.result.penaltyMs)}</span>（{game.result.mistakes} × 5秒）</p>
             <p>完成{game.totalPairs}对 · 配错{game.result.mistakes}次</p>
-            <p>{game.nickname ? `成绩已记入排行榜，昵称：${game.nickname}` : '本次为匿名挑战，成绩不参与排行榜。'}</p>
+            <p>{game.nickname ? `成绩已记入排行榜，昵称：${game.nickname}` : '本次为匿名挑战，成绩仅在管理员排行榜显示。'}</p>
             {admin ? <button className="matching-primary" disabled={busy} onClick={() => { setGame(null); setElapsed(0); setMessage(''); setLeft(null); setRight(null) }}>再挑战一次</button> : <p>本浏览器的挑战机会已使用，感谢参与！</p>}
           </> : <>
             <div className="matching-status"><span>第{game.roundIndex + 1} / {game.totalRounds}组 · 已完成{completed} / {game.totalPairs}对</span><strong className="matching-time" aria-label="当前总用时">{formatTime(elapsed + game.mistakes * 5000)}</strong></div>
@@ -133,7 +133,7 @@ export function MatchingGame() {
         <aside className="matching-ranking" aria-label="通关排行榜">
           <div className="matching-ranking-heading"><h2>通关排行榜</h2><button disabled={rankBusy} onClick={() => void refreshScores()}>{rankBusy ? '读取中…' : '刷新'}</button></div>
           <p>全站共享 · 总用时越短，排名越靠前（含每次配错5秒惩罚）</p>
-          {rankError ? <p role="alert">{rankError}</p> : !scores.length ? <p>{rankBusy ? '正在读取成绩…' : '还没有通关记录，来留下第一份成绩。'}</p> : <ol>{scores.map((score, index) => <li key={`${score.finishedAt}-${index}`}><span className="matching-rank-number">{index + 1}</span><div><strong>{score.nickname}</strong><span>配错{score.mistakes}次</span></div><strong className="matching-time">{formatTime(score.elapsedMs)}</strong></li>)}</ol>}
+          {rankError ? <p role="alert">{rankError}</p> : !scores.length ? <p>{rankBusy ? '正在读取成绩…' : '还没有通关记录，来留下第一份成绩。'}</p> : <ol>{scores.map((score, index) => <li key={`${score.finishedAt}-${index}`}><span className="matching-rank-number">{index + 1}</span><div><strong>{score.nickname || '匿名用户'}</strong><span>配错{score.mistakes}次</span></div><strong className="matching-time">{formatTime(score.elapsedMs)}</strong></li>)}</ol>}
         </aside>
       </div>
       {admin && <p><a href="/game/admin">查看全部作答记录（含匿名） →</a></p>}

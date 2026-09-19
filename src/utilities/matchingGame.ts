@@ -11,6 +11,9 @@ const records = path.join(root, 'records')
 const MAX_AGE = 60 * 60 * 1000
 const LEADERBOARD_CUTOFF = '2026-09-19T03:02:59Z'
 const LEGACY_ADMIN_LEADERBOARD_RECORDS = new Set([
+  '|2026-09-18T03:04:01',
+  '|2026-09-18T02:50:53',
+  '|2026-09-18T02:49:31',
   '星旋斗转|2026-09-17T16:42:45',
   '林间云天ZYX|2026-09-17T13:35:29',
   '111|2026-09-17T12:40:38',
@@ -174,10 +177,31 @@ async function readScores(): Promise<Score[]> {
     throw error
   }
 }
+async function readAdminScores() {
+  const collected = new Map((await readScores()).map((score) => [score.id, score]))
+  await mkdir(records, { recursive: true })
+  const files = (await readdir(records)).filter((file) => /^[a-f0-9-]{36}\.json$/.test(file))
+  for (let i = 0; i < files.length; i += 25) {
+    const batch = await Promise.all(
+      files.slice(i, i + 25).map(async (file) => {
+        try {
+          return JSON.parse(await readFile(path.join(records, file), 'utf8')) as Session
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+          throw error
+        }
+      }),
+    )
+    for (const session of batch)
+      if (session?.result && !collected.has(session.id))
+        collected.set(session.id, scored(session.result))
+  }
+  return [...collected.values()].sort(compareScores)
+}
 export async function leaderboard(admin = false) {
   await mkdir(sessions, { recursive: true })
-  return (await readScores())
-    .filter((score) => includedInLeaderboard(score, admin))
+  return (admin ? await readAdminScores() : await readScores())
+    .filter((score) => (admin || score.nickname) && includedInLeaderboard(score, admin))
     .slice(0, 50)
     .map(({ id: _id, includeInLeaderboards: _includeInLeaderboards, ...score }, i) => ({
       ...score,
@@ -185,7 +209,6 @@ export async function leaderboard(admin = false) {
     }))
 }
 async function saveScore(score: Score) {
-  if (!score.nickname) return
   await locked(path.join(root, 'scores.lock'), async () => {
     const scores = await readScores()
     if (!scores.some((s) => s.id === score.id)) scores.push(score)
