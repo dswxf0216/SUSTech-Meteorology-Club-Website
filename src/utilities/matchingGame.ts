@@ -9,6 +9,12 @@ const root = path.resolve(process.cwd(), 'media', '.matching-game', QUESTION_VER
 const sessions = path.join(root, 'sessions')
 const records = path.join(root, 'records')
 const MAX_AGE = 60 * 60 * 1000
+const LEADERBOARD_CUTOFF = '2026-09-19T03:02:59Z'
+const LEGACY_ADMIN_LEADERBOARD_RECORDS = new Set([
+  '星旋斗转|2026-09-17T16:42:45',
+  '林间云天ZYX|2026-09-17T13:35:29',
+  '111|2026-09-17T12:40:38',
+])
 type Option = { id: string; text: string; image?: boolean }
 type Round = {
   title: string
@@ -26,6 +32,7 @@ type Score = {
   penaltyMs?: number
   mistakes: number
   finishedAt: string
+  includeInLeaderboards?: boolean
 }
 type Session = {
   submitIp?: string
@@ -121,8 +128,19 @@ function compareScores(a: Score, b: Score) {
     a.elapsedMs - b.elapsedMs || a.mistakes - b.mistakes || a.finishedAt.localeCompare(b.finishedAt)
   )
 }
+function includedInLeaderboard(score: Score, admin: boolean) {
+  if (score.includeInLeaderboards === true || score.finishedAt >= LEADERBOARD_CUTOFF) return true
+  const startedAt = new Date(
+    Date.parse(score.finishedAt) - (score.actualMs ?? score.elapsedMs),
+  ).toISOString().slice(0, 19)
+  return admin && LEGACY_ADMIN_LEADERBOARD_RECORDS.has(`${score.nickname}|${startedAt}`)
+}
 function publicSession(session: Session) {
   const r = session.rounds[session.round]
+  const result = session.result && scored(session.result)
+  const publicResult = result
+    ? (({ includeInLeaderboards: _includeInLeaderboards, ...score }) => score)(result)
+    : undefined
   return {
     sessionId: session.id,
     startedAt: session.startedAt,
@@ -136,7 +154,7 @@ function publicSession(session: Session) {
     matched: session.matched,
     matchedRight: session.matched.map((id) => r.answers[id]),
     mistakes: session.mistakes,
-    result: session.result && scored(session.result),
+    result: publicResult,
     round: r && {
       title: r.title,
       leftLabel: r.leftLabel,
@@ -156,11 +174,15 @@ async function readScores(): Promise<Score[]> {
     throw error
   }
 }
-export async function leaderboard() {
+export async function leaderboard(admin = false) {
   await mkdir(sessions, { recursive: true })
   return (await readScores())
+    .filter((score) => includedInLeaderboard(score, admin))
     .slice(0, 50)
-    .map(({ id: _id, ...score }, i) => ({ ...score, rank: i + 1 }))
+    .map(({ id: _id, includeInLeaderboards: _includeInLeaderboards, ...score }, i) => ({
+      ...score,
+      rank: i + 1,
+    }))
 }
 async function saveScore(score: Score) {
   if (!score.nickname) return
@@ -288,6 +310,7 @@ export async function gameAction(
             elapsedMs: Date.now() - session.startedAt,
             mistakes: session.mistakes,
             finishedAt: new Date().toISOString(),
+            includeInLeaderboards: true,
           })
         }
       }

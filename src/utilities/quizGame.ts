@@ -11,6 +11,7 @@ const sessions = path.join(root, 'sessions')
 const submissions = path.join(root, 'submissions')
 const MAX_AGE = 3600000
 const STATISTICS_CUTOFF = '2026-09-19T02:48:58Z'
+const LEADERBOARD_CUTOFF = '2026-09-19T03:02:59Z'
 const LEGACY_STATISTICS_RECORDS = new Set([
   '|75|2026-09-18T03:16:45',
   '|70|2026-09-18T03:00:09',
@@ -54,6 +55,13 @@ function includedInStatistics(result: QuizResult) {
     `${result.nickname}|${result.score}|${result.finishedAt.slice(0, 19)}`,
   )
 }
+function includedInLeaderboard(result: QuizResult, admin: boolean) {
+  if (result.includeInLeaderboards === true || result.finishedAt >= LEADERBOARD_CUTOFF)
+    return true
+  return admin && LEGACY_STATISTICS_RECORDS.has(
+    `${result.nickname}|${result.score}|${result.finishedAt.slice(0, 19)}`,
+  )
+}
 function withoutPenalty(result: QuizResult): QuizResult {
   const answers = result.answers.map((a) => ({
     ...a,
@@ -72,7 +80,12 @@ function withoutPenalty(result: QuizResult): QuizResult {
   }
 }
 function publicSession(s: Session): QuizSession {
-  const { submitIp: _submitIp, includeInStatistics: _includeInStatistics, ...publicResult } = s.result
+  const {
+    submitIp: _submitIp,
+    includeInStatistics: _includeInStatistics,
+    includeInLeaderboards: _includeInLeaderboards,
+    ...publicResult
+  } = s.result
     ? withoutPenalty(s.result)
     : ({} as QuizResult)
   return {
@@ -173,6 +186,7 @@ export async function quizAction(
       s.result = {
         submitIp,
         includeInStatistics: true,
+        includeInLeaderboards: true,
         id: s.id,
         nickname: s.nickname,
         score: answers.reduce((sum, a) => sum + a.points, 0),
@@ -205,9 +219,9 @@ async function results() {
 export function compareQuizScores(a: QuizResult, b: QuizResult) {
   return b.score - a.score || a.elapsedMs - b.elapsedMs || a.finishedAt.localeCompare(b.finishedAt)
 }
-export async function quizLeaderboard() {
+export async function quizLeaderboard(admin = false) {
   return (await results())
-    .filter((r) => r.nickname)
+    .filter((r) => r.nickname && includedInLeaderboard(r, admin))
     .sort(compareQuizScores)
     .slice(0, 50)
     .map(
@@ -216,6 +230,7 @@ export async function quizLeaderboard() {
         answers: _answers,
         submitIp: _submitIp,
         includeInStatistics: _includeInStatistics,
+        includeInLeaderboards: _includeInLeaderboards,
         ...r
       }, i) => ({ ...r, rank: i + 1 }),
     )

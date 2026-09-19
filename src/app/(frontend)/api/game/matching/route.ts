@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const who = await identity(request)
     return Response.json(
       {
-        scores: await leaderboard(),
+        scores: await leaderboard(who.admin),
         admin: who.admin,
         completed: !who.admin && (await deviceCompleted(who.deviceId)),
       },

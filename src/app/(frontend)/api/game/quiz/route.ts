@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const who = await gameIdentity(request, 'quiz-device')
     return Response.json(
       {
-        scores: await quizLeaderboard(),
+        scores: await quizLeaderboard(who.admin),
         admin: who.admin,
         completed: !who.admin && (await quizDeviceCompleted(who.deviceId)),
       },
