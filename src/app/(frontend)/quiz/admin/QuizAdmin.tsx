@@ -45,7 +45,10 @@ export function QuizAdmin() {
       {data && (
         <>
           <h2>每道题整体正确率</h2>
-          <p>共 {data.total} 份完整提交。包括匿名及管理员作答；未提交的作答不计入。</p>
+          <p>
+            共保存 {data.total} 份完整提交；每题正确率按 {data.questions[0]?.total || 0}{' '}
+            份有效记录计算。全部记录（包括匿名及管理员作答）仍保留在下方。
+          </p>
           <div className="quiz-admin-summary">
             {data.questions.map((q) => (
               <div className="quiz-stat-row" key={q.id}>

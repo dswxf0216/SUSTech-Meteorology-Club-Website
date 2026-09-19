@@ -16,6 +16,7 @@ export type QuizAnswer = {
 }
 export type QuizResult = {
   submitIp?: string
+  includeInStatistics?: boolean
   id: string
   nickname: string
   score: number

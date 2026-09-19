@@ -10,6 +10,15 @@ const root = path.resolve(process.cwd(), 'media', '.quiz-game', QUIZ_VERSION)
 const sessions = path.join(root, 'sessions')
 const submissions = path.join(root, 'submissions')
 const MAX_AGE = 3600000
+const STATISTICS_CUTOFF = '2026-09-19T02:48:58Z'
+const LEGACY_STATISTICS_RECORDS = new Set([
+  '|75|2026-09-18T03:16:45',
+  '|70|2026-09-18T03:00:09',
+  '|100|2026-09-18T02:47:32',
+  '星旋斗转|70|2026-09-17T16:40:31',
+  '林间云天ZYX|90|2026-09-17T13:47:06',
+  '111|90|2026-09-17T12:53:00',
+])
 type Session = {
   id: string
   nickname: string
@@ -38,6 +47,13 @@ function answerPoints(selected: string[], answer: string[], multiple: boolean) {
   if (selected.length === answer.length && selected.every((id) => answer.includes(id))) return 10
   return multiple && selected.length > 0 && selected.every((id) => answer.includes(id)) ? 5 : 0
 }
+function includedInStatistics(result: QuizResult) {
+  if (typeof result.includeInStatistics === 'boolean') return result.includeInStatistics
+  if (result.finishedAt >= STATISTICS_CUTOFF) return true
+  return LEGACY_STATISTICS_RECORDS.has(
+    `${result.nickname}|${result.score}|${result.finishedAt.slice(0, 19)}`,
+  )
+}
 function withoutPenalty(result: QuizResult): QuizResult {
   const answers = result.answers.map((a) => ({
     ...a,
@@ -56,7 +72,7 @@ function withoutPenalty(result: QuizResult): QuizResult {
   }
 }
 function publicSession(s: Session): QuizSession {
-  const { submitIp: _submitIp, ...publicResult } = s.result
+  const { submitIp: _submitIp, includeInStatistics: _includeInStatistics, ...publicResult } = s.result
     ? withoutPenalty(s.result)
     : ({} as QuizResult)
   return {
@@ -156,6 +172,7 @@ export async function quizAction(
       const actualMs = Math.max(0, Date.now() - s.startedAt)
       s.result = {
         submitIp,
+        includeInStatistics: true,
         id: s.id,
         nickname: s.nickname,
         score: answers.reduce((sum, a) => sum + a.points, 0),
@@ -193,10 +210,19 @@ export async function quizLeaderboard() {
     .filter((r) => r.nickname)
     .sort(compareQuizScores)
     .slice(0, 50)
-    .map(({ id: _id, answers: _answers, submitIp: _submitIp, ...r }, i) => ({ ...r, rank: i + 1 }))
+    .map(
+      ({
+        id: _id,
+        answers: _answers,
+        submitIp: _submitIp,
+        includeInStatistics: _includeInStatistics,
+        ...r
+      }, i) => ({ ...r, rank: i + 1 }),
+    )
 }
 export async function quizStatistics(page = 1): Promise<QuizStatistics> {
   const all = (await results()).sort((a, b) => b.finishedAt.localeCompare(a.finishedAt))
+  const statistical = all.filter(includedInStatistics)
   const pages = Math.max(1, Math.ceil(all.length / 25))
   page = Math.min(pages, Math.max(1, page))
   return {
@@ -205,15 +231,15 @@ export async function quizStatistics(page = 1): Promise<QuizStatistics> {
     pages,
     records: all.slice((page - 1) * 25, page * 25),
     questions: quizQuestions.map((q) => {
-      const correct = all.filter(
+      const correct = statistical.filter(
         (r) => r.answers.find((a) => a.questionId === q.id)?.correct,
       ).length
       return {
         id: q.id,
         prompt: q.prompt,
         correct,
-        total: all.length,
-        rate: all.length ? correct / all.length : null,
+        total: statistical.length,
+        rate: statistical.length ? correct / statistical.length : null,
         correctAnswer: q.answer,
       }
     }),
